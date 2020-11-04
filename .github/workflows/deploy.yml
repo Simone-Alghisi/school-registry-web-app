@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x]
+    
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v2
+        
+      - name: Use Node.js version ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          
+      - name: Install dependencies
+        run: |
+          echo "npm install ..."
+          npm install
+          
+      - name: Run test
+        run: |
+          echo "npm run test ..."
+          npm run test 
+    
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Add remote origin
+        run: |
+          echo 'Adding remote origin ...'
+          git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
+
+      - name: Deploy to Heroku
+        run: |
+          echo 'Deploying to Heroku ...'
+          git push --force heroku 'git subtree split --prefix server HEAD':master
