@@ -1,0 +1,38 @@
+{
+  "name": "project_se_2_group_06",
+  "version": "1.0.0",
+  "description": "REST service for a Software Engineering project",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node dist/app.js",
+    "dev": "nodemon lib/app.ts",
+    "build": "tsc -p .",
+    "test": "mocha -r ts-node/register spec/**/*.spec.ts",
+    "clean": "rm -r dist/* || true"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Simone-Alghisi/projectSe2group06.git"
+  },
+  "author": "Emanuele Beozzo, Massimo Rizzoli, Samuele Bortolotti, Simone Alghisi",
+  "bugs": {
+    "url": "https://github.com/Simone-Alghisi/projectSe2group06/issues"
+  },
+  "homepage": "https://github.com/Simone-Alghisi/projectSe2group06#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.14",
+    "@types/express": "^4.17.8",
+    "@types/mocha": "^8.0.3",
+    "@types/node": "^14.14.6",
+    "@types/sinon": "^9.0.8",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1",
+    "nodemon": "^2.0.6",
+    "sinon": "^9.2.1",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.5"
+  }
+}
