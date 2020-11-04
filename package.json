@@ -7,7 +7,7 @@
     "start": "node dist/app.js",
     "dev": "nodemon lib/app.ts",
     "build": "tsc -p .",
-    "test": "mocha -r ts-node/register spec/**/*.spec.ts",
+    "test": "mocha -r ts-node/register spec/**/*.spec.ts --exit",
     "clean": "rm -r dist/* || true",
     "postinstall": "tsc -p ."
   },
