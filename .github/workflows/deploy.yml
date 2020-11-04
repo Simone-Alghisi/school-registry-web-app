@@ -46,8 +46,18 @@ jobs:
         run: |
           echo 'Adding remote origin ...'
           git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
-
+      
+      - name: Add changes
+        run: |
+          echo 'Adding files to staged area'
+          git add .
+          
+      - name: Commit 
+        run: |
+          echo 'Commit of the staged files'
+          git commit -m "New deploy"
+        
       - name: Deploy to Heroku
         run: |
           echo 'Deploying to Heroku ...'
-          git push --force heroku 'git subtree split --prefix server HEAD':master
+          git push --force heroku master
