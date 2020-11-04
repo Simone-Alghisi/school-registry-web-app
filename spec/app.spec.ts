@@ -1,9 +1,25 @@
 import 'mocha';
-import { expect } from 'chai';
+import app from '../lib/app';
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-describe("Sample test", () => {
-  it('should always pass', function () {
-    console.log("Sample test");
-    expect(true).to.equal(true);
+chai.use(chaiHttp);
+
+describe("Hello World API Request", () => {
+  it("should return 200 code", async () => {
+    return chai
+      .request(app)
+      .get("/")
+      .then(res => {
+        chai.expect(res.status).to.eql(200);
+      });
+  });
+  it("should return hello world on call", async () => {
+    return chai
+      .request(app)
+      .get("/")
+      .then(res => {
+        chai.expect(res.text).to.eql("Hello World");
+      });
   });
 });
