@@ -5,21 +5,21 @@ import chaiHttp from 'chai-http';
 
 chai.use(chaiHttp);
 
-describe("Hello World API Request", () => {
-  it("should return 200 code", async () => {
+describe('Hello World API Request', () => {
+  it('should return 200 code', async () => {
     return chai
       .request(app)
-      .get("/")
+      .get('/')
       .then(res => {
         chai.expect(res.status).to.eql(200);
       });
   });
-  it("should return hello world on call", async () => {
+  it('should return hello world on call', async () => {
     return chai
       .request(app)
-      .get("/")
+      .get('/')
       .then(res => {
-        chai.expect(res.text).to.eql("Hello World");
+        chai.expect(res.text).to.eql('Hello World');
       });
   });
 });
