@@ -40,6 +40,52 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
+    delete:
+      description: >-
+        Delete all the user in the system
+      summary: Delete all the users
+      responses:
+        '405':
+          description: 'Method not allowed'
+
+  /users/{id}:
+    delete: 
+      description: >-
+        Delete a user with a specific id
+      summary: Delete a user
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: integer
+          required: true
+          description: 'Id of the user to delete'
+      responses:
+        '204':
+          description: 'User deleted'
+        '404':
+          description: 'User to delete not found'
+    get:
+      description: >-
+        Returns the data of a users with a specific id
+      summary: Return a user
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: integer
+          required: true
+          description: 'Id of the user to insert'
+      responses:
+        '200':
+          description: 'Data of user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: 'User not found'
+          
 components:
   schemas:
     User:
