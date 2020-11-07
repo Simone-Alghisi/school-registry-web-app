@@ -1,3 +1,13 @@
+/**
+ * The test verifies if a newly created instance of {@link UserRoutes}
+ * has the properties _app_ and _name_. It also verifies if the property
+ * _name_ is not null, if the type is string and if it contains the same
+ * value passed to the constructor. It also verifies if the instance has 
+ * an implementation of the method _configureRoutes()_ defined by the
+ * interface {@link CommonRoutes}
+ * @packageDocumentation
+ */
+
 import 'mocha';
 import chai from 'chai';
 import app from '../../lib/app';

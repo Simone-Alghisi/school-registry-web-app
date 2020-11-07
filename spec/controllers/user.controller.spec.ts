@@ -1,3 +1,11 @@
+/**
+ * Verifies if a newly created instance of {@link UserController} implements 
+ * all the methods defined by the interface {@link CRUDController}.
+ * It also verifies that the result of a get request to _/users_ responds
+ * with status 200 OK, returning the same information stored in the database
+ * @packageDocumentation
+ */
+
 import 'mocha';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
