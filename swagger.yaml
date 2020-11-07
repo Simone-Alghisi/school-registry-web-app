@@ -6,7 +6,7 @@ info:
   license:
     name: MIT
 servers:
-  - url: https://project-se-2-group-06.herokuapp.com/v1
+  - url: https://project-se-2-group-06.herokuapp.com/api/v1
     description: Heroku test server (uses test data)
 paths:
   /users:
@@ -34,24 +34,107 @@ paths:
             Location:
               schema:
                 type: string
-              description: Link to the newly created user.      
+              description: 'Link to the newly created user'     
+        '422':
+          description: 'Unprocessable entity'
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
+    patch:
+      description: >-
+        Update all the users in the system
+      summary: Update all the existing users in the system
+      responses:
+        '405':
+          description: 'Method not allowed'    
+      requestBody:
+        content:
+          application/json:
+           schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdatedUser'
+    delete:
+      description: >-
+        Delete all the user in the system
+      summary: Delete all the users
+      responses:
+        '405':
+          description: 'Method not allowed'
+
+  /users/{id}:
+    delete: 
+      description: >-
+        Delete a user with a specific id
+      summary: Delete a user
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: integer
+          required: true
+          description: 'Id of the user to delete'
+      responses:
+        '204':
+          description: 'User deleted'
+        '404':
+          description: 'User to delete not found'
+    get:
+      description: >-
+        Returns the data of a users with a specific id
+      summary: Return a user
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: integer
+          required: true
+          description: 'Id of the user to insert'
+      responses:
+        '200':
+          description: 'Data of user'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: 'User not found'
+    patch:
+      description: >-
+        Update a user in the system given the user's id
+      summary: Update a user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: 'Id of the user to update'
+          schema: 
+            type: integer
+      requestBody:
+        content:
+          application/json:
+           schema:
+              $ref: '#/components/schemas/UpdatedUser'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '204':
+          description: 'No content'
+        '404':
+          description: 'id not found or invalid'
+        '422':
+          description: 'Unprocessable entity'
+
 components:
   schemas:
-    User:
+    UpdatedUser:
       type: object
-      required:
-        - name
-        - surname
-        - email
-        - password
-        - id
-        - role
-        - birth_date
       properties:
         name:
           type: string
@@ -76,3 +159,15 @@ components:
           type: string
           description: 'birth date of the user'
           format: date
+    User:
+      allOf:
+        $ref: '#/components/schemas/UpdatedUser'
+      type: object
+      required:
+        - name
+        - surname
+        - email
+        - password
+        - id
+        - role
+        - birth_date
