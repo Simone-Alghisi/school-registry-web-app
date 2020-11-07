@@ -7,10 +7,13 @@ import { CommonRoutes } from './common/routes/common.routes'
 dotenv.config();
 
 //Get the port
+/**Port on which the server will listen onto */
 const port = process.env.PORT;
 
+/**Express instance */
 const app: Application = express();
 
+/**Array containing all the routes */
 const routes: CommonRoutes[] = [];
 
 app.use(express.json());

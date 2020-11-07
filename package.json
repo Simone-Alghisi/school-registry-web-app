@@ -12,7 +12,7 @@
     "postinstall": "tsc -p .",
     "lint": "eslint . --ext .ts",
     "lintfix": "eslint . --ext .ts --fix",
-    "typedoc": "typedoc --out doc /lib"
+    "typedoc": "typedoc --out doc ./lib ./spec"
   },
   "repository": {
     "type": "git",

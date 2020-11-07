@@ -1,3 +1,9 @@
+/**
+ * It verifies if a newly created instance of {@link User}
+ * contains all the properties specified in its definition
+ * @packageDocumentation
+ */
+
 import 'mocha';
 import chai from 'chai';
 import { User } from '../../lib/models/user.model'

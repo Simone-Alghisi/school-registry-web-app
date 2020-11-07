@@ -1,3 +1,9 @@
+/**
+ * It verifies if a request to _/_ succeeds with status 200 OK
+ * and returns _'Hello World'_
+ * @packageDocumentation
+ */
+
 import 'mocha';
 import app from '../lib/app';
 import chai from 'chai';

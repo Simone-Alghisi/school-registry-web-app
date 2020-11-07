@@ -1,3 +1,11 @@
+/**
+ * The test verifies if a newly created instance of {@link CommonRoutes}
+ * has the properties _app_ and _name_. It also verifies if the property
+ * _name_ is not null, if the type is string and if it contains the same
+ * value passed to the constructor
+ * @packageDocumentation
+ */
+
 import 'mocha';
 import { Application } from 'express';
 import chai from 'chai';
