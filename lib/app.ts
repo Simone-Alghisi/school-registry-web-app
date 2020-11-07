@@ -9,7 +9,7 @@ const port = process.env.PORT;
 
 const app: Application = express();
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
+app.get('/', (req: Request, res: Response) => {
   res.send('Hello World')
 });
 

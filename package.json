@@ -11,7 +11,8 @@
     "clean": "rm -r dist/* || true",
     "postinstall": "tsc -p .",
     "lint": "eslint . --ext .ts",
-    "lintfix": "eslint . --ext .ts --fix"
+    "lintfix": "eslint . --ext .ts --fix",
+    "typedoc": "typedoc --out doc /lib"
   },
   "repository": {
     "type": "git",
@@ -43,6 +44,7 @@
     "nodemon": "^2.0.6",
     "sinon": "^9.2.1",
     "ts-node": "^9.0.0",
+    "typedoc": "^0.19.2",
     "typescript": "^4.0.5"
   },
   "engines": {
