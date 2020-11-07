@@ -1,0 +1,29 @@
+[
+    {
+        "id": 0,
+        "role": 0,
+        "name": "james",
+        "surname": "doe",
+        "email": "james.smith@gmail.com",
+        "password" : "12345", 
+        "birth_date" : "2000-04-23T18:25:43.511"
+    },
+    {
+        "id": 1,
+        "role": 0,
+        "name": "james",
+        "surname": "doe",
+        "email": "james.smith@gmail.com",
+        "password" : "12345", 
+        "birth_date" : "2000-04-23T18:25:43.511"
+    },
+    {
+        "id": 2,
+        "role": 0,
+        "name": "james",
+        "surname": "doe",
+        "email": "james.smith@gmail.com",
+        "password" : "12345", 
+        "birth_date" : "2000-04-23T18:25:43.511"
+    }
+]
