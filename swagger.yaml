@@ -23,6 +23,23 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+    post:
+      description: >-
+        Creates a new user in the system
+      summary: Register a new user
+      responses:
+        '201':
+          description: 'Collection of Users'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Link to the newly created user.      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
 components:
   schemas:
     User:
