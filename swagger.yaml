@@ -1,120 +1,61 @@
-swagger: '2.0'
+openapi: 3.0.0
 info:
   version: '1.0'
-  title: " projectSe2group06"
-  description: Polls is a simple API allowing consumers to view polls and vote in them.
+  title: "Projectse2group06 OpenAPI 3.0"
+  description: API for managing a school system.
   license:
     name: MIT
-    url: https://github.com/apiaryio/polls-api/blob/master/LICENSE
-host: polls.apiblueprint.org
-basePath: /
-schemes:
-- https
-consumes:
-- application/json
-produces:
-- application/json
+servers:
+  - url: https://project-se-2-group-06.herokuapp.com/v1
+    description: Heroku test server (uses test data)
 paths:
-  /questions:
-    x-summary: Questions Collection
+  /users:
     get:
-      summary: List All Questions
-      responses:
-        200:
-          description: Successful Response
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Question'
-          examples:
-            application/json:
-              - question: Favourite programming language?
-                published_at: '2015-08-05T08:40:51.620Z'
-                choices:
-                  - choice: Swift
-                    votes: 2048
-                  - choice: Python
-                    votes: 1024
-                  - choice: Objective-C
-                    votes: 512
-                  - choice: Ruby
-                    votes: 256
-    post:
       description: >-
-        You may create your own question using this action. It takes a JSON
-        object containing a question and a collection of answers in the
-        form of choices.
-      summary: Create a New Question
-      parameters:
-        - name: body
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/QuestionRequest'
+        Returns the list of all users in the system
+      summary: Returns all the users
       responses:
-        201:
-          description: ''
-          schema:
-            $ref: '#/definitions/Question'
-          examples:
+        '200':
+          description: 'Collection of Users'
+          content:
             application/json:
-                question: Favourite programming language?
-                published_at: '2015-08-05T08:40:51.620Z'
-                choices:
-                  - choice: Swift
-                    votes: 0
-                  - choice: Python
-                    votes: 0
-                  - choice: Objective-C
-                    votes: 0
-                  - choice: Ruby
-                    votes: 0
-definitions:
-  Question:
-    title: Question
-    type: object
-    properties:
-      question:
-        type: string
-      published_at:
-        type: string
-      choices:
-        type: array
-        items:
-          $ref: '#/definitions/Choice'
-    required:
-      - question
-      - published_at
-      - choices
-  Choice:
-    title: Choice
-    type: object
-    properties:
-      votes:
-        type: integer
-        format: int32
-      choice:
-        type: string
-    required:
-      - votes
-      - choice
-  QuestionRequest:
-    title: Question Request
-    type: object
-    properties:
-      question:
-        type: string
-      choices:
-        type: array
-        items:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - name
+        - surname
+        - email
+        - password
+        - id
+        - role
+        - birth_date
+      properties:
+        name:
           type: string
-    required:
-      - question
-      - choices
-    example:
-      question: Favourite programming language?
-      choices:
-        - Swift
-        - Python
-        - Objective-C
-        - Ruby
+          description: 'name of the user'
+        surname:
+          type: string
+          description: 'surname of the user'
+        email:
+          type: string
+          description: 'email of the user'
+          format: email
+        password:
+          type: string
+          description: 'password of the user'
+        id:
+          type: integer
+          description: 'ID of the user'
+        role:
+          type: integer
+          description: 'role of the user'
+        birth_date:
+          type: string
+          description: 'birth date of the user'
+          format: date
