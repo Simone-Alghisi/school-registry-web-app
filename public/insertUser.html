@@ -187,48 +187,54 @@
               <!-- Project Card Example -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-card">Utenti</h6>
+                  <h6 class="m-0 font-weight-bold text-card">Crea nuovo utente</h6>
                 </div>
                 <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-12 table-responsive">
-                      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Nome</th>
-                                <th>Cognome</th>
-                                <th>Data di Nascita</th>
-                                <th>Ruolo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Fausto</td>
-                                <td>Faustino</td>
-                                <td>4/6/1997</td>
-                                <td>Student*</td>
-                            </tr>
-                            <tr>
-                              <td>Prof.</td>
-                              <td>Segata</td>
-                              <td>3/10/1980</td>
-                              <td>Professor*</td>
-                            </tr>
-                            <tr>
-                              <td>Mario</td>
-                              <td>Mario</td>
-                              <td>2/6/1976</td>
-                              <td>Segretari*</td>
-                            </tr>
-                        </tbody>
-                      </table>
+                  <form id="form" action="http://localhost:8080/api/v1/users" method="POST">
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="name">Nome</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Inserisci il nome..." required>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="surname">Cognome</label>
+                        <input type="text" class="form-control" id="surname" name="surname" placeholder="Inserisci il cognome..." required>
+                      </div>
                     </div>
-                  </div>
-                  <div class="row justify-content-end">
-                    <div class="col-auto">
-                      <button class="btn btn-danger btn-circle" onclick="location.href='./insertUser.html';"><i class="fas fa-fw fa-plus"></i></button>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="birth_date">Data di nascita</label>
+                        <input type="date" class="form-control" id="birth_date" name="birth_date" required>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="role">Categoria</label>
+                        <select class="form-control" id="role" name="role" required>
+                          <option  value="" selected="selected">Seleziona la categoria dell'utente</option>
+                          <option value="0">Student*</option>
+                          <option value="1">Professor*</option>
+                          <option value="2">Segretari*</option>
+                        </select>
+                      </div>
                     </div>
-                  </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Inserisci l'email..." required>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Inserisci la password..." required>
+                      </div>
+                    </div>
+                    <div class="form-row justify-content-end">
+                      <div class="form-group col-auto">
+                        <button class="btn btn-secondary" onclick="location.href='./users.html';">Annulla</button>
+                        <button type="submit" class="btn btn-primary" id="submit">Conferma</button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </div>
 
@@ -304,10 +310,9 @@
   <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css"></script>
 
+
   <!-- Page level custom scripts -->
   <script src="js/demo/datatables-demo.js"></script>
-  
-
 
 </body>
 
