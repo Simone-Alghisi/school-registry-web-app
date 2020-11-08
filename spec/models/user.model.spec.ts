@@ -12,7 +12,7 @@ import * as faker from 'faker';
 describe('User', () => {
   const personName: string = faker.name.findName();
   const personSurname: string = faker.name.findName();
-  const personEmail: string = faker.internet.email()
+  const personEmail: string = faker.internet.email();
   const personPassword: string = faker.internet.password();
   const personId: number = faker.random.number();
   const personRole: number = faker.random.number();
