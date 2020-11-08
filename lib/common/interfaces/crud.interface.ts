@@ -14,6 +14,14 @@ export interface CRUDController {
    */
   create: (req: Request, res: Response) => Promise<void>,
   /**
+   * Update all the resources
+   */
+  updateAll: (req: Request, res: Response) => Promise<void>, 
+  /**
+   * Update all the resources
+   */
+  deleteAll: (req: Request, res: Response) => Promise<void>, 
+  /**
    * Updates the instance of the resource with the given id
    */
   updateById: (req: Request, res: Response) => Promise<void>,

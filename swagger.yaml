@@ -128,8 +128,6 @@ paths:
           description: 'No content'
         '404':
           description: 'id not found or invalid'
-        '422':
-          description: 'Unprocessable entity'
 
 components:
   schemas:
