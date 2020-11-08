@@ -72,7 +72,7 @@ describe('UserController', () => {
     const personSurname: string = faker.name.findName();
     const personEmail: string = faker.internet.email()
     const personPassword: string = faker.internet.password();
-    const personId: number = 3;
+    const personId = 3;
     const personRole: number = faker.random.number({'min': 0, 'max': 2});
     const personBirth_day: string = faker.name.findName();
     const user: User = new User(personName, personSurname, personEmail, personPassword, personId, personRole, personBirth_day);
@@ -118,7 +118,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: missing field', async () => {
-      let fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: personRole};
+      const fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: personRole};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -130,7 +130,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty name field', async () => {
-      let fake_usr:object = {name: "", surname: personSurname, email: personEmail, password: personPassword, role: personRole, birth_date: personBirth_day};
+      const fake_usr:object = {name: '', surname: personSurname, email: personEmail, password: personPassword, role: personRole, birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -142,7 +142,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for name', async () => {
-      let fake_usr:object = {name: 0, surname: personSurname, email: personEmail, password: personPassword, role: personRole, birth_date: personBirth_day};
+      const fake_usr:object = {name: 0, surname: personSurname, email: personEmail, password: personPassword, role: personRole, birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -154,7 +154,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty surname field', async () => {
-      let fake_usr:object = {name: personName, surname: "", email: personEmail, password: personPassword, role: personRole, birth_date: personBirth_day};
+      const fake_usr:object = {name: personName, surname: '', email: personEmail, password: personPassword, role: personRole, birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -166,7 +166,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for surname', async () => {
-      let fake_usr:object = {name: personName, surname: 0, email: personEmail, password: personPassword, role: personRole, birth_date: personBirth_day};
+      const fake_usr:object = {name: personName, surname: 0, email: personEmail, password: personPassword, role: personRole, birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -178,7 +178,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty email field', async () => {
-      let fake_usr:object = {name: personName, surname: personSurname, email: "", password: personPassword, role: personRole, birth_date: personBirth_day};
+      const fake_usr:object = {name: personName, surname: personSurname, email: '', password: personPassword, role: personRole, birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -190,7 +190,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for email', async () => {
-      let fake_usr:object = {name: personName, surname: personSurname, email: 0, password: personPassword, role: personRole, birth_date: personBirth_day};
+      const fake_usr:object = {name: personName, surname: personSurname, email: 0, password: personPassword, role: personRole, birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -202,7 +202,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty password field', async () => {
-      let fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: "", role: personRole, birth_date: personBirth_day};
+      const fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: '', role: personRole, birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -214,7 +214,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for password', async () => {
-      let fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: 0, role: personRole, birth_date: personBirth_day};
+      const fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: 0, role: personRole, birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -226,7 +226,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty role field', async () => {
-      let fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: "", birth_date: personBirth_day};
+      const fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: '', birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -238,7 +238,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for role', async () => {
-      let fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: "0", birth_date: personBirth_day};
+      const fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: '0', birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -250,7 +250,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty birth_date field', async () => {
-      let fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: personRole, birth_date: ""};
+      const fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: personRole, birth_date: ''};
       return chai
           .request(app)
           .post('/api/v1/users')
@@ -262,7 +262,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for birth_date', async () => {
-      let fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: personRole, birth_date: 0};
+      const fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: personRole, birth_date: 0};
       return chai
           .request(app)
           .post('/api/v1/users')

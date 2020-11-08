@@ -32,5 +32,13 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
     this.app.patch('/api/v1/users/:id', [
       userController.updateById
     ]);
+
+    this.app.delete('/api/v1/users/:id',[
+      userController.deleteById
+    ]);
+
+    this.app.delete('/api/v1/users',[
+      userController.deleteAll
+    ]);
   }
 }
