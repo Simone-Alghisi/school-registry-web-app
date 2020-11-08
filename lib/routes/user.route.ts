@@ -13,8 +13,12 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
   configureRoutes(): void {
     const userController:UserController = new UserController();
 
-    this.app.get('/users', [
+    this.app.get('/api/v1/users', [
       userController.list
+    ]);
+
+    this.app.post('/api/v1/users', [
+      userController.create
     ]);
   }
 }
