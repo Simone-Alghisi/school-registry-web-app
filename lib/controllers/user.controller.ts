@@ -26,6 +26,8 @@ export class UserController extends CommonController implements CRUDController{
     }
 
     const promise: Promise<any> = new Promise(function(resolve, reject) {
+      req.body.role = UserController.caster(req.body.role);
+      
       if(req.body === null || req.body === undefined || !UserController.checkValidity(req.body.name, 'string') ||
       !UserController.checkValidity(req.body.surname, 'string') || !UserController.checkValidity(req.body.email, 'string') ||
       !UserController.checkValidity(req.body.password, 'string') || !UserController.checkValidity(req.body.role, 'number') || 
