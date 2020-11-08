@@ -238,7 +238,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for role', async () => {
-      const fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: '0', birth_date: personBirth_day};
+      const fake_usr:object = {name: personName, surname: personSurname, email: personEmail, password: personPassword, role: 'hello world', birth_date: personBirth_day};
       return chai
           .request(app)
           .post('/api/v1/users')

@@ -3,8 +3,12 @@ export class CommonController {
   }
 
   static caster(value: string): any{
-    const parsed: number = parseFloat(value);
-    return parsed !== NaN ? parsed : value;
+    if(value === ''){
+      return value;
+    } else {
+      const parsed: number = parseFloat(value);
+      return !isNaN(parsed) ? parsed : value;
+    }
   }
 
   static checkValidity(value: any, type: string): boolean {
