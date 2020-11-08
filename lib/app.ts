@@ -19,7 +19,7 @@ const routes: CommonRoutes[] = [];
 app.use(express.json());
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Methods', 'GET,PATCH,HEAD,PUT,POST,DELETE');
   if (req.method === 'OPTIONS') {
     //TODO define options
     return res.status(200).send();

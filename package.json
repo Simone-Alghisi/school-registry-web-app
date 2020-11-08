@@ -25,7 +25,8 @@
   "homepage": "https://github.com/Simone-Alghisi/projectSe2group06#readme",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "moment": "^2.29.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.14",

@@ -17,8 +17,20 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
       userController.list
     ]);
 
+    this.app.get('/api/v1/users/:id', [
+      userController.getById
+    ]);
+
     this.app.post('/api/v1/users', [
       userController.create
+    ]);
+
+    this.app.patch('/api/v1/users', [
+      userController.updateAll
+    ]);
+
+    this.app.patch('/api/v1/users/:id', [
+      userController.updateById
     ]);
   }
 }
