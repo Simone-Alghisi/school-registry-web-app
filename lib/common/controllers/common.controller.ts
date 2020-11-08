@@ -4,9 +4,9 @@ export class CommonController {
 
   static checkValidity(value: any, type: string): boolean {
     let isValid = false;
-    if(value != null && value !== "" && typeof value === type){
+    if(value != null && value !== '' && typeof value === type){
       isValid = true;
-      if(type == "number"){
+      if(type == 'number'){
         isValid = value == parseInt(value, 10);
       }
     }

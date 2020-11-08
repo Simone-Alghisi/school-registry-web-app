@@ -163,6 +163,24 @@ export class UserController extends CommonController implements CRUDController{
     }
   }
 
-  async deleteAll(req: Request, res: Response): Promise<void> {}
-  async deleteById(req: Request, res: Response): Promise<void> {}  
+  async deleteAll(req: Request, res: Response): Promise<void> {
+    res.status(405);
+    res.json({ error: 'Method not allowed' });
+  }
+
+  async deleteById(req: Request, res: Response): Promise<void> {
+    const id = parseInt(req.params.id, 10);
+
+    const indexToDelete = users.findIndex((user) => {
+      return user.id === id;
+    });
+
+    if(indexToDelete != -1){
+      users.splice(indexToDelete,1);
+      res.status(204).send();
+    }else{
+      res.status(404);
+      res.json({ error: 'User to delete not found' });
+    }
+  }  
 }
