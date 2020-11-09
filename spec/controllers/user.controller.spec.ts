@@ -755,5 +755,105 @@ describe('UserController', () => {
           chai.expect(res.status).to.eql(404);
         });
     });
+
+    it('should return the json error message "Id not found or invalid"', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+invalidPersonId)
+        .set('content-type', 'application/json')
+        .send()
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Id not found or invalid');
+        });
+    });
+  });
+
+  describe('#updateAll', () => { 
+    it('should return the 405 status code: method not allowed', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/users')
+        .set('content-type', 'application/json')
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(405);
+        });
+    });
+
+    it('should return the json error message "Method not allowed"', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/users')
+        .set('content-type', 'application/json')
+        .send()
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Method not allowed');
+        });
+    });
+  });
+
+  describe('#getById', () => { 
+    const personName: string = faker.name.findName();
+    const personSurname: string = faker.name.findName();
+    const personEmail: string = faker.internet.email()
+    const personPassword: string = faker.internet.password();
+    const personId = faker.random.number({
+      'min': 1,
+      'max': 3
+    });
+    const personRole: number = faker.random.number({
+      'min': 0,
+      'max': 2
+    });
+    //TODO... Change date format for test case
+    const prova: Date = faker.date.past();
+    const personBirth_day: string = faker.date.past().toLocaleDateString();
+    const user: User = new User(personName, personSurname, personEmail, personPassword, personId, personRole, personBirth_day);
+    const invalidPersonId:number = 1000;
+    const invalidPersonIdType: string = 'hello word'
+
+    it('should return the 200 status code', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ personId)
+        .set('content-type', 'application/json')
+        .send(user)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+
+    it('should return the 404 status code: wrong type for id', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/users/'+ invalidPersonIdType)
+        .set('content-type', 'application/json')
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(404);
+        });
+    });
+
+    it('should return the 404 status code: id not found', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/users/'+ invalidPersonId)
+        .set('content-type', 'application/json')
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(404);
+        });
+    });
+
+    it('should return the json error message "User not found"', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/users/'+invalidPersonId)
+        .set('content-type', 'application/json')
+        .send()
+        .then(res => {
+          chai.expect(res.body.error).to.equal('User not found');
+        });
+    });
   });
 });
