@@ -27,6 +27,12 @@ describe('UserController', () => {
     it('should implement the create function', () => {
       return chai.expect(userController).to.have.property('create');
     });
+    it('should implement the updateAll function', () => {
+      return chai.expect(userController).to.have.property('updateAll')
+    });
+    it('should implement the deleteAll unction', () => {
+      return chai.expect(userController).to.have.property('deleteAll');
+    });
     it('should implement the updateById function', () => {
       return chai.expect(userController).to.have.property('updateById');
     });
@@ -271,6 +277,88 @@ describe('UserController', () => {
           .then(res => {
             chai.expect(res.status).to.eql(422);
           });
+        });
+      });
+      
+      describe('#deleteAll', () => {
+        it('should return the 405 status code: operation not allowed', async () => {
+          return chai
+          .request(app)
+          .delete('/api/v1/users')
+          .then(res => {
+            chai.expect(res.status).to.equal(405);
+          });
+        });
+        
+        it('should return the json error message "Method not allowed"', async () =>{
+          return chai
+          .request(app)
+          .delete('/api/v1/users')
+          .then(res => {
+            chai.expect(res.body.error).to.equal('Method not allowed');
+          });
+        });
+      });
+      
+      describe('#deleteById', () => {
+        const existingUserId = 1;
+        const notAUserId = 69;
+        it('should return the 404 status code:    invalid user id', async () => {
+          return chai
+            .request(app)
+            .delete('/api/v1/users/' + notAUserId)
+            .then(res => {
+              chai.expect(res.status).to.equal(404);
+          });
+        });
+        it('should return the json error message: invalid user id', async () => {
+          return chai
+            .request(app)
+            .delete('/api/v1/users/' + notAUserId)
+            .then(res => {
+              chai.expect(res.body.error).to.equal('User to delete not found');
+          });
+        });
+        it('should return the 204 status code:    valid user id', async () => {
+          return chai
+            .request(app)
+            .delete('/api/v1/users/' + existingUserId)
+            .then(res => {
+              chai.expect(res.status).to.equal(204);
+          });
+        });
+        it('should return the 404 status code:    previously valid user id', async () => {
+          return chai
+            .request(app)
+            .delete('/api/v1/users/' + existingUserId)
+            .then(res => {
+              chai.expect(res.status).to.equal(404);
+          });
+        });
+        it('should return the json error message: previously valid user id', async () => {
+          return chai
+            .request(app)
+            .delete('/api/v1/users/' + existingUserId)
+            .then(res => {
+              chai.expect(res.body.error).to.equal('User to delete not found');
+          });
+        });
+        it('should be composed by 3 elements (one was added, one deleted)', () => {
+          return chai
+            .request(app)
+            .get('/api/v1/users')
+            .then(res => {
+              chai.expect(res.body).to.have.lengthOf(3);
+            });
+        });
+        //the element deleted should not be accessible
+        it('should return the 404 status code:    previously valid user id', () => {
+          return chai
+            .request(app)
+            .get('/api/v1/users/' + existingUserId)
+            .then(res => {
+              chai.expect(res.status).to.equal(404);
+            });
+        });
     });
   });
-});
