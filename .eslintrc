@@ -11,10 +11,13 @@
   ],
   "rules": {
     "@typescript-eslint/array-type": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/quotes": [ "warn", "single"],
     "no-console": "off",
+    "no-prototype-builtins": "off",
     "max-classes-per-file": "off"
   }
 }

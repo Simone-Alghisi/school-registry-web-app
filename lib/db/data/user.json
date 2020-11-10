@@ -6,7 +6,7 @@
         "surname": "doe",
         "email": "james.smith@gmail.com",
         "password" : "12345", 
-        "birth_date" : "2000-04-23T18:25:43.511"
+        "birth_date" : "2000-04-22"
     },
     {
         "id": 1,
@@ -15,7 +15,7 @@
         "surname": "doe",
         "email": "james.smith@gmail.com",
         "password" : "12345", 
-        "birth_date" : "2000-04-23T18:25:43.511"
+        "birth_date" : "2000-04-23"
     },
     {
         "id": 2,
@@ -24,6 +24,6 @@
         "surname": "doe",
         "email": "james.smith@gmail.com",
         "password" : "12345", 
-        "birth_date" : "2000-04-23T18:25:43.511"
+        "birth_date" : "2000-04-24"
     }
 ]
