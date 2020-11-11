@@ -18,6 +18,10 @@ export class CommonRoutes {
     this.name = name;
   }
 
+  /**
+   * Function that return the name of a route
+   * @returns name of the route
+   */
   getName(): string {
     return this.name;
   }

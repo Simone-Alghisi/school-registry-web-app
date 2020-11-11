@@ -11,24 +11,49 @@ import { UserMiddleware } from '../middlewares/user.middleware'
  */
 export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
 
+  /**
+   * Constructor that calls the consutructor of CommonRoutes and calls the method that define all the routes
+   * 
+   * @param app instance of the node.js server
+   */
   constructor(app: Application){
     super(app, 'UserRoutes');
     this.configureRoutes();
   }
 
+  /**
+   * Configures the route for each HTTP method in the CRUD interfaces for user resources 
+   */
   configureRoutes(): void {
+    /** Instance of user controller that implement the logic of rest method*/
     const userController: UserController = new UserController();
+    /** Instance of user middleware that check every request on user resources*/
     const userMiddleware: UserMiddleware = new UserMiddleware();
 
+    /**
+     * Route for the get method on the entire collection of users
+     * The request is routed only to user controller function for get all (list)
+    */
     this.app.get('/api/v1/users', [
       userController.list
     ]);
 
+    /** 
+     * Route for the get method on a single user with a specific id 
+     * The request is routed through a middlewares that check the existance of the id to retrive
+     * Then the request is routed to the appropriate user controller function for getById
+    */
     this.app.get('/api/v1/users/:id', [
       userMiddleware.validateIdParams,
       userController.getById
     ]);
 
+    /** 
+     * Route for the post method (insert resource) on the users resources 
+     * The request is routed through a series of middlewares that check the validitity of 
+     * Name, surname, email password, role and birth_date
+     * Then the request is routed to the appropriate user controller function for create
+    */
     this.app.post('/api/v1/users', [
       userMiddleware.validateName,
       userMiddleware.validateSurname,
@@ -39,10 +64,20 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
       userController.create
     ]);
 
+    /** 
+     * Route for the patch method on the entire collection of users
+     * The request is routed only to user controller function for updateAll
+    */
     this.app.patch('/api/v1/users', [
       userController.updateAll
     ]);
 
+    /**
+     * Route for the patch method (update resource) on a single users 
+     * The request is routed through a series of middlewares that check the existence of the id to update
+     * The middlewares also check the validity of the body and of the request
+     * Then the request is routed to the appropriate user controller function for UpdateById
+    */
     this.app.patch('/api/v1/users/:id', [
       userMiddleware.validateIdParams,
       userMiddleware.validateUpdateBody,
@@ -50,11 +85,19 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
       userController.updateById
     ]);
 
+    /**
+     * Route for the delete method on a single users 
+     * The request is routed through a middleware that check the existence of the id to delete
+     * Then the request is routed to the appropriate user controller function for deleteById
+    */
     this.app.delete('/api/v1/users/:id',[
       userMiddleware.validateIdParams,
       userController.deleteById
     ]);
 
+    /** Define the route for the delete method on the entire collection of users
+     * The request is routed only to user controller function for deleteAll
+    */
     this.app.delete('/api/v1/users',[
       userController.deleteAll
     ]);
