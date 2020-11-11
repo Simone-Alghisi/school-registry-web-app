@@ -1,18 +1,20 @@
 import users from '../db/db'
 import { Response, Request, NextFunction } from 'express';
-import moment from 'moment'
 import faker from 'faker';
 import { User } from '../models/user.model';
+import { CommonMiddleware } from '../common/middleware/common.middleware';
 
 /**
- * UserMiddleware class
+ * UserMiddleware class, it extends the {@link CommonMiddleware}
  * It aims to manage all the requests received:
  * - In case of errors, the HTTP status code is returned
  * - Otherwise the request is allowed to pass
  */
-export class UserMiddleware {
+export class UserMiddleware extends CommonMiddleware{
   
-  constructor(){}
+  constructor(){
+    super();
+  }
 
   /**
    * Function that returns the type of a fieldName in the User class
@@ -24,48 +26,6 @@ export class UserMiddleware {
     const user:User = new User(faker.name.findName(), faker.name.findName(), faker.internet.email(), faker.internet.password(), 0, 0, faker.date.past().toLocaleDateString());
     const type:string = typeof user[fieldName];
     return type;
-  }
-
-  /**
-   * Function that cast a string value into an integer
-   * @param value string value
-   * @returns value as a number if possibile
-   */
-  static stringToNumberCaster(value: string): any{
-    if(value === ''){
-      return value;
-    } else {
-      const parsed: number = parseFloat(value);
-      return !isNaN(parsed) ? parsed : value;
-    }
-  }
-
-  /**
-   * Function that checks the validity of a field
-   * In particular it checks if the field is not empty and if it is of the given type
-   * @param value value of the field that needs to be checked
-   * @param type type that the field should have 
-   * @returns true if the field is valid
-   * @returns false if the field is invalid
-   */
-  static checkValidity(value: any, type: string): boolean {
-    let isValid = false;
-    if(value != null && value !== '' && typeof value === type){
-      isValid = true;
-    }
-    return isValid;
-  }
-
-  /**
-   * Function that checks if a string is a valid date.
-   * If it has the date format: YYYY-MM-DD
-   * @param date string value of a date
-   * 
-   * @returns true if the date is valid
-   * @returns false otherwise
-   */
-  static isDate(date: string): boolean{
-    return moment(date, 'YYYY-MM-DD', true).isValid();
   }
 
   /**
