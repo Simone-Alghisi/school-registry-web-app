@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 
 <head>
 
@@ -190,7 +190,7 @@
                   <h6 class="m-0 font-weight-bold text-card">Crea nuovo utente</h6>
                 </div>
                 <div class="card-body">
-                  <form id="form" action="http://localhost:8080/api/v1/users" method="POST">
+                  <form id="form">
                     <div class="form-row">
                       <div class="form-group col-md-6">
                         <label for="name">Nome</label>
@@ -230,7 +230,7 @@
                     </div>
                     <div class="form-row justify-content-end">
                       <div class="form-group col-auto">
-                        <button class="btn btn-secondary" onclick="location.href='./users.html';">Annulla</button>
+                        <button type="button" class="btn btn-secondary" onclick="location.href='./users.html';">Annulla</button>
                         <button type="submit" class="btn btn-primary" id="submit">Conferma</button>
                       </div>
                     </div>
@@ -314,6 +314,8 @@
   <!-- Page level custom scripts -->
   <script src="js/demo/datatables-demo.js"></script>
 
+  <!-- Custom script for users page -->
+  <script src="js/insertUser.js"></script>
 </body>
 
 </html>
