@@ -1,4 +1,3 @@
-import { use } from 'chai';
 import { User } from '../models/user.model'
 import jsonUserData from './data/user.json'; 
 

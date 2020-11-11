@@ -1,4 +1,4 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { UserRoutes } from './routes/user.route';
 import { CommonRoutes } from './common/routes/common.routes'
@@ -33,7 +33,7 @@ app.use(function (req, res, next) {
 //Routes defined
 routes.push(new UserRoutes(app));
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
+app.get('/', (req: Request, res: Response) => {
   res.send('Hello World')
 });
 

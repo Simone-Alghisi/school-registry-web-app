@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import { Application } from 'express';
 
 /**
  * Base class for all Routes. Contains common attributes and methods.
