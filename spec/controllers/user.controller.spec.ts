@@ -10,19 +10,17 @@ import 'mocha';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../lib/app';
-import {
-  UserController
-} from '../../lib/controllers/user.controller';
+import { UserController } from '../../lib/controllers/user.controller';
 import * as faker from 'faker';
-import {
-  User
-} from '../../lib/models/user.model'
+import { User } from '../../lib/models/user.model'
 import users from '../../lib/db/db'
+import moment from 'moment'
 
 chai.use(chaiHttp);
 
 describe('UserController', () => {
   const userController: UserController = new UserController();
+  const dateFormat = 'YYYY-MM-DD';
 
   describe('CRUD interface implementation', () => {
     it('should implement the list function', () => {
@@ -87,7 +85,7 @@ describe('UserController', () => {
       'min': 0,
       'max': 2
     });
-    const personBirth_day: string = faker.name.findName();
+    const personBirth_day: string = moment(faker.date.past()).format(dateFormat);
     const user: User = new User(personName, personSurname, personEmail, personPassword, personId, personRole, personBirth_day);
 
     it('should return the 201 status code', async () => {
@@ -131,7 +129,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: missing field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
         email: personEmail,
@@ -149,7 +147,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty name field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: '',
         surname: personSurname,
         email: personEmail,
@@ -168,7 +166,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for name', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: 0,
         surname: personSurname,
         email: personEmail,
@@ -187,7 +185,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty surname field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: '',
         email: personEmail,
@@ -206,7 +204,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for surname', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: 0,
         email: personEmail,
@@ -225,7 +223,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty email field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
         email: '',
@@ -244,7 +242,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for email', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
         email: 0,
@@ -263,7 +261,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty password field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
         email: personEmail,
@@ -282,7 +280,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for password', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
         email: personEmail,
@@ -301,7 +299,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty role field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
         email: personEmail,
@@ -320,7 +318,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for role', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
         email: personEmail,
@@ -339,7 +337,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: empty birth_date field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
         email: personEmail,
@@ -358,7 +356,7 @@ describe('UserController', () => {
     });
 
     it('should return the 422 status code: wrong type for birth_date', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
         email: personEmail,
@@ -400,7 +398,7 @@ describe('UserController', () => {
   describe('#deleteById', () => {
     const existingUserId = 0;
     const notAUserId = 69;
-    it('should return the 404 status code:    invalid user id', async () => {
+    it('should return the 404 status code: User not found', async () => {
       return chai
         .request(app)
         .delete('/api/v1/users/' + notAUserId)
@@ -408,12 +406,12 @@ describe('UserController', () => {
           chai.expect(res.status).to.equal(404);
         });
     });
-    it('should return the json error message: invalid user id', async () => {
+    it('should return the json error message: User not found', async () => {
       return chai
         .request(app)
         .delete('/api/v1/users/' + notAUserId)
         .then(res => {
-          chai.expect(res.body.error).to.equal('User to delete not found');
+          chai.expect(res.body.error).to.equal('User not found');
         });
     });
     it('should return the 204 status code:    valid user id', async () => {
@@ -437,7 +435,7 @@ describe('UserController', () => {
         .request(app)
         .delete('/api/v1/users/' + existingUserId)
         .then(res => {
-          chai.expect(res.body.error).to.equal('User to delete not found');
+          chai.expect(res.body.error).to.equal('User not found');
         });
     });
     it('should be composed by 3 elements (one was added, one deleted)', () => {
@@ -472,9 +470,7 @@ describe('UserController', () => {
       'min': 0,
       'max': 2
     });
-    //TODO... Change date format for test case
-    const prova: Date = faker.date.past();
-    const personBirth_day: string = faker.date.past().toLocaleDateString();
+    const personBirth_day: string = moment(faker.date.past()).format(dateFormat);
     const user: User = new User(personName, personSurname, personEmail, personPassword, personId, personRole, personBirth_day);
     
     it('should return the 200 status code', async () => {
@@ -487,15 +483,15 @@ describe('UserController', () => {
           chai.expect(res.status).to.eql(200);
         });
     });
-    //! DOESN'T WORK CAUSE OF DATE FORMAT 
-    /*it('should edit the user, in json', async () => {
+    
+    it('should edit the user, in json', async () => {
       return chai
         .request(app)
         .get('/api/v1/users')
         .then(res => {
           chai.expect(res.body).to.deep.include(user);
         });
-    }); */
+    });
 
     it('should have the same number of element', async () => {
       return chai
@@ -518,7 +514,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: no field to edit', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name_: personName,
         surname_: personSurname,
         email_: personEmail,
@@ -536,7 +532,7 @@ describe('UserController', () => {
     });
 
     it('should return the 200 status code: some field missing but it\'s not a problem', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
       };
@@ -551,7 +547,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: empty name field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: ''
       };
       return chai
@@ -565,7 +561,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: wrong type for name', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         name: 0,
       };
       return chai
@@ -579,7 +575,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: empty surname field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         surname: ''
       };
       return chai
@@ -593,7 +589,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: wrong type for surname', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         surname: 0
       };
       return chai
@@ -607,7 +603,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: empty email field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         email: ''
       };
       return chai
@@ -621,7 +617,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: wrong type for email', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         email: 0
       };
       return chai
@@ -635,7 +631,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: empty password field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         password: '',
       };
       return chai
@@ -649,7 +645,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: wrong type for password', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         password: 0
       };
       return chai
@@ -663,7 +659,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: empty role field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         role: ''
       };
       return chai
@@ -677,7 +673,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: wrong type for role', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         role: 'hello world'
       };
       return chai
@@ -691,7 +687,7 @@ describe('UserController', () => {
     });
     
     it('should return the 204 status code: empty birth_date field', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         birth_date: ''
       };
       return chai
@@ -705,7 +701,7 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: wrong type for birth_date', async () => {
-      const fake_usr: object = {
+      const fake_usr: Record<string, unknown> = {
         birth_date: 0
       };
       return chai
@@ -720,9 +716,9 @@ describe('UserController', () => {
   });
 
   describe('#updateById', () => { 
-    const validPersonId:number = 1;
-    const invalidPersonId:number = 1000;
-    const invalidPersonIdType: string = 'hello word'
+    const validPersonId = 1;
+    const invalidPersonId = 1000;
+    const invalidPersonIdType = 'hello word'
     it('should return the 204 status code: no body', async () => {
       return chai
         .request(app)
@@ -756,14 +752,14 @@ describe('UserController', () => {
         });
     });
 
-    it('should return the json error message "Id not found or invalid"', async () => {
+    it('should return the json error message "User not found"', async () => {
       return chai
         .request(app)
         .patch('/api/v1/users/'+invalidPersonId)
         .set('content-type', 'application/json')
         .send()
         .then(res => {
-          chai.expect(res.body.error).to.equal('Id not found or invalid');
+          chai.expect(res.body.error).to.equal('User not found');
         });
     });
   });
@@ -805,12 +801,10 @@ describe('UserController', () => {
       'min': 0,
       'max': 2
     });
-    //TODO... Change date format for test case
-    const prova: Date = faker.date.past();
-    const personBirth_day: string = faker.date.past().toLocaleDateString();
+    const personBirth_day: string = moment(faker.date.past()).format(dateFormat);
     const user: User = new User(personName, personSurname, personEmail, personPassword, personId, personRole, personBirth_day);
-    const invalidPersonId:number = 1000;
-    const invalidPersonIdType: string = 'hello word'
+    const invalidPersonId = 1000;
+    const invalidPersonIdType = 'hello word'
 
     it('should return the 200 status code', async () => {
       return chai

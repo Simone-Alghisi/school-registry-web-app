@@ -7,7 +7,6 @@
  */
 
 import 'mocha';
-import { Application } from 'express';
 import chai from 'chai';
 import app from '../../../lib/app'
 import { CommonRoutes } from '../../../lib/common/routes/common.routes'

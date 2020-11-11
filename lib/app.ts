@@ -1,4 +1,4 @@
-import express, { Application, Request, Response } from 'express';
+import express, { Application, NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { UserRoutes } from './routes/user.route';
 import { CommonRoutes } from './common/routes/common.routes'
@@ -18,12 +18,13 @@ const routes: CommonRoutes[] = [];
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/public', express.static('public'));
-app.use(function (req, res, next) {
+app.use('/', express.static('public'));
+// Enabling CORS, respond to the OPTION HTTP verb
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PATCH,HEAD,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Methods', 'GET, PATCH, HEAD, PUT, POST, DELETE');
   if (req.method === 'OPTIONS') {
-    //TODO define options
     return res.status(200).send();
   } else {
     return next();
@@ -32,10 +33,6 @@ app.use(function (req, res, next) {
 
 //Routes defined
 routes.push(new UserRoutes(app));
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World')
-});
 
 app.listen(port, () => {
   console.log('Server running on port: ' + port)
