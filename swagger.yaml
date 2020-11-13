@@ -159,7 +159,8 @@ components:
           format: date
     User:
       allOf:
-        $ref: '#/components/schemas/UpdatedUser'
+        - $ref: '#/components/schemas/UpdatedUser'
+        - type: object
       type: object
       required:
         - name
