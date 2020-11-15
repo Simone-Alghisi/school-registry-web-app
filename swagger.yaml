@@ -157,6 +157,19 @@ components:
           type: string
           description: 'birth date of the user'
           format: date
+        communications:
+          type: array
+          description: 'communications sent to the user'
+          items:
+            $ref: '#/components/schemas/Communication'
+        class_id:
+          type: string
+          description: 'ID of the class where a student belong'
+        teaches:
+          type: array
+          description: 'list of the subjects teached in classes'
+          items: 
+            $ref: '#/components/schemas/Teach'
     User:
       allOf:
         - $ref: '#/components/schemas/UpdatedUser'
@@ -170,3 +183,205 @@ components:
         - id
         - role
         - birth_date
+    Lecture:
+      type: object
+      properties:
+        start_hour:
+          type: integer
+          description: 'when the lecture starts (hour)'
+        start_minute:
+          type: integer
+          description: 'when the lecture starts (minutes)'
+        end_hour:
+          type: integer
+          description: 'when the lecture ends (hour)'
+        end_minute:
+          type: integer
+          description: 'when the lecture ends (minutes)'
+        subject:
+          type: string
+          description: 'the subject of the lecture'
+        professor_id:
+          type: integer
+          description: 'the professor of the lecture'
+      required:
+        - start_hour
+        - start_minute
+        - end_hour
+        - end_minute
+        - subject
+        - professor_id
+    Message:
+      type: object
+      properties:
+        subject:
+          type: string
+          description: 'the subject of the message'
+        content:
+          type: string
+          description: 'the content of the message'
+      required:
+        - subject
+        - content
+    Communication:
+      type: object
+      properties:
+        sender_id: 
+          type: integer
+          description: 'the id of the sender of the communication'
+        messages:
+          type: array
+          description: 'the messages sent by the sender'
+          items: 
+            $ref: '#/components/schemas/Message'
+      required:
+        - sender_id
+    Homework:
+      type: object
+      properties:
+        subject:
+          type: integer
+          description: 'the subject of the homework'
+        title:
+          type: string
+          description: 'the title of the homework'
+        description:
+          type: string
+          description: 'the decription of the homework'
+        date:
+          type: string
+          format: date
+          description: 'when the homework is scheduled'
+      required:
+        - title
+        - description
+        - date
+        - subject
+    Test:
+      type: object
+      properties:
+        subject:
+          type: integer
+          description: 'the subject of the test'
+        title:
+          type: string
+          description: 'the title of the test'
+        description:
+          type: string
+          description: 'the decription of the test'
+        date:
+          type: string
+          format: date
+          description: 'when the test is scheduled'
+      required:
+        - title
+        - description
+        - date
+        - subject
+    Material:
+      type: object
+      properties:
+        subject:
+          type: integer
+          description: 'the subject of the material'
+        description:
+          type: string
+          description: 'the description of the material'
+      required:
+        - description
+        - subject
+    Grade:
+      type: object
+      properties:
+        value:
+          type: number
+          format: float
+          description: 'the value of the grade'
+        date:
+          type: string
+          format: date
+          description: 'when the grade is assigned'
+        subject: 
+          type: string
+          description: 'the subject of the grade'
+      required:
+        - value
+        - date
+        - subject
+    Student:
+      type: object
+      properties:
+        student_id:
+          type: integer
+          description: 'the id of the student'
+        grades:
+          type: array
+          description: 'the grades of A student for a specific subject'
+          items:
+            $ref: '#/components/schemas/Grade'
+      required:
+        - student_id
+    GradeElement:
+      type: object
+      properties:
+        subject: 
+          type: integer
+          description: 'the subject of the grade'
+        students:
+          type: array
+          description: 'the grades of THE students for a specific subject'
+          items:
+            $ref: '#/components/schemas/Student'
+      required:
+        - subject
+    Class:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 'ID of the class'
+        name: 
+          type: string
+          description: 'name of the class'
+        schedule:
+          type: array
+          description: 'schedule of the class'
+          items:
+            $ref: '#/components/schemas/Lecture'
+        communications: 
+          type: array
+          description: 'communications sent to the class'
+          items:
+            $ref: '#/components/schemas/Communication'
+        homeworks:
+          type: array
+          description: 'homeworks assigned to the class'
+          items:
+            $ref: '#/components/schemas/Homework'
+        tests:
+          type: array
+          description: 'tests scheduled for the class'
+          items: 
+            $ref: '#/components/schemas/Test'
+        materials:
+          type: array
+          description: 'materials for the class'
+          items:
+            $ref: '#/components/schemas/Material'
+        grades_list:
+          type: array
+          description: 'grades of the class'
+          items:
+            $ref: '#/components/schemas/GradeElement'
+      required:
+        - id
+        - name
+    Teach:
+      type: object
+      properties:
+        subject: 
+          type: integer
+          description: 'subject of the professor'
+        class_id: 
+          type: string
+          description: 'ID of the class for the professor'
