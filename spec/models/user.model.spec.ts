@@ -1,45 +1,112 @@
 /**
- * It verifies if a newly created instance of {@link User}
- * contains all the properties specified in its definition
+ * Tests the validator functions for the schema user
  * @packageDocumentation
  */
 
 import 'mocha';
 import chai from 'chai';
-import { User } from '../../lib/models/user.model'
+import { UserMiddleware } from '../../lib/middlewares/user.middleware'
 import * as faker from 'faker';
+import moment from 'moment';
 
-describe('User', () => {
-  const personName: string = faker.name.findName();
-  const personSurname: string = faker.name.findName();
-  const personEmail: string = faker.internet.email();
-  const personPassword: string = faker.internet.password();
-  const personId: number = faker.random.number();
-  const personRole: number = faker.random.number();
-  const personBirth_day: string = faker.name.findName();
-  const user: User = new User(personName, personSurname, personEmail, personPassword, personId, personRole, personBirth_day);
+describe('UserModel', () => {
+  describe('#validate', () => {
+    it('should be invalid if name is empty', function() {
+      chai.expect(UserMiddleware.validField('', 'name')).be.false;
+    });
+    
+    it('should be invalid if name is a number', function() {
+      chai.expect(UserMiddleware.validField(faker.random.number(), 'name')).be.false;
+    });
   
-  describe('#constructor', () => {
-    it('should have name', () =>{
-        return chai.expect(user).to.have.property('name');
+    it('should be valid if name is a string', function() {
+      chai.expect(UserMiddleware.validField(faker.name.findName(), 'name')).be.true;
     });
-    it('should have surname', () =>{
-        return chai.expect(user).to.have.property('surname');
+  
+    it('should be invalid if surname is empty', function() {
+      chai.expect(UserMiddleware.validField('', 'surname')).be.false;
     });
-    it('should have email', () =>{
-        return chai.expect(user).to.have.property('email');
+    
+    it('should be invalid if surname is a number', function() {
+      chai.expect(UserMiddleware.validField(faker.random.number(), 'surname')).be.false;
     });
-    it('should have password', () =>{
-        return chai.expect(user).to.have.property('password');
+  
+    it('should be valid if surname is a string', function() {
+      chai.expect(UserMiddleware.validField(faker.name.findName(), 'surname')).be.true;
     });
-    it('should have id', () =>{
-        return chai.expect(user).to.have.property('id');
+  
+    it('should be invalid if email is empty', function() {
+      chai.expect(UserMiddleware.validField('', 'email')).be.false;
     });
-    it('should have role', () =>{
-        return chai.expect(user).to.have.property('role');
+    
+    it('should be invalid if email is a number', function() {
+      chai.expect(UserMiddleware.validField(faker.random.number(), 'email')).be.false;
     });
-    it('should have birth_date', () =>{
-        return chai.expect(user).to.have.property('birth_date');
+  
+    it('should be valid if email is a string', function() {
+      chai.expect(UserMiddleware.validField(faker.internet.email(), 'email')).be.true;
+    });
+    
+    it('should be invalid if password is empty', function() {
+      chai.expect(UserMiddleware.validField('', 'password')).be.false;
+    });
+    
+    it('should be invalid if password is a number', function() {
+      chai.expect(UserMiddleware.validField(faker.random.number(), 'password')).be.false;
+    });
+  
+    it('should be valid if password is a string', function() {
+      chai.expect(UserMiddleware.validField(faker.name.firstName(), 'password')).be.true;
+    });
+  
+    it('should be invalid if salt is empty', function() {
+      chai.expect(UserMiddleware.validField('', 'salt')).be.false;
+    });
+    
+    it('should be invalid if salt is a number', function() {
+      chai.expect(UserMiddleware.validField(faker.random.number(), 'salt')).be.false;
+    });
+    
+    it('should be valid if salt is a string', function() {
+      chai.expect(UserMiddleware.validField(faker.name.firstName(), 'salt')).be.true;
+    });
+  
+    it('should be invalid if role is empty', function() {
+      chai.expect(UserMiddleware.validField('', 'role')).be.false;
+    });
+    
+    it('should be invalid if role is a string', function() {
+      chai.expect(UserMiddleware.validField(faker.name.findName(), 'role')).be.false;
+    });
+  
+    it('should be invalid if role is above 2', function() {
+      chai.expect(UserMiddleware.validField(3, 'role')).be.false;
+    });
+  
+    it('should be invalid if role is below 0', function() {
+      chai.expect(UserMiddleware.validField(-1, 'role')).be.false;
+    });
+  
+    it('should be valid if role is between 0 and 2 included', function() {
+      chai.expect(UserMiddleware.validField(1, 'role')).be.true;
+    });
+  
+    it('should be invalid if bith_date is a empty', function() {
+      chai.expect(UserMiddleware.validField('', 'birth_date')).be.false;
+    });
+  
+    it('should be invalid if birth_date is number', function() {
+      chai.expect(UserMiddleware.validField(faker.random.number(), 'birth_date')).be.false;
+    });
+  
+    it('should be invalid if birth_date is in an invalid format', function() {
+      const dateFormat = 'DD-MM-YYYY';
+      chai.expect(UserMiddleware.validField(moment(faker.date.past()).format(dateFormat), 'birth_date')).be.false;    
+    });
+    
+    it('should be valid if birth_date is an valid string', function() {
+      const dateFormat = 'YYYY-MM-DD';
+      chai.expect(UserMiddleware.validField(moment(faker.date.past()).format(dateFormat), 'birth_date')).be.true;    
     });
   });
 });

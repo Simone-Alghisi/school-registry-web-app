@@ -11,3 +11,6 @@ dist/**/*
 
 # typedoc documentation
 doc
+
+# real .env
+.env

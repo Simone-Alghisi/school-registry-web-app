@@ -1,40 +1,95 @@
-/**
- * Model for the instances of the resource _/users_
- */
-export class User {
-    /**name of the user */
-    name: string;
-    /**last name of the user */
-    surname: string;
-    /**email of the user */
-    email: string;
-    /**password of the account */
-    password: string;
-    /**unique identifier of the user */
-    id: number;
-    /**number specifying if the user is a _student_, a _teacher_ or a _secretary_ */
-    role: number;
-    // TODO change data type to Date after having DB 
-    /**date of birth */
-    birth_date: string;
+import { Schema } from 'mongoose';
+import { MongooseService } from '../common/services/mongoose.service';
 
-    /**
-     * 
-     * @param name name of the user
-     * @param surname last name of the user
-     * @param email email of the user
-     * @param password password of the account
-     * @param id unique identifier of the user
-     * @param role number specifying if the user is a _student_, a _teacher_ or a _secretary_
-     * @param birth_date date of birth
-     */
-    constructor(name: string, surname: string, email: string, password: string, id: number, role: number, birth_date: string){
-        this.name = name;
-        this.surname = surname;
-        this.email = email;
-        this.password = password;
-        this.id = id;
-        this.role = role;
-        this.birth_date = birth_date;
+function validateString(value: any):boolean {
+  const type:string = typeof(value);
+  let isValid = false;
+  if(isNaN(Number(value)) && value != null && value !== '' && type === 'string'){
+    isValid = true;
+  }
+  return isValid;
+}
+
+export class UserModel {
+  mongooseService: MongooseService = MongooseService.getInstance();
+  private static instance: UserModel;
+
+  dbSchema = this.mongooseService.getMongoose().Schema;
+
+  userSchema: Schema = new this.dbSchema({
+    name: { 
+      type: String,
+      validate: {
+        validator: validateString,
+        message: 'Invalid name'
+      },
+      required: true
+    },
+    surname: { 
+      type: String, 
+      required: true,
+      validate: {
+        validator: validateString,
+        message: 'Invalid surname'
+      }
+    },
+    email: { 
+      type: String, 
+      required: true,
+      unique: true,
+      validate: {
+        validator: validateString,
+        message: 'Invalid email'
+      },
+      // eslint-disable-next-line
+      match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+    },
+    password: { 
+      type: String,
+      validate: {
+        validator: validateString,
+        message: 'Invalid password'
+      },
+      required: true 
+    },
+    salt: { 
+      type: String, 
+      validate: {
+        validator: validateString,
+        message: 'Invalid salt'
+      },
+      required: true 
+    },
+    role: { 
+      type: Number, 
+      required: true, 
+      min: 0,
+      max: 2
+    },
+    birth_date: { 
+      type: String, 
+      required: true,
+      validate: {
+        validator: validateString,
+        message: 'Invalid birth_date'
+      },
+      // eslint-disable-next-line
+      match: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/
     }
+  });
+
+  userCollection = this.mongooseService.getMongoose().model('users', this.userSchema);
+
+  constructor(){}
+
+  public static getInstance(): UserModel{
+    if (!this.instance) {
+      this.instance = new UserModel();
+    }
+    return this.instance;
+  }
+
+  public isValidId(id:string): boolean{
+    return this.mongooseService.isValidId(id);
+  } 
 }

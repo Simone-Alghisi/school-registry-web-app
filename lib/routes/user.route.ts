@@ -44,7 +44,7 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * Then the request is routed to the appropriate user controller function for getById
     */
     this.app.get('/api/v1/users/:id', [
-      userMiddleware.validateIdParams,
+      userMiddleware.validateUserExists,
       userController.getById
     ]);
 
@@ -55,9 +55,11 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * Then the request is routed to the appropriate user controller function for create
     */
     this.app.post('/api/v1/users', [
+      userMiddleware.discardUselessFields,
       userMiddleware.validateName,
       userMiddleware.validateSurname,
       userMiddleware.validateEmail,
+      userMiddleware.validateUniqueEmail,
       userMiddleware.validatePassword,
       userMiddleware.validateRole,
       userMiddleware.validateBirthDate,
@@ -79,7 +81,8 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * Then the request is routed to the appropriate user controller function for UpdateById
     */
     this.app.patch('/api/v1/users/:id', [
-      userMiddleware.validateIdParams,
+      userMiddleware.discardUselessFields,
+      userMiddleware.validateUserExists,
       userMiddleware.validateUpdateBody,
       userMiddleware.validateUpdateRequest,
       userController.updateById
@@ -91,7 +94,7 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * Then the request is routed to the appropriate user controller function for deleteById
     */
     this.app.delete('/api/v1/users/:id',[
-      userMiddleware.validateIdParams,
+      userMiddleware.validateUserExists,
       userController.deleteById
     ]);
 

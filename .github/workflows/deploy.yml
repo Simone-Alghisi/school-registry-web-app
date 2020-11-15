@@ -32,7 +32,7 @@ jobs:
       - name: Run test
         run: |
           echo "npm run test ..."
-          npm run test 
+          MONGODB_URI=${{secrets.MONGODB_URI}} npm run test 
     
   deploy:
     name: Deploy

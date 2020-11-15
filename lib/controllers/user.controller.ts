@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import { CRUDController } from '../common/interfaces/crud.interface'
-import users from '../db/db'
-import { User } from '../models/user.model';
+import { CRUDController } from '../common/interfaces/crudController.interface'
+import { UserService } from '../services/user.service';
 
 /**
  * UserController class, it implements the {@link CRUDController} interface.
@@ -17,7 +16,13 @@ export class UserController implements CRUDController{
    * @param res express Response object
    */
   async list(req: Request, res: Response): Promise<void>{
-    res.status(200).send(users);
+    const userService = UserService.getInstance();
+    try{
+      const users = await userService.list();
+      res.status(200).send(users);
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
   }
 
   /**
@@ -27,13 +32,13 @@ export class UserController implements CRUDController{
    * @param res express Response object
    */
   async create(req: Request, res: Response): Promise<void> {
-    let id = Math.max(...users.map(function(u) { return u.id; })) + 1;
-    if(!Number.isFinite(id)){
-      id = 0;
+    const userService = UserService.getInstance();
+    try{
+      const userId = userService.create(req.body);
+      res.status(201).location('api/v1/users/' + userId).send();
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
     }
-    const user:User = new User(req.body.name, req.body.surname, req.body.email, req.body.password, id, req.body.role, req.body.birth_date);
-    users.push(user);
-    res.status(201).location('api/v1/users/'+id).send();
   }
   
   /**
@@ -52,8 +57,13 @@ export class UserController implements CRUDController{
    * @param res express Response object
    */
   async getById(req: Request, res: Response): Promise<void> {
-    const userId: number = parseInt(req.params.id, 10);
-    res.status(200).send(users.find(user => user.id === userId));
+    const userService = UserService.getInstance();
+    try{
+      const usersFound = await userService.getById(req.params.id);
+      res.status(200).send(usersFound);
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
   }
 
   /**
@@ -63,13 +73,14 @@ export class UserController implements CRUDController{
    * @param res express Response object
    */
   async updateById(req: Request, res: Response): Promise<void> {
-    const userId: number = parseInt(req.params.id, 10);
-    const updatedUser: any = users.find(user => user.id === userId);
-    for(const i in req.body){
-      updatedUser[i] = req.body[i];
+    const userService = UserService.getInstance();
+    req.body.id = req.params.id;
+    try{
+      const updatedUser = await userService.updateById(req.body);
+      res.status(200).send(updatedUser);
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
     }
-    users.map(user => user.id === userId || updatedUser);
-    res.status(200).send(updatedUser);
   }
 
   /**
@@ -88,8 +99,12 @@ export class UserController implements CRUDController{
    * @param res express Response object
    */
   async deleteById(req: Request, res: Response): Promise<void> {
-    const id: number = parseInt(req.params.id, 10);
-    users.splice(id,1);
-    res.status(204).send();
+    const userService = UserService.getInstance();
+    try{
+      await userService.deleteById(req.params.id);
+      res.status(204).send();
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
   }  
 }

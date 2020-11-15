@@ -27,7 +27,6 @@
     }
     fetch(url, fetchData)
       .then((resp) => {
-        console.log(resp)
         $(location).prop('href', './users.html');
       })
       .catch( 

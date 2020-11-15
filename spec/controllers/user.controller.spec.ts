@@ -12,14 +12,52 @@ import chaiHttp from 'chai-http';
 import app from '../../lib/app';
 import { UserController } from '../../lib/controllers/user.controller';
 import * as faker from 'faker';
-import { User } from '../../lib/models/user.model'
-import users from '../../lib/db/db'
-import moment from 'moment'
+import moment from 'moment';
+import { UserModel } from '../../lib/models/user.model'
 
 chai.use(chaiHttp);
 
+let userModel: UserModel;
+let userController: UserController;
+
+async function getNumberOfUsers(){
+  return new Promise( (resolve, reject) => {
+    userModel.userCollection
+      .estimatedDocumentCount({})
+      .exec(
+        function (err, count) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(count);
+          }
+        })
+  });
+}
+
+async function getRandomUser(){
+  return new Promise( (resolve, reject) => {
+    userModel.userCollection
+      .findOne()
+      .sort({created_at: -1})
+      .exec(
+        function (err, user) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(user);
+          }
+        })
+  });
+}
+
 describe('UserController', () => {
-  const userController: UserController = new UserController();
+
+  before(() => {
+    userModel = UserModel.getInstance();
+    userController = new UserController();
+  });
+
   const dateFormat = 'YYYY-MM-DD';
 
   describe('CRUD interface implementation', () => {
@@ -55,39 +93,38 @@ describe('UserController', () => {
           chai.expect(res.status).to.eql(200);
         });
     });
-
-    it('should return the users json data in db', async () => {
-      return chai
-        .request(app)
-        .get('/api/v1/users')
-        .then(res => {
-          chai.expect(res.body).to.eql(users);
-        });
-    });
-
+    
     it('should be composed of 3 elements', async () => {
+      const nUser: any = await getNumberOfUsers();
       return chai
         .request(app)
         .get('/api/v1/users')
         .then(res => {
-          chai.expect(res.body).to.have.lengthOf(3);
+          chai.expect(res.body).to.have.lengthOf(nUser);
         });
     });
   });
 
-  describe('#create', async () => {
+  describe('#create', () => {
     const personName: string = faker.name.findName();
     const personSurname: string = faker.name.findName();
-    const personEmail: string = faker.internet.email()
-    const personPassword: string = faker.internet.password();
-    const personId = 3;
+    const personPassword: any = faker.name.findName();
+    const personEmail: string = faker.internet.email();
     const personRole: number = faker.random.number({
       'min': 0,
       'max': 2
     });
-    const personBirth_day: string = moment(faker.date.past()).format(dateFormat);
-    const user: User = new User(personName, personSurname, personEmail, personPassword, personId, personRole, personBirth_day);
-
+    const personBirth_date: string = moment(faker.date.past()).format(dateFormat);
+    const userObj = {
+      name: personName, 
+      surname: personSurname,
+      password: personPassword,
+      email: personEmail,
+      role: personRole,
+      birth_date: personBirth_date
+    }
+    const user = JSON.stringify(userObj);
+    
     it('should return the 201 status code', async () => {
       return chai
         .request(app)
@@ -96,24 +133,6 @@ describe('UserController', () => {
         .send(user)
         .then(res => {
           chai.expect(res.status).to.eql(201);
-        });
-    });
-
-    it('should create a new user, in json', async () => {
-      return chai
-        .request(app)
-        .get('/api/v1/users')
-        .then(res => {
-          chai.expect(res.body).to.deep.include(user);
-        });
-    });
-
-    it('should create a new user, element added', async () => {
-      return chai
-        .request(app)
-        .get('/api/v1/users')
-        .then(res => {
-          chai.expect(res.body).to.have.lengthOf(4);
         });
     });
 
@@ -132,7 +151,7 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
-        email: personEmail,
+        email: faker.internet.email(),
         password: personPassword,
         role: personRole
       };
@@ -150,10 +169,10 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: '',
         surname: personSurname,
-        email: personEmail,
+        email: faker.internet.email(),
         password: personPassword,
         role: personRole,
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -169,10 +188,10 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: 0,
         surname: personSurname,
-        email: personEmail,
+        email: faker.internet.email(),
         password: personPassword,
         role: personRole,
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -188,10 +207,10 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: '',
-        email: personEmail,
+        email: faker.internet.email(),
         password: personPassword,
         role: personRole,
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -207,10 +226,10 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: 0,
-        email: personEmail,
+        email: faker.internet.email(),
         password: personPassword,
         role: personRole,
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -229,7 +248,7 @@ describe('UserController', () => {
         email: '',
         password: personPassword,
         role: personRole,
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -248,7 +267,7 @@ describe('UserController', () => {
         email: 0,
         password: personPassword,
         role: personRole,
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -264,10 +283,10 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
-        email: personEmail,
+        email: faker.internet.email(),
         password: '',
         role: personRole,
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -283,10 +302,10 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
-        email: personEmail,
+        email: faker.internet.email(),
         password: 0,
         role: personRole,
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -302,10 +321,10 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
-        email: personEmail,
+        email: faker.internet.email(),
         password: personPassword,
         role: '',
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -321,10 +340,10 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
-        email: personEmail,
+        email: faker.internet.email(),
         password: personPassword,
         role: 'hello world',
-        birth_date: personBirth_day
+        birth_date: personBirth_date
       };
       return chai
         .request(app)
@@ -340,7 +359,7 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
-        email: personEmail,
+        email: faker.internet.email(),
         password: personPassword,
         role: personRole,
         birth_date: ''
@@ -359,7 +378,7 @@ describe('UserController', () => {
       const fake_usr: Record<string, unknown> = {
         name: personName,
         surname: personSurname,
-        email: personEmail,
+        email: faker.internet.email(),
         password: personPassword,
         role: personRole,
         birth_date: 0
@@ -396,25 +415,27 @@ describe('UserController', () => {
   });
 
   describe('#deleteById', () => {
-    const existingUserId = 0;
-    const notAUserId = 69;
+    let existingUserId: any;
+    const notAUserId = 0;
     it('should return the 404 status code: User not found', async () => {
       return chai
-        .request(app)
-        .delete('/api/v1/users/' + notAUserId)
-        .then(res => {
-          chai.expect(res.status).to.equal(404);
-        });
+      .request(app)
+      .delete('/api/v1/users/' + notAUserId)
+      .then(res => {
+        chai.expect(res.status).to.equal(404);
+      });
     });
     it('should return the json error message: User not found', async () => {
       return chai
-        .request(app)
-        .delete('/api/v1/users/' + notAUserId)
-        .then(res => {
-          chai.expect(res.body.error).to.equal('User not found');
-        });
+      .request(app)
+      .delete('/api/v1/users/' + notAUserId)
+      .then(res => {
+        chai.expect(res.body.error).to.equal('User not found');
+      });
     });
-    it('should return the 204 status code:    valid user id', async () => {
+    it('should return the 204 status code: valid user id', async () => {
+      const randomUser:any = await getRandomUser();
+      existingUserId = randomUser._id;
       return chai
         .request(app)
         .delete('/api/v1/users/' + existingUserId)
@@ -422,7 +443,7 @@ describe('UserController', () => {
           chai.expect(res.status).to.equal(204);
         });
     });
-    it('should return the 404 status code:    previously valid user id', async () => {
+    it('should return the 404 status code: previously valid user id', async () => {
       return chai
         .request(app)
         .delete('/api/v1/users/' + existingUserId)
@@ -436,14 +457,6 @@ describe('UserController', () => {
         .delete('/api/v1/users/' + existingUserId)
         .then(res => {
           chai.expect(res.body.error).to.equal('User not found');
-        });
-    });
-    it('should be composed by 3 elements (one was added, one deleted)', () => {
-      return chai
-        .request(app)
-        .get('/api/v1/users')
-        .then(res => {
-          chai.expect(res.body).to.have.lengthOf(3);
         });
     });
     //the element deleted should not be accessible
@@ -460,20 +473,27 @@ describe('UserController', () => {
   describe('#findAndUpdateUserById', () => {
     const personName: string = faker.name.findName();
     const personSurname: string = faker.name.findName();
-    const personEmail: string = faker.internet.email()
+    const personEmail: string = faker.internet.email();
     const personPassword: string = faker.internet.password();
-    const personId = faker.random.number({
-      'min': 1,
-      'max': 3
-    });
+    let personId :any;
     const personRole: number = faker.random.number({
       'min': 0,
       'max': 2
     });
-    const personBirth_day: string = moment(faker.date.past()).format(dateFormat);
-    const user: User = new User(personName, personSurname, personEmail, personPassword, personId, personRole, personBirth_day);
+    const personBirth_date: string = moment(faker.date.past()).format(dateFormat);
+    const userObj = {
+      name: personName, 
+      surname: personSurname,
+      email: personEmail,
+      password: personPassword,
+      role: personRole,
+      birth_date: personBirth_date
+    }
+    const user = JSON.stringify(userObj);
     
     it('should return the 200 status code', async () => {
+      const person:any = await getRandomUser();
+      personId = person._id;
       return chai
         .request(app)
         .patch('/api/v1/users/'+ personId)
@@ -481,24 +501,6 @@ describe('UserController', () => {
         .send(user)
         .then(res => {
           chai.expect(res.status).to.eql(200);
-        });
-    });
-    
-    it('should edit the user, in json', async () => {
-      return chai
-        .request(app)
-        .get('/api/v1/users')
-        .then(res => {
-          chai.expect(res.body).to.deep.include(user);
-        });
-    });
-
-    it('should have the same number of element', async () => {
-      return chai
-        .request(app)
-        .get('/api/v1/users')
-        .then(res => {
-          chai.expect(res.body).to.have.lengthOf(3);
         });
     });
     
@@ -716,10 +718,12 @@ describe('UserController', () => {
   });
 
   describe('#updateById', () => { 
-    const validPersonId = 1;
+    let validPersonId: any;
     const invalidPersonId = 1000;
     const invalidPersonIdType = 'hello word'
     it('should return the 204 status code: no body', async () => {
+      const person: any = await getRandomUser();
+      validPersonId = person._id;
       return chai
         .request(app)
         .patch('/api/v1/users/'+ validPersonId)
@@ -793,20 +797,27 @@ describe('UserController', () => {
     const personSurname: string = faker.name.findName();
     const personEmail: string = faker.internet.email()
     const personPassword: string = faker.internet.password();
-    const personId = faker.random.number({
-      'min': 1,
-      'max': 3
-    });
+    let personId: any;
     const personRole: number = faker.random.number({
       'min': 0,
       'max': 2
     });
-    const personBirth_day: string = moment(faker.date.past()).format(dateFormat);
-    const user: User = new User(personName, personSurname, personEmail, personPassword, personId, personRole, personBirth_day);
+    const personBirth_date: string = moment(faker.date.past()).format(dateFormat);
+    const userObj = {
+      name: personName, 
+      surname: personSurname,
+      email: personEmail,
+      password: personPassword,
+      role: personRole,
+      birth_date: personBirth_date
+    }
+    const user = JSON.stringify(userObj);
     const invalidPersonId = 1000;
     const invalidPersonIdType = 'hello word'
 
     it('should return the 200 status code', async () => {
+      const person: any = await getRandomUser();
+      personId = person._id;
       return chai
         .request(app)
         .patch('/api/v1/users/'+ personId)
