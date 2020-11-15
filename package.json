@@ -25,10 +25,12 @@
   },
   "homepage": "https://github.com/Simone-Alghisi/projectSe2group06#readme",
   "dependencies": {
+    "@types/jsonwebtoken": "^8.5.0",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "faker": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.10.14"
   },
   "devDependencies": {
