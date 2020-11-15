@@ -14,10 +14,10 @@ export class CommonMiddleware {
       if (userRole && userRole === 2) {
         next();
       } else {
-        res.status(401).json({ message: 'Authentication failed' });
+        res.status(403).json({ error: 'Forbidden' });
       }
     } catch (e) {
-      res.status(401).json({ message: 'Authentication failed' });
+      res.status(403).json({ error: 'Forbidden' });
     }
   }
 
@@ -28,10 +28,10 @@ export class CommonMiddleware {
       if (userRole && userRole === 1) {
         next();
       } else {
-        res.status(401).json({ message: 'Authentication failed' });
+        res.status(403).json({ error: 'Forbidden' });
       }
     } catch (e) {
-      res.status(401).json({ message: 'Authentication failed' });
+      res.status(403).json({ error: 'Forbidden' });
     }
   }
 
@@ -42,10 +42,10 @@ export class CommonMiddleware {
       if (userRole && userRole === 0) {
         next();
       } else {
-        res.status(401).json({ message: 'Authentication failed' });
+        res.status(403).json({ error: 'Forbidden' });
       }
     } catch (e) {
-      res.status(401).json({ message: 'Authentication failed' });
+      res.status(403).json({ error: 'Forbidden' });
     }
   }
 }

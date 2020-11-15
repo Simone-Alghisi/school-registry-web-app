@@ -15,7 +15,7 @@ export class JwtMiddleware {
         //Basic HTTP Authentication convention
         if(authorization[0] !== 'Bearer'){
           console.log('Missing Bearer');
-          res.status(401).json({ message: 'Authentication failed' });
+          res.status(403).json({ error: 'Forbidden' });
         } else{
           const token = authorization[1];
           const decoded = jwt.verify(token, jwtSecret);
@@ -24,11 +24,32 @@ export class JwtMiddleware {
         }
       } catch (error) {
         console.log(error);
-        res.status(401).json({ message: 'Authentication failed' });
+        res.status(403).json({ error: 'Forbidden' });
       }
     } else {
       console.log('Missing header');
-      res.status(401).json({ message: 'Authentication failed' });
+      res.status(403).json({ error: 'Forbidden' });
+    }
+  }
+
+  validateRefreshTokenField(req: Request, res: Response, next: NextFunction) {
+    if (req.body && req.body.refreshToken) {
+      next();
+    } else {
+      res.status(401).send({error: 'Login failed'});
+    }
+  }
+
+  validateRefreshTokenContent(req: Request, res: Response, next: NextFunction){
+    dotenv.config();
+    const jwtRefreshSecret:string = process.env.JWT_REFRESH_SECRET ? process.env.JWT_REFRESH_SECRET : '';
+    try{
+      const decoded = jwt.verify(req.body.refreshToken, jwtRefreshSecret);
+      req.body.role = decoded['role'];
+      next();
+    }catch (error) {
+      console.log(error);
+      res.status(401).json({ error: 'Login failed'});
     }
   }
 }
