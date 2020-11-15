@@ -4,9 +4,7 @@ import dotenv from 'dotenv';
 export class MongooseService {
   private static instance: MongooseService;
   private uri: string;
-  /**
-   * Vedere cosa sono le options qui
-   */
+
   options = {
     autoIndex: true,
     poolSize: 10,
