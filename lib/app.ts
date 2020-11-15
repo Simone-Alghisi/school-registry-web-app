@@ -2,6 +2,7 @@ import express, { Application, NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { UserRoutes } from './routes/user.route';
 import { CommonRoutes } from './common/routes/common.routes'
+import { LoginRoutes } from './routes/login.route';
 
 //Dotenv configuration
 dotenv.config();
@@ -33,12 +34,14 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 //Routes defined
 routes.push(new UserRoutes(app));
+routes.push(new LoginRoutes(app));
 
 app.listen(port, () => {
   console.log('Server running on port: ' + port)
   routes.forEach((route: CommonRoutes) => {
     console.log('Routes configured for ' + route.getName());
   });
+  console.log('Create a defaut user');
 });
 
 //Default 404 handler
