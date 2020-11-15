@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
 import { MongooseService } from '../common/services/mongoose.service';
 
 function validateString(value: any):boolean {
@@ -75,7 +76,26 @@ export class UserModel {
       },
       // eslint-disable-next-line
       match: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/
-    }
+    },
+    class:{
+      type: Types.ObjectId,
+      required: false,
+      validate: {
+        validator: this.isValidId,
+        message: 'Invalid calss id'
+      }
+    },
+    communications:[
+      {
+        sender: String,
+        communication: [
+          {
+            subject: String,
+            content: String
+          }
+        ]
+      }
+    ]
   });
 
   userCollection = this.mongooseService.getMongoose().model('users', this.userSchema);

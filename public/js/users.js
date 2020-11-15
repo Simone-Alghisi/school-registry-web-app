@@ -39,7 +39,7 @@
           elem.surname, 
           elem.birth_date, 
           roleMapping[elem.role]
-        ]).draw().node().id = elem.id;
+        ]).draw().node().id = elem._id;
       })
     })
     .catch(
