@@ -77,7 +77,7 @@ export class UserModel {
       // eslint-disable-next-line
       match: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/
     },
-    class:{
+    class_id:{
       type: Types.ObjectId,
       required: false,
       validate: {
@@ -85,6 +85,12 @@ export class UserModel {
         message: 'Invalid calss id'
       }
     },
+    teaches:[
+      {
+        class_id: Types.ObjectId,
+        subject: Number
+      }
+    ],
     communications:[
       {
         sender: String,
@@ -96,7 +102,7 @@ export class UserModel {
         ]
       }
     ]
-  });
+   });
 
   userCollection = this.mongooseService.getMongoose().model('users', this.userSchema);
 
