@@ -1,15 +1,7 @@
 import { Schema } from 'mongoose';
 import { Types } from 'mongoose';
 import { MongooseService } from '../common/services/mongoose.service';
-
-function validateString(value: any):boolean {
-  const type:string = typeof(value);
-  let isValid = false;
-  if(isNaN(Number(value)) && value != null && value !== '' && type === 'string'){
-    isValid = true;
-  }
-  return isValid;
-}
+import { CommonModel } from '../common/models/common.model'
 
 export class UserModel {
   mongooseService: MongooseService = MongooseService.getInstance();
@@ -21,7 +13,7 @@ export class UserModel {
     name: { 
       type: String,
       validate: {
-        validator: validateString,
+        validator: CommonModel.validateString,
         message: 'Invalid name'
       },
       required: true
@@ -30,7 +22,7 @@ export class UserModel {
       type: String, 
       required: true,
       validate: {
-        validator: validateString,
+        validator: CommonModel.validateString,
         message: 'Invalid surname'
       }
     },
@@ -39,7 +31,7 @@ export class UserModel {
       required: true,
       unique: true,
       validate: {
-        validator: validateString,
+        validator: CommonModel.validateString,
         message: 'Invalid email'
       },
       // eslint-disable-next-line
@@ -48,7 +40,7 @@ export class UserModel {
     password: { 
       type: String,
       validate: {
-        validator: validateString,
+        validator: CommonModel.validateString,
         message: 'Invalid password'
       },
       required: true 
@@ -56,7 +48,7 @@ export class UserModel {
     salt: { 
       type: String, 
       validate: {
-        validator: validateString,
+        validator: CommonModel.validateString,
         message: 'Invalid salt'
       },
       required: true 
@@ -71,7 +63,7 @@ export class UserModel {
       type: String, 
       required: true,
       validate: {
-        validator: validateString,
+        validator: CommonModel.validateString,
         message: 'Invalid birth_date'
       },
       // eslint-disable-next-line

@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from 'express';
-import { UserModel } from '../models/user.model';
-import { UserService } from '../services/user.service'
+import { ClassModel } from '../models/class.model';
+import { ClassService } from '../services/class.service'
 
 export class ClassMiddleware {
 

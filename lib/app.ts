@@ -1,6 +1,7 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { UserRoutes } from './routes/user.route';
+import { ClassRoutes } from './routes/class.route';
 import { CommonRoutes } from './common/routes/common.routes'
 import { LoginRoutes } from './routes/login.route';
 
@@ -34,6 +35,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 //Routes defined
 routes.push(new UserRoutes(app));
+routes.push(new ClassRoutes(app));
 routes.push(new LoginRoutes(app));
 
 app.listen(port, () => {

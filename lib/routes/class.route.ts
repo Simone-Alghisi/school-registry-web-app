@@ -1,8 +1,6 @@
 import { Application } from 'express';
 import { CommonRoutes } from '../common/routes/common.routes'
 import { ConfigureRoutes } from '../common/interfaces/configureRoutes.interface'
-import { UserController } from  '../controllers/user.controller'
-import { UserMiddleware } from '../middlewares/user.middleware'
 import { ClassController } from '../controllers/class.controller';
 import { ClassMiddleware } from '../middlewares/class.middleware';
 
