@@ -180,7 +180,7 @@ export class UserMiddleware {
     const userService = UserService.getInstance();
     const user = await userService.getByEmail(req.body.email);
     if (user) {
-      res.status(409).json({ message: 'Mail exists' });
+      res.status(409).json({ error: 'Mail exists' });
     } else {
       next();
     }
@@ -201,7 +201,6 @@ export class UserMiddleware {
     }else{
       res.status(404).json({error: 'User not found'});
     }
-    
   }
 
   discardUselessFields(req: Request, res: Response, next: NextFunction): void{

@@ -3,6 +3,7 @@ import { CommonRoutes } from '../common/routes/common.routes'
 import { ConfigureRoutes } from '../common/interfaces/configureRoutes.interface'
 import { LoginMiddleware } from '../middlewares/login.middleware'
 import { LoginController } from '../controllers/login.controller'
+import { JwtMiddleware } from '../middlewares/jwt.middleware';
 
 
 export class LoginRoutes extends CommonRoutes implements ConfigureRoutes {
@@ -18,8 +19,9 @@ export class LoginRoutes extends CommonRoutes implements ConfigureRoutes {
   }
 
   configureRoutes(): void {
-    const loginMiddleware = new LoginMiddleware();
-    const loginController = new LoginController();
+    const loginMiddleware: LoginMiddleware = new LoginMiddleware();
+    const loginController: LoginController = new LoginController();
+    const jwtMiddleware: JwtMiddleware = new JwtMiddleware();
 
     this.app.post('/api/v1/login', [
       loginMiddleware.validateLoginBody,
@@ -27,8 +29,10 @@ export class LoginRoutes extends CommonRoutes implements ConfigureRoutes {
       loginController.createJWT
     ]);
 
-    this.app.post('/api/v1/login/refresh-token', [
-      //TODO refresh token implementation
+    this.app.post('/api/v1/login/refresh', [
+      jwtMiddleware.validateRefreshTokenField,
+      jwtMiddleware.validateRefreshTokenContent,
+      loginController.createJWT
     ]);
   }
 }
