@@ -10,8 +10,8 @@ export class LoginController {
 
   async createJWT(req: Request, res: Response) {
     dotenv.config();
-    const jwtSecret = process.env.JWT_SECRET ? process.env.JWT_SECRET : '';
-    const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET ? process.env.JWT_REFRESH_SECRET : '';
+    const jwtSecret = process.env.JWT_SECRET || '';
+    const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET || '';
     console.log('CREATE JWT');
     try{
       const token = jwt.sign({ email: req.body.email, role: req.body.role }, jwtSecret, {expiresIn: LoginController.tokenExpiration});
@@ -20,6 +20,20 @@ export class LoginController {
       res.status(200).json({ message: 'Login successful', accessToken: token, refreshToken: refToken});
     }catch (err) {
       console.log('FAILED CREATE JWT' + err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  async refreshJWT(req: Request, res: Response) {
+    dotenv.config();
+    const jwtSecret = process.env.JWT_SECRET || '';
+    console.log('Refresh JWT');
+    try{
+      const token = jwt.sign({ email: req.body.email, role: req.body.role }, jwtSecret, {expiresIn: LoginController.tokenExpiration});
+
+      res.status(200).json({ message: 'Refresh successful', accessToken: token});
+    }catch (err) {
+      console.log('FAILED REFRESH JWT' + err);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
