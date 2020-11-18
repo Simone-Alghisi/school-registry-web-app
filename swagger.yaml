@@ -6,11 +6,14 @@ info:
   license:
     name: MIT
 servers:
-  - url: https://project-se-2-group-06.herokuapp.com/api/v1
+  - url: https://project-se-2-group-06.herokuapp.com/api/
     description: Heroku test server (uses test data)
+    
 paths:
   /users:
     get:
+      security:
+        - bearerJwtAuthToken: []
       description: >-
         Returns the list of all users in the system
       summary: Returns all the users
@@ -23,7 +26,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
     post:
+      security:
+        - bearerJwtAuthToken: []
       description: >-
         Creates a new user in the system
       summary: Register a new user
@@ -36,19 +46,30 @@ paths:
                 type: string
               description: 'Link to the newly created user'     
         '422':
-          description: 'Unprocessable entity'
+          $ref: '#/components/responses/UnprocessableEntity'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
+              
     patch:
+      security:
+        - bearerJwtAuthToken: []
       description: >-
         Update all the users in the system
       summary: Update all the existing users in the system
       responses:
         '405':
-          description: 'Method not allowed'    
+          description: 'Method not allowed'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
       requestBody:
         content:
           application/json:
@@ -56,16 +77,25 @@ paths:
               type: array
               items:
                 $ref: '#/components/schemas/UpdatedUser'
+                
     delete:
+      security:
+        - bearerJwtAuthToken: []
       description: >-
         Delete all the user in the system
       summary: Delete all the users
       responses:
         '405':
-          description: 'Method not allowed'
-
+          $ref: '#/components/responses/MethodNotAllowed'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    
   /users/{id}:
     delete: 
+      security:
+        - bearerJwtAuthToken: []
       description: >-
         Delete a user with a specific id
       summary: Delete a user
@@ -78,10 +108,17 @@ paths:
           description: 'Id of the user to delete'
       responses:
         '204':
-          description: 'User deleted'
+          $ref: '#/components/responses/NoContentResponse'
         '404':
           description: 'User to delete not found'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
     get:
+      security:
+        - bearerJwtAuthToken: []
       description: >-
         Returns the data of a users with a specific id
       summary: Return a user
@@ -101,7 +138,14 @@ paths:
                 $ref: '#/components/schemas/User'
         '404':
           description: 'User not found'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
     patch:
+      security:
+        - bearerJwtAuthToken: []
       description: >-
         Update a user in the system given the user's id
       summary: Update a user
@@ -125,11 +169,63 @@ paths:
               schema:
                 $ref: "#/components/schemas/User"
         '204':
-          description: 'No content'
+          $ref: '#/components/responses/NoContentResponse'
         '404':
           description: 'id not found or invalid'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
+  /login:
+    post:
+      description: Login to the service providing the credentials
+      summary: Login into the system
+      requestBody:
+        content:
+          application/json:
+           schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: 'Login successful'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/LoginFailedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  /login/refresh:
+    post:
+      description: Providing a refresh token allows you to get a new access token without log in again
+      summary: Obtain a new access token
+      requestBody:
+        content:
+          application/json:
+           schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: 'Refresh successful'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RefreshTokenResponse'
+        '401':
+          $ref: '#/components/responses/LoginFailedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
+  securitySchemes:
+    bearerJwtAuthToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  
   schemas:
     UpdatedUser:
       type: object
@@ -170,6 +266,7 @@ components:
           description: 'list of the subjects teached in classes'
           items: 
             $ref: '#/components/schemas/Teach'
+            
     User:
       allOf:
         - $ref: '#/components/schemas/UpdatedUser'
@@ -183,6 +280,7 @@ components:
         - id
         - role
         - birth_date
+        
     Lecture:
       type: object
       properties:
@@ -211,6 +309,7 @@ components:
         - end_minute
         - subject
         - professor_id
+        
     Message:
       type: object
       properties:
@@ -223,6 +322,7 @@ components:
       required:
         - subject
         - content
+        
     Communication:
       type: object
       properties:
@@ -236,6 +336,7 @@ components:
             $ref: '#/components/schemas/Message'
       required:
         - sender_id
+        
     Homework:
       type: object
       properties:
@@ -257,6 +358,7 @@ components:
         - description
         - date
         - subject
+        
     Test:
       type: object
       properties:
@@ -278,6 +380,7 @@ components:
         - description
         - date
         - subject
+        
     Material:
       type: object
       properties:
@@ -290,6 +393,7 @@ components:
       required:
         - description
         - subject
+        
     Grade:
       type: object
       properties:
@@ -308,6 +412,7 @@ components:
         - value
         - date
         - subject
+        
     Student:
       type: object
       properties:
@@ -321,6 +426,7 @@ components:
             $ref: '#/components/schemas/Grade'
       required:
         - student_id
+        
     GradeElement:
       type: object
       properties:
@@ -334,6 +440,7 @@ components:
             $ref: '#/components/schemas/Student'
       required:
         - subject
+        
     Class:
       type: object
       properties:
@@ -376,6 +483,7 @@ components:
       required:
         - id
         - name
+        
     Teach:
       type: object
       properties:
@@ -385,3 +493,59 @@ components:
         class_id: 
           type: string
           description: 'ID of the class for the professor'
+          
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          description: "User's email"
+        password:
+          type: string
+          description: "User's password"
+          
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: 'Login successful'
+        accessToken:
+          type: string
+          description: 'Access token'
+        refreshToken:
+          type: string
+          description: 'Access token'
+    
+    RefreshTokenRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          description: 'Refresh token'
+          
+    RefreshTokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: 'New access token'
+  
+  responses:
+    LoginFailedError:
+      description: 'Login failed'
+      
+    UnauthorizedError:
+      description: 'Forbidden'
+      
+    InternalServerError:
+      description: 'Internal server error'
+      
+    UnprocessableEntity:
+      description: 'Unprocessable entity'
+      
+    MethodNotAllowed:
+      description: 'Method not allowed'
+      
+    NoContentResponse:
+      description: 'No content'
