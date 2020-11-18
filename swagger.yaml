@@ -218,7 +218,28 @@ paths:
           $ref: '#/components/responses/LoginFailedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
+          
+  /classes:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns the list of all classes in the system
+      summary: Returns all the classes
+      responses:
+        '200':
+          description: 'Collection of Classes'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+                  
 components:
   securitySchemes:
     bearerJwtAuthToken:

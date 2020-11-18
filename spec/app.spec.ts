@@ -45,7 +45,7 @@ describe('OPTIONS HTTP verb', () => {
   it('should contain the Access-Control-Allow-Methods header', async () => {
     return chai
       .request(app)
-      .get('/')
+      .get('/aaaaaaaa')
       .then(res => {
         chai.expect(res).to.have.header('access-control-allow-headers');
       });
@@ -86,7 +86,7 @@ describe('Default 404 handler', () => {
   it('should return "Not found" error: Non existing resource in api v1', async () => {
     return chai
       .request(app)
-      .get('/')
+      .get('/aaaaaa')
       .then(res => {
         chai.expect(res.body.error).to.eql('Not found');
       });
