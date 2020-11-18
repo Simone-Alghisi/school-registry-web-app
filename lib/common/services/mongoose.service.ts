@@ -17,7 +17,7 @@ export class MongooseService {
 
   constructor() {
     dotenv.config();
-    this.uri = process.env.MONGODB_URI ? process.env.MONGODB_URI : '';
+    this.uri = process.env.MONGODB_URI || '';
     this.connect();
   }
 

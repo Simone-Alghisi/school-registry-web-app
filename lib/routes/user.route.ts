@@ -4,7 +4,7 @@ import { ConfigureRoutes } from '../common/interfaces/configureRoutes.interface'
 import { UserController } from  '../controllers/user.controller'
 import { UserMiddleware } from '../middlewares/user.middleware'
 import { JwtMiddleware } from '../middlewares/jwt.middleware';
-import { CommonMiddleware } from '../common/middleware/common.middleware';
+import { CommonMiddleware } from '../common/middlewares/common.middleware';
 
 /**
  * UserRoutes class, it extends the {@link CommonRoutes} class and implements the {@link ConfigureRoutes} interface.
@@ -105,6 +105,7 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
       userMiddleware.validateUserExists,
       userMiddleware.validateUpdateBody,
       userMiddleware.validateUpdateRequest,
+      userMiddleware.discardSaltField,
       userController.updateById
     ]);
 

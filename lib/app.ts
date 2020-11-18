@@ -43,7 +43,6 @@ app.listen(port, () => {
   routes.forEach((route: CommonRoutes) => {
     console.log('Routes configured for ' + route.getName());
   });
-  console.log('Create a defaut user');
 });
 
 //Default 404 handler

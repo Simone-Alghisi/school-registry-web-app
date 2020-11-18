@@ -32,7 +32,7 @@ export class LoginRoutes extends CommonRoutes implements ConfigureRoutes {
     this.app.post('/api/v1/login/refresh', [
       jwtMiddleware.validateRefreshTokenField,
       jwtMiddleware.validateRefreshTokenContent,
-      loginController.createJWT
+      loginController.refreshJWT
     ]);
   }
 }

@@ -176,6 +176,13 @@ export class UserMiddleware {
     }
   }
 
+  discardSaltField(req: Request, res: Response, next: NextFunction): void{
+    if (req.body && req.body.salt) {
+      delete req.body.salt;
+    }
+    next();
+  }
+
   async validateUniqueEmail(req: Request, res: Response, next: NextFunction): Promise<void>{
     const userService = UserService.getInstance();
     const user = await userService.getByEmail(req.body.email);
