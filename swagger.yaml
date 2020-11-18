@@ -128,7 +128,22 @@ paths:
           description: 'No content'
         '404':
           description: 'id not found or invalid'
-
+          
+  /classes:
+    get:
+      description: >-
+        Returns the list of all classes in the system
+      summary: Returns all the classes
+      responses:
+        '200':
+          description: 'Collection of Classes'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Class'
+                  
 components:
   schemas:
     UpdatedUser:
