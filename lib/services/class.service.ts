@@ -19,7 +19,11 @@ export class ClassService implements CRUDService {
     return ClassService.instance;
   }
 
-  async create(resource: any) : Promise<any>{}
+  async create(resource: any) : Promise<any>{
+    const newClass = new this.classModel.classCollection(resource);
+    await newClass.save();
+    return resource._id;
+  }
 
   async deleteById(resourceId: string): Promise<void>{}
 
