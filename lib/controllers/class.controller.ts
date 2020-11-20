@@ -34,7 +34,7 @@ export class ClassController implements CRUDController{
   async create(req: Request, res: Response): Promise<void> {
     const classService = ClassService.getInstance();
     try{
-      const classId = classService.create(req.body);
+      const classId = await classService.create(req.body);
       res.status(201).location('api/v1/classes/' + classId).send();
     }catch(e){
       res.status(500).json({error: 'Internal server error'});
