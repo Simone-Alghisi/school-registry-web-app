@@ -1,6 +1,8 @@
+import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } from './common.js';
+
 (function ($) {
   "use strict";
-
+  
   /**
    * Function that sends the user data as a json to the RESTFUL api to add the user
    */
@@ -13,11 +15,21 @@
     let fetchData = {
       method: 'POST', 
       body: data,
-      headers: {'Content-Type': 'application/json'}
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken}
     }
     fetch(url, fetchData)
-      .then((resp) => {
-        $(location).prop('href', './users.html');
+      .then(() => {
+        if(resp.ok){
+          $(location).prop('href', './users.html');
+        }else if(resp.status == 403){
+          try{
+            refreshToken();
+          }catch(error){
+            dealWithForbiddenErrorCode();
+          }
+        } else {
+          dealWithServerErrorCodes();
+        }
       })
       .catch( 
         error => console.error(error)

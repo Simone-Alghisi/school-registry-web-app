@@ -32,7 +32,7 @@ jobs:
       - name: Run test
         run: |
           echo "npm run test ..."
-          MONGODB_URI=${{secrets.MONGODB_URI}} JWT_SECRET=${{secrets.JWT_SECRET}} JWT_REFRESH_SECRET={{secrets.JWT_REFRESH_SECRET}} npm run test 
+          PORT=${{secrets.PORT}} MONGODB_URI=${{secrets.MONGODB_URI}} JWT_SECRET=${{secrets.JWT_SECRET}} JWT_REFRESH_SECRET={{secrets.JWT_REFRESH_SECRET}} npm run test 
     
   deploy:
     name: Deploy

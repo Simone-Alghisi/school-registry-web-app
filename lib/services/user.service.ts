@@ -47,6 +47,11 @@ export class UserService implements CRUDService {
   }
 
   async updateById(resource: any): Promise<any>{
+    if(resource.password){
+      resource.salt = crypto.randomBytes(32).toString('base64');
+      const hash = crypto.createHmac('sha512', resource.salt).update(resource.password).digest('base64');
+      resource.password = hash + resource.salt;
+    }
     await this.userModel.userCollection.updateOne({_id: resource.id}, resource);
     return await this.getById(resource.id);
   }

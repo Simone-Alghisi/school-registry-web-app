@@ -1,3 +1,5 @@
+import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } from './common.js';
+
 (function ($) {
     "use strict";
   
@@ -17,10 +19,20 @@
       fetch(url, fetchData)
         .then((resp) => {
 					console.log(resp.status);
-					if(resp.status === 200)
-						$(location).prop('href', './users.html');
-					else
+          if(resp.ok) {
+            return resp.json();
+          } else if(resp.status == 401) {
 						$('#loginError').text("Email e/o password non corretti");
+          } else {
+            dealWithServerErrorCodes();
+          }
+        })
+        .then((data) => {
+          if(data){
+            window.sessionStorage.accessToken = data.accessToken;
+            window.sessionStorage.refreshToken = data.refreshToken;
+            //$(location).prop('href', './users.html');
+          }
         })
         .catch( 
           error => console.error(error)
@@ -31,4 +43,19 @@
 			login();
 			event.preventDefault();
     });
+
+    /**
+     * Function that checks if the user can be already logged in
+     */
+    function alreadyLogged(){
+      // Try to get another token from the refresh token
+      if(window.sessionStorage.refreshToken){
+        try{
+          refreshToken();
+          dealWithAlreadyLoggedUser();
+        }catch(e){ }
+      }
+    }
+
+    alreadyLogged();
   })(jQuery);

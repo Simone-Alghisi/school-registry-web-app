@@ -19,7 +19,7 @@ export class JwtMiddleware {
         } else{
           const token = authorization[1];
           const decoded = jwt.verify(token, jwtSecret);
-          req.body.role = decoded['role'];
+          req.jwt =  { role: decoded['role'] };
           next();
         }
       } catch (error) {
@@ -45,7 +45,7 @@ export class JwtMiddleware {
     const jwtRefreshSecret:string = process.env.JWT_REFRESH_SECRET ? process.env.JWT_REFRESH_SECRET : '';
     try{
       const decoded = jwt.verify(req.body.refreshToken, jwtRefreshSecret);
-      req.body.role = decoded['role'];
+      req.jwt = { role: decoded['role'] };
       next();
     }catch (error) {
       console.log(error);
