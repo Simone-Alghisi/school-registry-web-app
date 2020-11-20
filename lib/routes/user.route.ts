@@ -41,9 +41,8 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * The request is routed only to user controller function for get all (list)
     */
     this.app.get('/api/v1/users', [
-      //TODO uncomment this, after the tests are fixed
-      /*jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,*/
+      jwtMiddleware.validateJWT,
+      commonMiddleware.onlySecretaryNeedsToDoThis,
       userController.list
     ]);
 
@@ -53,9 +52,8 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * Then the request is routed to the appropriate user controller function for getById
     */
     this.app.get('/api/v1/users/:id', [
-      //TODO uncomment this, after the tests are fixed
-      /*jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,*/
+      jwtMiddleware.validateJWT,
+      commonMiddleware.onlySecretaryNeedsToDoThis,
       userMiddleware.validateUserExists,
       userController.getById
     ]);
@@ -67,9 +65,8 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * Then the request is routed to the appropriate user controller function for create
     */
     this.app.post('/api/v1/users', [
-      //TODO uncomment this, after the tests are fixed
-      /*jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,*/
+      jwtMiddleware.validateJWT,
+      commonMiddleware.onlySecretaryNeedsToDoThis,
       userMiddleware.discardUselessFields,
       userMiddleware.validateName,
       userMiddleware.validateSurname,
@@ -86,8 +83,8 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * The request is routed only to user controller function for updateAll
     */
     this.app.patch('/api/v1/users', [
-      //TODO uncomment this, after the tests are fixed
-      /*jwtMiddleware.validateJWT,*/
+      jwtMiddleware.validateJWT,
+      commonMiddleware.onlySecretaryNeedsToDoThis,
       userController.updateAll
     ]);
 
@@ -98,9 +95,8 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * Then the request is routed to the appropriate user controller function for UpdateById
     */
     this.app.patch('/api/v1/users/:id', [
-      //TODO uncomment this, after the tests are fixed
-      /*jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,*/
+      jwtMiddleware.validateJWT,
+      commonMiddleware.onlySecretaryNeedsToDoThis,
       userMiddleware.discardUselessFields,
       userMiddleware.validateUserExists,
       userMiddleware.validateUpdateBody,
@@ -115,9 +111,8 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * Then the request is routed to the appropriate user controller function for deleteById
     */
     this.app.delete('/api/v1/users/:id',[
-      //TODO uncomment this, after the tests are fixed
-      /*jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,*/
+      jwtMiddleware.validateJWT,
+      commonMiddleware.onlySecretaryNeedsToDoThis,
       userMiddleware.validateUserExists,
       userController.deleteById
     ]);
@@ -126,8 +121,8 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * The request is routed only to user controller function for deleteAll
     */
     this.app.delete('/api/v1/users',[
-      //TODO uncomment this, after the tests are fixed
-      //jwtMiddleware.validateJWT,
+      jwtMiddleware.validateJWT,
+      commonMiddleware.onlySecretaryNeedsToDoThis,
       userController.deleteAll
     ]);
   }

@@ -5,6 +5,14 @@ import { ClassRoutes } from './routes/class.route';
 import { CommonRoutes } from './common/routes/common.routes'
 import { LoginRoutes } from './routes/login.route';
 
+declare global {
+  namespace Express {
+    interface Request {
+      jwt: any
+    }
+  }
+}
+
 //Dotenv configuration
 dotenv.config();
 
@@ -32,6 +40,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     return next();
   }
 });
+
 
 //Routes defined
 routes.push(new UserRoutes(app));

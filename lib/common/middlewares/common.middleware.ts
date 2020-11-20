@@ -9,7 +9,7 @@ export class CommonMiddleware {
 
   onlySecretaryNeedsToDoThis(req: Request, res: Response, next: NextFunction) {
     try {
-      const userRole = parseInt(req.body.role, 10);
+      const userRole = parseInt(req.jwt.role, 10);
       console.log('userRole: ' + userRole)
       if (userRole && userRole === 2) {
         next();
@@ -23,7 +23,7 @@ export class CommonMiddleware {
 
   onlyProfessorNeedsToDoThis(req: Request, res: Response, next: NextFunction) {
     try {
-      const userRole = parseInt(req.body.role, 10);
+      const userRole = parseInt(req.jwt.role, 10);
       console.log('userRole: ' + userRole)
       if (userRole && userRole === 1) {
         next();
@@ -37,7 +37,7 @@ export class CommonMiddleware {
 
   onlyStudentNeedsToDoThis(req: Request, res: Response, next: NextFunction) {
     try {
-      const userRole = parseInt(req.body.role, 10);
+      const userRole = parseInt(req.jwt.role, 10);
       console.log('userRole: ' + userRole)
       if (userRole && userRole === 0) {
         next();

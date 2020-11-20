@@ -10,15 +10,26 @@ import 'mocha';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../lib/app';
-import { UserController } from '../../lib/controllers/user.controller';
 import * as faker from 'faker';
 import moment from 'moment';
+import dotenv from 'dotenv';
 import { UserModel } from '../../lib/models/user.model'
+import { UserController } from '../../lib/controllers/user.controller';
+import { user_role_0, user_role_1, user_role_2, userAccessToken } from '../spec_helper';
+import { UserService } from '../../lib/services/user.service';
+
+dotenv.config();
 
 chai.use(chaiHttp);
 
 let userModel: UserModel;
 let userController: UserController;
+let idUser0: string;
+let idUser1: string;
+let idUser2: string;
+let token0: string;
+let token1: string;
+let token2: string;
 
 async function getNumberOfUsers(){
   return new Promise( (resolve, reject) => {
@@ -52,10 +63,44 @@ async function getRandomUser(){
 }
 
 describe('UserController', () => {
+  const userService: UserService = UserService.getInstance();
 
-  before(() => {
-    userModel = UserModel.getInstance();
-    userController = new UserController();
+  userModel = UserModel.getInstance();
+  userController = new UserController();
+  
+  before(async () => {
+    user_role_0.email = faker.internet.email();
+    user_role_1.email = faker.internet.email();
+    user_role_2.email = faker.internet.email();
+
+    idUser0 = await userService.create(JSON.parse(JSON.stringify(user_role_0)));
+    idUser1 = await userService.create(JSON.parse(JSON.stringify(user_role_1)));
+    idUser2 = await userService.create(JSON.parse(JSON.stringify(user_role_2)));
+
+    await userAccessToken(user_role_0.email, user_role_0.password)
+      .then((data: any) => {
+        token0 = data;
+      });
+    
+    await userAccessToken(user_role_1.email, user_role_1.password)
+      .then((data: any) => {
+        token1 = data;
+      });
+
+    await userAccessToken(user_role_2.email, user_role_2.password)
+      .then((data: any) => {
+        token2 = data;
+      });
+
+    console.log('token0: ' + token0);
+    console.log('token1: ' + token1);
+    console.log('token2: ' + token2);
+  });
+
+  after(async () => {
+    await userService.deleteById(idUser0);
+    await userService.deleteById(idUser1);
+    await userService.deleteById(idUser2);
   });
 
   const dateFormat = 'YYYY-MM-DD';
@@ -85,20 +130,33 @@ describe('UserController', () => {
   });
 
   describe('#list', () => {
+    
+    it('should return the 403 Forbidden code: student should\'t be able to request users', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/users')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
     it('should return the 200 OK code', async () => {
       return chai
         .request(app)
         .get('/api/v1/users')
+        .set('authorization', 'Bearer ' + token2)
         .then(res => {
           chai.expect(res.status).to.eql(200);
         });
     });
     
-    it('should be composed of 3 elements', async () => {
+    it('should return all the users', async () => {
       const nUser: any = await getNumberOfUsers();
       return chai
         .request(app)
         .get('/api/v1/users')
+        .set('authorization', 'Bearer ' + token2)
         .then(res => {
           chai.expect(res.body).to.have.lengthOf(nUser);
         });
@@ -125,11 +183,36 @@ describe('UserController', () => {
     }
     const user = JSON.stringify(userObj);
     
+    it('should return the 403 Forbidden code: student should\'t be able to add user', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users')
+        .set('authorization', 'Bearer ' + token0)
+        .set('content-type', 'application/json')
+        .send(user)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 403 Forbidden code: professor should\'t be able to add user', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users')
+        .set('authorization', 'Bearer ' + token1)
+        .set('content-type', 'application/json')
+        .send(user)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
     it('should return the 201 status code', async () => {
       return chai
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(user)
         .then(res => {
           chai.expect(res.status).to.eql(201);
@@ -141,6 +224,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -159,6 +243,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -178,6 +263,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -197,6 +283,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -216,6 +303,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -235,6 +323,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -254,6 +343,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -273,6 +363,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -292,6 +383,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -311,6 +403,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -330,6 +423,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -349,6 +443,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -368,6 +463,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -387,6 +483,7 @@ describe('UserController', () => {
         .request(app)
         .post('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(422);
@@ -395,10 +492,31 @@ describe('UserController', () => {
   });
 
   describe('#deleteAll', () => {
+    it('should return the 403 Forbidden code: student should\'t be able to delete all users', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/users')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 403 Forbidden code: professor should\'t be able to delete all users', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/users')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
     it('should return the 405 status code: operation not allowed', async () => {
       return chai
         .request(app)
         .delete('/api/v1/users')
+        .set('authorization', 'Bearer ' + token2)
         .then(res => {
           chai.expect(res.status).to.equal(405);
         });
@@ -408,6 +526,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .delete('/api/v1/users')
+        .set('authorization', 'Bearer ' + token2)
         .then(res => {
           chai.expect(res.body.error).to.equal('Method not allowed');
         });
@@ -417,10 +536,36 @@ describe('UserController', () => {
   describe('#deleteById', () => {
     let existingUserId: any;
     const notAUserId = 0;
+
+    it('should return the 403 Forbidden code: student should\'t be able to delete user', async () => {
+      const randomUser:any = await getRandomUser();
+      existingUserId = randomUser._id;
+      return chai
+        .request(app)
+        .delete('/api/v1/users/'+ existingUserId)
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 403 Forbidden code: student should\'t be able to delete user', async () => {
+      const randomUser:any = await getRandomUser();
+      existingUserId = randomUser._id;
+      return chai
+        .request(app)
+        .delete('/api/v1/users/'+ existingUserId)
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
     it('should return the 404 status code: User not found', async () => {
       return chai
       .request(app)
       .delete('/api/v1/users/' + notAUserId)
+      .set('authorization', 'Bearer ' + token2)
       .then(res => {
         chai.expect(res.status).to.equal(404);
       });
@@ -429,6 +574,7 @@ describe('UserController', () => {
       return chai
       .request(app)
       .delete('/api/v1/users/' + notAUserId)
+      .set('authorization', 'Bearer ' + token2)
       .then(res => {
         chai.expect(res.body.error).to.equal('User not found');
       });
@@ -439,6 +585,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .delete('/api/v1/users/' + existingUserId)
+        .set('authorization', 'Bearer ' + token2)
         .then(res => {
           chai.expect(res.status).to.equal(204);
         });
@@ -447,6 +594,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .delete('/api/v1/users/' + existingUserId)
+        .set('authorization', 'Bearer ' + token2)
         .then(res => {
           chai.expect(res.status).to.equal(404);
         });
@@ -455,6 +603,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .delete('/api/v1/users/' + existingUserId)
+        .set('authorization', 'Bearer ' + token2)
         .then(res => {
           chai.expect(res.body.error).to.equal('User not found');
         });
@@ -464,6 +613,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .get('/api/v1/users/' + existingUserId)
+        .set('authorization', 'Bearer ' + token2)
         .then(res => {
           chai.expect(res.status).to.equal(404);
         });
@@ -491,6 +641,30 @@ describe('UserController', () => {
     }
     const user = JSON.stringify(userObj);
     
+    it('should return the 403 Forbidden code: student should\'t be able to update user', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ personId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token0)
+        .send(user)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 403 Forbidden code: professor should\'t be able to update user', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ personId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(user)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
     it('should return the 200 status code', async () => {
       const person:any = await getRandomUser();
       personId = person._id;
@@ -498,6 +672,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(user)
         .then(res => {
           chai.expect(res.status).to.eql(200);
@@ -509,6 +684,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -527,6 +703,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -542,6 +719,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(200);
@@ -556,6 +734,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -570,6 +749,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -584,6 +764,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -598,6 +779,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -612,6 +794,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -626,6 +809,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -640,6 +824,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -654,6 +839,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -668,6 +854,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -682,6 +869,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -696,6 +884,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -710,6 +899,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(fake_usr)
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -721,6 +911,7 @@ describe('UserController', () => {
     let validPersonId: any;
     const invalidPersonId = 1000;
     const invalidPersonIdType = 'hello word'
+
     it('should return the 204 status code: no body', async () => {
       const person: any = await getRandomUser();
       validPersonId = person._id;
@@ -728,6 +919,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ validPersonId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.status).to.eql(204);
@@ -739,6 +931,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ invalidPersonIdType)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.status).to.eql(404);
@@ -750,6 +943,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ invalidPersonId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.status).to.eql(404);
@@ -761,6 +955,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+invalidPersonId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.body.error).to.equal('User not found');
@@ -769,11 +964,37 @@ describe('UserController', () => {
   });
 
   describe('#updateAll', () => { 
+
+    it('should return the 403 Forbidden code: student should\'t be able to update all users', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/users/')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token0)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 403 Forbidden code: professor should\'t be able to update all users', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/users/')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
     it('should return the 405 status code: method not allowed', async () => {
       return chai
         .request(app)
         .patch('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.status).to.eql(405);
@@ -785,6 +1006,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users')
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.body.error).to.equal('Method not allowed');
@@ -815,6 +1037,20 @@ describe('UserController', () => {
     const invalidPersonId = 1000;
     const invalidPersonIdType = 'hello word'
 
+    it('should return the 403 Forbidden code: student should\'t be able to get a users', async () => {
+      const person: any = await getRandomUser();
+      personId = person._id;
+      return chai
+        .request(app)
+        .get('/api/v1/users/' + personId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token0)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
     it('should return the 200 status code', async () => {
       const person: any = await getRandomUser();
       personId = person._id;
@@ -822,6 +1058,7 @@ describe('UserController', () => {
         .request(app)
         .patch('/api/v1/users/'+ personId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send(user)
         .then(res => {
           chai.expect(res.status).to.eql(200);
@@ -833,6 +1070,7 @@ describe('UserController', () => {
         .request(app)
         .get('/api/v1/users/'+ invalidPersonIdType)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.status).to.eql(404);
@@ -844,6 +1082,7 @@ describe('UserController', () => {
         .request(app)
         .get('/api/v1/users/'+ invalidPersonId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.status).to.eql(404);
@@ -855,6 +1094,7 @@ describe('UserController', () => {
         .request(app)
         .get('/api/v1/users/'+invalidPersonId)
         .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
         .send()
         .then(res => {
           chai.expect(res.body.error).to.equal('User not found');

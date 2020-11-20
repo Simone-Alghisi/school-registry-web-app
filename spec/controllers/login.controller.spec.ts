@@ -3,45 +3,39 @@ import chai from 'chai';
 import app from '../../lib/app';
 import chaiHttp from 'chai-http';
 import faker from 'faker';
-import { UserController } from '../../lib/controllers/user.controller';
-import moment from 'moment';
+import { user_role_0 as user } from '../spec_helper';
+import { UserService } from '../../lib/services/user.service';
 
 chai.use(chaiHttp);
 
-const email: string = faker.internet.email();
-const password: string = 'veryWeakPassw0rd!';
-const dateFormat: string = 'YYYY-MM-DD';
-let refreshToken:string = '';
+let refreshToken = '';
 
-describe('UserController', () => {
-  const userController: UserController = new UserController();
+describe('LoginController', () => {
+  const userService: UserService = UserService.getInstance();
+  let userId = '';
 
   describe('#createJWT', () => {
-    const user = {
-      name: faker.name.firstName(),
-      surname: faker.name.lastName(),
-      password: password,
-      email: email,
-      role: 0,
-      birth_date: moment(new Date()).format(dateFormat)
-    }
 
-    it('Default user created', async () => {
-      return chai
-        .request(app)
-        .post('/api/v1/users')
-        .set('content-type', 'application/json')
-        .send(user)
-        .then(res => {
-          chai.expect(res.status).to.eql(201);
-        });
+    before(async () => {
+      const toInsert = JSON.parse(JSON.stringify(user));
+      await userService.create(toInsert).then((id) => {
+        userId = id;
+      });
+      console.log('User created ' + userId);
+    });
+
+    after(async () => {
+      //Need to wait for the promise
+      await userService.deleteById(userId);
+      console.log('user deleted');
     });
 
     it('should return the 200 OK code', async () => {
+      console.log('email: ' + user.email + ' password: ' + user.password)
       return chai
         .request(app)
         .post('/api/v1/login')
-        .send({ email: email, password: password })
+        .send({ email: user.email, password: user.password })
         .then(res => {
           chai.expect(res.status).to.eql(200);
         });
@@ -51,7 +45,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .post('/api/v1/login')
-        .send({ email: email, password: password })
+        .send({ email: user.email, password: user.password })
         .then(res => {
           refreshToken = res.body.refreshToken;
           chai.expect(res.body).to.have.property('accessToken');
@@ -62,7 +56,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .post('/api/v1/login')
-        .send({ email: email, password: password })
+        .send({ email: user.email, password: user.password })
         .then(res => {
           chai.expect(res.body).to.have.property('refreshToken');
         });
@@ -72,7 +66,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .post('/api/v1/login')
-        .send({ email: email, password: faker.lorem.text() })
+        .send({ email: user.email, password: faker.lorem.text() })
         .then(res => {
           chai.expect(res.status).to.eql(401);
         });
@@ -82,7 +76,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .post('/api/v1/login')
-        .send({ email: faker.internet.email(), password: password })
+        .send({ email: faker.internet.email(), password: user.password })
         .then(res => {
           chai.expect(res.status).to.eql(401);
         });
@@ -102,7 +96,7 @@ describe('UserController', () => {
       return chai
         .request(app)
         .post('/api/v1/login')
-        .send({ email: email})
+        .send({ email: user.email})
         .then(res => {
           chai.expect(res.status).to.eql(401);
         });

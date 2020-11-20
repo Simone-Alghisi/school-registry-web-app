@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 export class LoginController {
-  private static tokenExpiration = '1h';
-  private static refreshTokenExpiration = '1d';
+  private static tokenExpiration = '15m';
+  private static refreshTokenExpiration = '2h';
 
   constructor() {}
 

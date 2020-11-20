@@ -1,28 +1,31 @@
+import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.js';
+
 (function ($) {
   "use strict";
-  
-  let userId = getUrlVars()['id'];
 
-  /**
-   * Function that gets the params in the url
-   */
-  function getUrlVars(){
-    let vars = [], hash;
-    let hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++){
-      hash = hashes[i].split('=');
-      vars.push(hash[0]);
-      vars[hash[0]] = hash[1];
-    }
-    return vars;
-  }
+  let userId = getUrlVars()['id'];
 
   /**
    * 
    */
   function getUser(){
-    fetch('../api/v1/users/' + userId)
-    .then((resp) => resp.json())
+    fetch('../api/v1/users/' + userId, {
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
+    })
+    .then((resp) => {
+      if(resp.ok){
+        return resp.json();
+      }else if(resp.status == 403){
+        try{
+          refreshToken();
+        }catch(error){
+          dealWithForbiddenErrorCode();
+        }
+      } else {
+        dealWithServerErrorCodes();
+      }
+    })
     .then(function (data) {
       if(!data.error){
         $('#name').val(data.name);
@@ -52,10 +55,23 @@
     let fetchData = {
       method: 'PATCH', 
       body: data,
-      headers: {'Content-Type': 'application/json'}
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
     }
     fetch(url, fetchData)
       .then((resp) => {
+        if(resp.ok){
+          return resp.json();
+        }else if(resp.status == 403){
+          try{
+            refreshToken();
+          }catch(error){
+            dealWithForbiddenErrorCode();
+          }
+        } else {
+          dealWithServerErrorCodes();
+        }
+      })
+      .then(() => {
         $(location).prop('href', './users.html');
       })
       .catch( 

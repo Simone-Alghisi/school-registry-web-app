@@ -1,3 +1,5 @@
+import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } from './common.js';
+
 (function ($) {
   "use strict";
 
@@ -30,17 +32,36 @@
    * And load them into the table in the users.html page
    */
   function getUsers(){
-    fetch('../api/v1/users')
-    .then((resp) => resp.json())
-    .then(function (data) { 
-      data.map((elem) => {
-        table.row.add([
-          elem.name, 
-          elem.surname, 
-          elem.birth_date, 
-          roleMapping[elem.role]
-        ]).draw().node().id = elem._id;
-      })
+    fetch('../api/v1/users', {
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken}
+    })
+    .then((resp) => { 
+      if(resp.ok){
+        return resp.json();
+      }else if(resp.status == 403){
+        try{
+          console.log('Hello')
+          refreshToken();
+        }catch(error){
+          console.log('Ciao');
+          dealWithForbiddenErrorCode();
+        }
+      } else {
+        dealWithServerErrorCodes();
+      }
+    })
+    .then(function (data) {
+      if(!data.error){
+        data.map((elem) => {
+          table.row.add([
+            elem.name, 
+            elem.surname, 
+            elem.birth_date, 
+            roleMapping[elem.role]
+          ]).draw().node().id = elem._id;
+        })
+      }
     })
     .catch(
       error => console.error(error)
