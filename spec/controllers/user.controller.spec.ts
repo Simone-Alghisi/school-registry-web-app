@@ -12,13 +12,10 @@ import chaiHttp from 'chai-http';
 import app from '../../lib/app';
 import * as faker from 'faker';
 import moment from 'moment';
-import dotenv from 'dotenv';
 import { UserModel } from '../../lib/models/user.model'
 import { UserController } from '../../lib/controllers/user.controller';
 import { user_role_0, user_role_1, user_role_2, userAccessToken } from '../spec_helper';
 import { UserService } from '../../lib/services/user.service';
-
-dotenv.config();
 
 chai.use(chaiHttp);
 

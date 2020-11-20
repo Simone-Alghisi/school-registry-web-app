@@ -3,6 +3,9 @@ import moment from 'moment';
 import { RequestOptions } from 'https';
 import { ClientRequest, IncomingMessage } from 'http';
 import http from 'http';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const dateFormat = 'YYYY-MM-DD';
 
