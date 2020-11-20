@@ -53,4 +53,9 @@
     e.preventDefault();
   });
 
+  $("#logoutButton").click(function() {
+    window.sessionStorage.clear();
+    $(location).prop('href', '/');
+  });
+
 })(jQuery); // End of use strict

@@ -65,8 +65,8 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
      * Then the request is routed to the appropriate user controller function for create
     */
     this.app.post('/api/v1/users', [
-      jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,
+      /*jwtMiddleware.validateJWT,
+      commonMiddleware.onlySecretaryNeedsToDoThis,*/
       userMiddleware.discardUselessFields,
       userMiddleware.validateName,
       userMiddleware.validateSurname,

@@ -17,11 +17,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        try{
-          refreshToken();
-        }catch(error){
-          dealWithForbiddenErrorCode();
-        }
+        refreshToken().catch(() => dealWithForbiddenErrorCode());
       } else {
         dealWithServerErrorCodes();
       }

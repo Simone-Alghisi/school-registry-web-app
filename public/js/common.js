@@ -1,8 +1,9 @@
 export { getUrlVars, dealWithForbiddenErrorCode, refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser };
 
 function refreshToken(){
-  const url = '../api/v1/login/refresh';
-  let options = {
+  return new Promise((resolve, reject) => {
+    const url = '../api/v1/login/refresh';
+    let options = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -18,11 +19,13 @@ function refreshToken(){
         throw "Could not refresh the token";
       }
       window.sessionStorage.accessToken = data.accessToken;
+      resolve();
     })
     .catch((error) =>{
       console.error(error);
-      return Promise.reject();
+      reject();
     });
+  });
 }
 
 
@@ -41,13 +44,13 @@ function getUrlVars(){
 }
 
 function dealWithForbiddenErrorCode(){
-  $(location).prop('href', './index.html');
+  $(location).prop('href', './forbidden.html');
 }
 
 function dealWithServerErrorCodes(){
-  $(location).prop('href', './index.html');
+  $(location).prop('href', './serverError.html');
 }
 
 function dealWithAlreadyLoggedUser(){
-  $(location).prop('href', './users.html');
+  $(location).prop('href', './home.html');
 }
