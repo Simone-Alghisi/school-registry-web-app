@@ -74,6 +74,10 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
     this.app.patch('/api/v1/classes/:id', [
       jwtMiddleware.validateJWT,
       commonMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.discardUselessFields,
+      classMiddleware.validateClassExists,
+      classMiddleware.validateUpdateBody,
+      classMiddleware.validateUpdateRequest,
       classController.updateById
     ]);
 

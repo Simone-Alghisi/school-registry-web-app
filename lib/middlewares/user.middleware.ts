@@ -51,6 +51,7 @@ export class UserMiddleware {
     }
   }
 
+  //TODO move it to /lib/middlewares/common.middleware.ts
   /**
    * Middleware that checks if the body of the request is empy for an update operation
    * @param req Express Request
