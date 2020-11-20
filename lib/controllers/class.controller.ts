@@ -41,11 +41,35 @@ export class ClassController implements CRUDController{
     }
   }
 
-  async updateAll(req: Request, res: Response): Promise<void> {}
+  /**
+   * Asyncronous functions which is not allowed, it sends back error code 405
+   * @param req express Request object
+   * @param res express Response object
+   */
+  async updateAll(req: Request, res: Response): Promise<void> {
+    res.status(405).json({ error: 'Method not allowed' });
+  }
   
-  async getById(req: Request, res: Response): Promise<void> {}
+  async getById(req: Request, res: Response): Promise<void> {
+    const classService = ClassService.getInstance();
+    try{
+      const classFound = await classService.getById(req.params.id);
+      res.status(200).send(classFound);
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
+  }
 
-  async updateById(req: Request, res: Response): Promise<void> {}
+  async updateById(req: Request, res: Response): Promise<void> {
+    const classService = ClassService.getInstance();
+    req.body.id = req.params.id;
+    try{
+      const updatedClass = await classService.updateById(req.body);
+      res.status(200).send(updatedClass);
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
+  }
 
   async deleteAll(req: Request, res: Response): Promise<void> {}
 

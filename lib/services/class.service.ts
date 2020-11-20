@@ -40,9 +40,15 @@ export class ClassService implements CRUDService {
     });
   }
 
-  async updateById(resource: any): Promise<any>{}
+  async updateById(resource: any): Promise<any>{
+    await this.classModel.classCollection.updateOne({_id: resource.id}, resource);
+    return await this.getById(resource.id);
+  }
 
-  async getById(resourceId: string): Promise<any>{}
+  async getById(resourceId: string): Promise<any>{
+    const foundClass = await this.classModel.classCollection.findById(resourceId).select(['-password', '-salt', '-__v']);
+    return foundClass;
+  }
 
   async getByEmail(email: string): Promise<any>{}
 }
