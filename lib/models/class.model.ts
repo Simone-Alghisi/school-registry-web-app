@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 import { MongooseService } from '../common/services/mongoose.service';
 import { CommonModel } from '../common/models/common.model'
 
+/**Class which specifies the schema for a class in the DB */
 export class ClassModel {
   mongooseService: MongooseService = MongooseService.getInstance();
   private static instance: ClassModel;

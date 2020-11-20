@@ -27,13 +27,13 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
    * Configures the route for each HTTP method in the CRUD interfaces for user resources 
    */
   configureRoutes(): void {
-    /** Instance of user controller that implement the logic of rest method*/
+    /** Instance of user controller that implements the logic of rest method*/
     const userController: UserController = new UserController();
-    /** Instance of user middleware that check every request on user resources*/
+    /** Instance of user middleware that checks every request on user resources*/
     const userMiddleware: UserMiddleware = new UserMiddleware();
-
+    /** Instance of jwt middleware that checks if a client has a valid token*/
     const jwtMiddleware: JwtMiddleware = new JwtMiddleware();
-    
+    /** Instance of common middler that checks if a jwt token has the correct role*/
     const commonMiddleware: CommonMiddleware = new CommonMiddleware();
 
     /**

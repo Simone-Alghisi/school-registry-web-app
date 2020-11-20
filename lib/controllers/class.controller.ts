@@ -2,10 +2,19 @@ import { Request, Response } from 'express';
 import { CRUDController } from '../common/interfaces/crudController.interface'
 import { ClassService } from '../services/class.service';
 
-
+/**
+ * ClassController class, it implements the {@link CRUDController} interface.
+ * It aims to manage all the operations that involves the class resource
+ */
 export class ClassController implements CRUDController{
   constructor() {}
 
+  /**
+   * Asyncronous functions that retrieves the list of classes from the DB
+   * and sends it back with the status code 200 otherwise 500
+   * @param req express Request object
+   * @param res express Response object
+   */
   async list(req: Request, res: Response): Promise<void>{
 		const classService = ClassService.getInstance();
     try{

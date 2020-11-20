@@ -10,8 +10,8 @@ export class UserController implements CRUDController{
   constructor() {}
 
   /**
-   * Asyncronous functions that retrieves the list of users from the "DB"
-   * and sends it back with the status code 200
+   * Asyncronous functions that retrieves the list of users from the DB
+   * and sends it back with the status code 200 otherwise 500
    * @param req express Request object
    * @param res express Response object
    */
@@ -26,8 +26,8 @@ export class UserController implements CRUDController{
   }
 
   /**
-   * Asyncronous functions that inserts the new user in the "DB", sends back
-   * the location of the new element with the status code 201
+   * Asyncronous functions that inserts the new user in the DB, sends back
+   * the location of the new element with the status code 201 otherwise 500
    * @param req express Request object
    * @param res express Response object
    */
@@ -51,8 +51,8 @@ export class UserController implements CRUDController{
   }
   
   /**
-   * Asyncronous functions that retrieves a user with a specific id from the "DB",
-   * sends back the requested user with the status code 200
+   * Asyncronous functions that retrieves a user with a specific id from the DB,
+   * sends back the requested user with the status code 200 otherwise 500
    * @param req express Request object
    * @param res express Response object
    */
@@ -67,8 +67,8 @@ export class UserController implements CRUDController{
   }
 
   /**
-   * Asyncronous functions that updates a user with a specific id in the "DB"
-   * sends back the updated user with the status code 200
+   * Asyncronous functions that updates a user with a specific id in the DB
+   * sends back the updated user with the status code 200 otherwise 500
    * @param req express Request object
    * @param res express Response object
    */
@@ -93,8 +93,8 @@ export class UserController implements CRUDController{
   }
 
   /**
-   * Asyncronous functions that deletes a user with a specific id in the "DB"
-   * sends back the status code 204
+   * Asyncronous functions that deletes a user with a specific id in the DB
+   * sends back the status code 204 otherwise 500
    * @param req express Request object
    * @param res express Response object
    */
