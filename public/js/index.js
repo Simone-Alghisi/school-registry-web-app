@@ -31,7 +31,7 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } fro
           if(data){
             window.sessionStorage.accessToken = data.accessToken;
             window.sessionStorage.refreshToken = data.refreshToken;
-            //$(location).prop('href', './users.html');
+            $(location).prop('href', './home.html');
           }
         })
         .catch( 
@@ -51,8 +51,7 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } fro
       // Try to get another token from the refresh token
       if(window.sessionStorage.refreshToken){
         try{
-          refreshToken();
-          dealWithAlreadyLoggedUser();
+          refreshToken().then(() => dealWithAlreadyLoggedUser());
         }catch(e){ }
       }
     }

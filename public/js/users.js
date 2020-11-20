@@ -40,13 +40,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        try{
-          console.log('Hello')
-          refreshToken();
-        }catch(error){
-          console.log('Ciao');
-          dealWithForbiddenErrorCode();
-        }
+        refreshToken().catch(() => dealWithForbiddenErrorCode());
       } else {
         dealWithServerErrorCodes();
       }
