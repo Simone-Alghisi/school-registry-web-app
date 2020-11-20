@@ -52,9 +52,16 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
       classController.getById
     ]);
 
+    /** 
+     * Route for the post method (insert resource) on the classes resources 
+     * The request is routed through a  middlewares that check the validitity of name
+     * The middlewares check also the validity of token and the role of the user
+     * Then the request is routed to the appropriate class controller function for create
+    */
     this.app.post('/api/v1/classes', [
       jwtMiddleware.validateJWT,
       commonMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.validateName,
       classController.create
     ]);
 

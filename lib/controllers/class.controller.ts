@@ -25,7 +25,21 @@ export class ClassController implements CRUDController{
     }
   }
 
-  async create(req: Request, res: Response): Promise<void> {}
+  /**
+   * Asyncronous functions that insert a class in the DB
+   * and sends the status code 200 in case of success, 500 otherwise
+   * @param req express Request object
+   * @param res express Response object
+   */
+  async create(req: Request, res: Response): Promise<void> {
+    const classService = ClassService.getInstance();
+    try{
+      const classId = classService.create(req.body);
+      res.status(201).location('api/v1/classes/' + classId).send();
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
+  }
 
   async updateAll(req: Request, res: Response): Promise<void> {}
   
