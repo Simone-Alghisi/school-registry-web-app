@@ -2,12 +2,23 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
+/**
+ * LoginController class
+ * It aims to manage all the operations that involves the generation of JWT
+ */
 export class LoginController {
   private static tokenExpiration = '15m';
   private static refreshTokenExpiration = '2h';
 
   constructor() {}
 
+  /**
+   * Asyncronous functions that creates the JWT access token which will be included as a bearer token in each api request that
+   * needs certain level of protection
+   * It will generate also a refreshToken which will be used to obtain a fresh new access token
+   * @param req request
+   * @param res response
+   */
   async createJWT(req: Request, res: Response) {
     dotenv.config();
     const jwtSecret = process.env.JWT_SECRET || '';
@@ -24,6 +35,12 @@ export class LoginController {
     }
   }
 
+  /**
+   * Asyncronous functions that generates a new accessToken
+   * It is used when it is required to generate a new access token given a refresh token 
+   * @param req request
+   * @param res response
+   */
   async refreshJWT(req: Request, res: Response) {
     dotenv.config();
     const jwtSecret = process.env.JWT_SECRET || '';
