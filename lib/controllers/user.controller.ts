@@ -34,7 +34,7 @@ export class UserController implements CRUDController{
   async create(req: Request, res: Response): Promise<void> {
     const userService = UserService.getInstance();
     try{
-      const userId = userService.create(req.body);
+      const userId = await userService.create(req.body);
       res.status(201).location('api/v1/users/' + userId).send();
     }catch(e){
       res.status(500).json({error: 'Internal server error'});

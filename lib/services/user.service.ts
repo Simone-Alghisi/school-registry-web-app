@@ -26,7 +26,7 @@ export class UserService implements CRUDService {
     resource.password = hash + resource.salt;
     const user = new this.userModel.userCollection(resource);
     await user.save();
-    return resource._id;
+    return user._id;
   }
 
   async deleteById(resourceId: string): Promise<void>{
