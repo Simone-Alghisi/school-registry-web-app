@@ -39,7 +39,7 @@ paths:
       summary: Register a new user
       responses:
         '201':
-          description: 'Collection of Users'
+          description: 'Location of created user'
           headers:
             Location:
               schema:
@@ -82,7 +82,7 @@ paths:
       security:
         - bearerJwtAuthToken: []
       description: >-
-        Delete all the user in the system
+        Delete all the users in the system
       summary: Delete all the users
       responses:
         '405':
@@ -239,7 +239,68 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-                  
+          
+    post:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Creates a new class in the system
+      summary: Create a new class
+      responses:
+        '201':
+          description: 'Location of created class'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: 'Link to the newly created class'     
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Class'
+    
+    patch:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Update all the classes in the system
+      summary: Update all the existing classes in the system
+      responses:
+        '405':
+          description: 'Method not allowed'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        content:
+          application/json:
+           schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UpdatedClass'
+                
+    delete:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Delete all the classes in the system
+      summary: Delete all the classes
+      responses:
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
 components:
   securitySchemes:
     bearerJwtAuthToken:
@@ -462,7 +523,7 @@ components:
       required:
         - subject
         
-    Class:
+    UpdatedClass:
       type: object
       properties:
         id:
@@ -501,6 +562,12 @@ components:
           description: 'grades of the class'
           items:
             $ref: '#/components/schemas/GradeElement'
+            
+    Class:
+      allOf:
+        - $ref: '#/components/schemas/UpdatedClass'
+        - type: object
+      type: object
       required:
         - id
         - name
