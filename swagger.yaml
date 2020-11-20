@@ -300,7 +300,69 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+     
+  /classes/{id}:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns the data of a class with a specific id
+      summary: Return a class
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: integer
+          required: true
+          description: 'Id of the class to insert'
+      responses:
+        '200':
+          description: 'Data of class'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+        '404':
+          description: 'Class not found'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
           
+    patch:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Update a class in the system given the id of the class
+      summary: Update a class
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: 'Id of the class to update'
+          schema: 
+            type: integer
+      requestBody:
+        content:
+          application/json:
+           schema:
+              $ref: '#/components/schemas/UpdatedClass'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Class"
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '404':
+          description: 'id not found or invalid'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
   securitySchemes:
     bearerJwtAuthToken:
