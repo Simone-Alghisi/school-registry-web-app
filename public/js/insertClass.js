@@ -1,3 +1,9 @@
+import {
+	refreshToken,
+	dealWithForbiddenErrorCode,
+	dealWithServerErrorCodes
+} from './common.js';
+
 (function ($) {
 	"use strict";
 
@@ -26,12 +32,7 @@
 	 */
 	let modifiedUsers = [];
 
-	let class_id;
-	//carico script per generare ObjectId
-	$.getScript('/js/ObjectId.js', function () {
-		let objId = new ObjectID();
-		class_id = objId.toHexString();
-	});
+	let class_id = 0;
 
 	let subjectSelector = $('#materia');
 	subjectSelector.prop("disabled", true);
@@ -69,8 +70,21 @@
 	});
 
 	function getUsersToInsert() {
-		fetch('../api/v1/users')
-			.then(resp => resp.json())
+		fetch('../api/v1/users', {
+				method: 'GET',
+				headers: {
+					'Authorization': 'Bearer ' + window.sessionStorage.accessToken
+				}
+			})
+			.then((resp) => {
+				if (resp.ok) {
+					return resp.json();
+				} else if (resp.status == 403) {
+					refreshToken().catch(() => dealWithForbiddenErrorCode());
+				} else {
+					dealWithServerErrorCodes();
+				}
+			})
 			.then((data) => {
 				data.map((elem) => {
 					//TODO prendere solo quelli senza classe assegnata (e comunque i professori) da query forse è meglio
@@ -89,7 +103,7 @@
 			if (selectedUser.role === 1) {
 				let subject = subjectSelector.find('option:selected').val();
 				if (subject !== '') {
-					addProfessor(selectedUser, subject);
+					addProfessor(selectedUser, parseInt(subject,10));
 				}
 			} else {
 				addStudent(selectedUser);
@@ -136,9 +150,7 @@
 	}
 
 	function addProfessor(user, subject) {
-		//TODO aggiungo a modified
 		//add professor to modified users, only if not already modified or new (subject,class)
-		//TODO problema class_id: devo avere già un class_id
 		let canAdd = false;
 		if (!modifiedUsers[user._id]) {
 			modifiedUsers[user._id] = copyUser(user);
@@ -179,6 +191,7 @@
 				user.surname,
 				'<button type="button" class="btn btn-danger removeStudent">Rimuovi</button>'
 			]).draw().node().id = user._id;
+			console.log(modifiedUsers);
 		}
 
 		//remove selection
@@ -192,10 +205,9 @@
 	//event attached to the table, but executed by buttons with class .removeProfessor
 	$('#professorsTable').on('click', 'button.removeProfessor', function (e) {
 		let toRemove = $(this).closest('tr');
-		let subject = toRemove[0].childNodes[2].childNodes[0].id;
+		let subject = parseInt(toRemove[0].childNodes[2].childNodes[0].id, 10);
 		let idToRemove = toRemove[0].id;
 
-		
 		//remove from modified
 		modifiedUsers[idToRemove].teaches = modifiedUsers[idToRemove].teaches.filter((elem) => {
 			return elem.subject !== subject || elem.class_id !== class_id;
@@ -232,37 +244,91 @@
 		// The data we are going to send in our request
 		let data = '{"name": "' + user.name + '", "surname": "' + user.surname + '", "email": "' + user.email + '", "password": "' +
 			user.password + '", "role": ' + user.role + ', "birth_date": "' + user.birth_date + '", "class_id": "' + user.class_id +
-			'", "teaches": ' + getTeachesJson(user) + '}'
-		console.log(data);
+			'", "teaches": ' + getTeachesJson(user) + '}';
 		// The parameters we are gonna pass to the fetch function
 		let fetchData = {
 			method: 'PATCH',
 			body: data,
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + window.sessionStorage.accessToken
 			}
 		}
 		fetch(url, fetchData)
 			.then((resp) => {
-				//$(location).prop('href', './users.html');
-				console.log("DONE");
+				if (resp.ok) {
+					return resp.json();
+				} else if (resp.status == 403) {
+					refreshToken().catch(() => dealWithForbiddenErrorCode());
+				} else {
+					dealWithServerErrorCodes();
+				}
+			})
+			.then((resp) => {
+
 			})
 			.catch(
 				error => console.error(error)
-			);
+		);
+	}
+
+	function createClass(){
+		const url = '../api/v1/classes/';
+		let name = $('#className').val();
+		// The data we are going to send in our request
+		let data = '{"name": "' + name + '"}';
+		console.log(data);
+		// The parameters we are gonna pass to the fetch function
+		let fetchData = {
+			method: 'POST',
+			body: data,
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + window.sessionStorage.accessToken
+			}
+		}
+		fetch(url, fetchData)
+			.then((resp) => {
+				if (resp.ok) {
+					class_id = resp.headers.get('location').split('/')[3];
+
+					//once received the class id, edit users appropriately
+					for (let id in modifiedUsers) {
+						correctClassId(id);
+						editUser(modifiedUsers[id]);
+					}
+					//redirect to classes list
+					//TODO problema attesa chiamate asincrone (editUser devono terminare tutte)
+					//$(location).prop('href', './classes.html');
+				} else if (resp.status == 403) {
+					refreshToken().catch(() => dealWithForbiddenErrorCode());
+				} else {
+					dealWithServerErrorCodes();
+				}
+			})
+			.catch(
+				error => console.error(error)
+		);
+	}
+
+	function correctClassId(id){
+		if(modifiedUsers[id].role === 0){
+			modifiedUsers[id].class_id = class_id;
+		} else if(modifiedUsers[id].role === 1) {
+			let length = modifiedUsers[id].teaches.length;
+			for(let i = 0; i < length; i++){
+				if(modifiedUsers[id].teaches[i].class_id === 0){
+					modifiedUsers[id].teaches[i].class_id = class_id;
+				}
+			}
+		}
 	}
 
 	$('#form').submit((event) => {
-		//TODO creo classe
-		//add students/professors
-		console.log(modifiedUsers);
-
-		for (let id in modifiedUsers) {
-			editUser(modifiedUsers[id]);
-		}
-
-		event.preventDefault();
-	})
+		createClass();
+		//add students/professors	
+		event.preventDefault();	
+	});
 
 	getUsersToInsert();
 
