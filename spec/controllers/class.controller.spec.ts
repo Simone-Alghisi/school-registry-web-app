@@ -160,11 +160,105 @@ describe('ClassController', () => {
     });
   });
 
-  /*describe('#create', () => {
+  describe('#create', () => {
+    const className: string = faker.name.findName(); 
+    const classObj = {
+      name: className
+    }
+    const newClass = JSON.stringify(classObj);
+    
+    it('should return the 403 Forbidden code: student should\'t be able to add classes', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes')
+        .set('authorization', 'Bearer ' + token0)
+        .set('content-type', 'application/json')
+        .send(newClass)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
 
+    it('should return the 403 Forbidden code: professor should\'t be able to add classes', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes')
+        .set('authorization', 'Bearer ' + token1)
+        .set('content-type', 'application/json')
+        .send(newClass)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 201 status code', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(newClass)
+        .then(res => {
+          chai.expect(res.status).to.eql(201);
+        });
+    });
+
+    it('should return the 422 status code: no body', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 status code: empty name field', async () => {
+      const fake_class: Record<string, unknown> = {
+        name: '',
+      };
+      return chai
+        .request(app)
+        .post('/api/v1/classes')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_class)
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 status code: wrong type for name', async () => {
+      const fake_class: Record<string, unknown> = {
+        name: 0,
+      };
+      return chai
+        .request(app)
+        .post('/api/v1/classes')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_class)
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('the location in the header shoud have the form api/v1/classes/id', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(newClass)
+        .then(res => {
+          chai.expect(res.header.location).to.contains('api/v1/classes/');
+        });
+    });
   });
 
-  describe('#updateAll', () => {
+  /*describe('#updateAll', () => {
 
   });
 
