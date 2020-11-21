@@ -165,6 +165,7 @@ describe('UserController', () => {
     const personSurname: string = faker.name.findName();
     const personPassword: any = faker.name.findName();
     const personEmail: string = faker.internet.email();
+    const personEmail2: string = faker.internet.email();
     const personRole: number = faker.random.number({
       'min': 0,
       'max': 2
@@ -178,7 +179,16 @@ describe('UserController', () => {
       role: personRole,
       birth_date: personBirth_date
     }
+    const userObj2 = {
+      name: personName, 
+      surname: personSurname,
+      password: personPassword,
+      email: personEmail2,
+      role: personRole,
+      birth_date: personBirth_date
+    }
     const user = JSON.stringify(userObj);
+    const user2 = JSON.stringify(userObj2);
     
     it('should return the 403 Forbidden code: student should\'t be able to add user', async () => {
       return chai
@@ -213,6 +223,18 @@ describe('UserController', () => {
         .send(user)
         .then(res => {
           chai.expect(res.status).to.eql(201);
+        });
+    });
+
+    it('the location in the header shoud have the form api/v1/users/id', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(user2)
+        .then(res => {
+          chai.expect(res.header.location).to.contains('api/v1/users/');
         });
     });
 
