@@ -46,7 +46,7 @@ export class ClassService implements CRUDService {
   }
 
   async getById(resourceId: string): Promise<any>{
-    const foundClass = await this.classModel.classCollection.findById(resourceId).select(['-password', '-salt', '-__v']);
+    const foundClass = await this.classModel.classCollection.findById(resourceId).select(['-__v']);
     return foundClass;
   }
 
