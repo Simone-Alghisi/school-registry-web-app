@@ -72,16 +72,20 @@ export class UserModel {
     },
     class_id:{
       type: Types.ObjectId,
-      required: false,
-      validate: {
-        validator: this.isValidId,
-        message: 'Invalid calss id'
-      }
+      ref: 'classes',
+      required: false
     },
     teaches:[
       {
-        class_id: Types.ObjectId,
-        subject: Number
+        class_id: {
+          type: Types.ObjectId,
+          ref: 'classes',
+          required: true
+        },
+        subject: { 
+          type: Number,
+          required: true
+        }
       }
     ],
     communications:[
@@ -109,6 +113,7 @@ export class UserModel {
   }
 
   public isValidId(id:string): boolean{
-    return this.mongooseService.isValidId(id);
+    //return this.mongooseService.isValidId(id);
+    return Types.ObjectId.isValid(id);
   } 
 }

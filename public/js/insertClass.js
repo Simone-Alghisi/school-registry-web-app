@@ -103,7 +103,7 @@ import {
 			if (selectedUser.role === 1) {
 				let subject = subjectSelector.find('option:selected').val();
 				if (subject !== '') {
-					addProfessor(selectedUser, parseInt(subject,10));
+					addProfessor(selectedUser, parseInt(subject, 10));
 				}
 			} else {
 				addStudent(selectedUser);
@@ -191,7 +191,6 @@ import {
 				user.surname,
 				'<button type="button" class="btn btn-danger removeStudent">Rimuovi</button>'
 			]).draw().node().id = user._id;
-			console.log(modifiedUsers);
 		}
 
 		//remove selection
@@ -240,44 +239,48 @@ import {
 	}
 
 	function editUser(user) {
-		const url = '../api/v1/users/' + user._id;
-		// The data we are going to send in our request
-		let data = '{"name": "' + user.name + '", "surname": "' + user.surname + '", "email": "' + user.email + '", "password": "' +
-			user.password + '", "role": ' + user.role + ', "birth_date": "' + user.birth_date + '", "class_id": "' + user.class_id +
-			'", "teaches": ' + getTeachesJson(user) + '}';
-		// The parameters we are gonna pass to the fetch function
-		let fetchData = {
-			method: 'PATCH',
-			body: data,
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Bearer ' + window.sessionStorage.accessToken
-			}
-		}
-		fetch(url, fetchData)
-			.then((resp) => {
-				if (resp.ok) {
-					return resp.json();
-				} else if (resp.status == 403) {
-					refreshToken().catch(() => dealWithForbiddenErrorCode());
-				} else {
-					dealWithServerErrorCodes();
+		return new Promise((resolve, reject) => {
+			const url = '../api/v1/users/' + user._id;
+			// The data we are going to send in our request
+			let data = '{"name": "' + user.name + '", "surname": "' + user.surname + '", "email": "' + user.email + '", "password": "' +
+				user.password + '", "role": ' + user.role + ', "birth_date": "' + user.birth_date + '", "class_id": "' + user.class_id +
+				'", "teaches": ' + getTeachesJson(user) + '}';
+			// The parameters we are gonna pass to the fetch function
+			let fetchData = {
+				method: 'PATCH',
+				body: data,
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Bearer ' + window.sessionStorage.accessToken
 				}
-			})
-			.then((resp) => {
-
-			})
-			.catch(
-				error => console.error(error)
-		);
+			}
+			fetch(url, fetchData)
+				.then((resp) => {
+					if (resp.ok) {
+						return resp.json();
+					} else if (resp.status == 403) {
+						refreshToken().catch(() => dealWithForbiddenErrorCode());
+					} else {
+						dealWithServerErrorCodes();
+					}
+				})
+				.then((resp) => {
+					resolve();
+				})
+				.catch(
+					error => {
+						console.error(error)
+						reject();
+					}
+				);
+		});
 	}
 
-	function createClass(){
+	function createClass() {
 		const url = '../api/v1/classes/';
 		let name = $('#className').val();
 		// The data we are going to send in our request
 		let data = '{"name": "' + name + '"}';
-		console.log(data);
 		// The parameters we are gonna pass to the fetch function
 		let fetchData = {
 			method: 'POST',
@@ -288,18 +291,16 @@ import {
 			}
 		}
 		fetch(url, fetchData)
-			.then((resp) => {
+			.then(async (resp) => {
 				if (resp.ok) {
 					class_id = resp.headers.get('location').split('/')[3];
-
 					//once received the class id, edit users appropriately
 					for (let id in modifiedUsers) {
 						correctClassId(id);
-						editUser(modifiedUsers[id]);
+						await editUser(modifiedUsers[id]);
 					}
 					//redirect to classes list
-					//TODO problema attesa chiamate asincrone (editUser devono terminare tutte)
-					//$(location).prop('href', './classes.html');
+					$(location).prop('href', './classes.html');
 				} else if (resp.status == 403) {
 					refreshToken().catch(() => dealWithForbiddenErrorCode());
 				} else {
@@ -308,16 +309,16 @@ import {
 			})
 			.catch(
 				error => console.error(error)
-		);
+			);
 	}
 
-	function correctClassId(id){
-		if(modifiedUsers[id].role === 0){
+	function correctClassId(id) {
+		if (modifiedUsers[id].role === 0) {
 			modifiedUsers[id].class_id = class_id;
-		} else if(modifiedUsers[id].role === 1) {
+		} else if (modifiedUsers[id].role === 1) {
 			let length = modifiedUsers[id].teaches.length;
-			for(let i = 0; i < length; i++){
-				if(modifiedUsers[id].teaches[i].class_id === 0){
+			for (let i = 0; i < length; i++) {
+				if (modifiedUsers[id].teaches[i].class_id === 0) {
 					modifiedUsers[id].teaches[i].class_id = class_id;
 				}
 			}
@@ -327,7 +328,7 @@ import {
 	$('#form').submit((event) => {
 		createClass();
 		//add students/professors	
-		event.preventDefault();	
+		event.preventDefault();
 	});
 
 	getUsersToInsert();

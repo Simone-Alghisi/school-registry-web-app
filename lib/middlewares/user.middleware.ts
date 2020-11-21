@@ -80,7 +80,6 @@ export class UserMiddleware {
     if(user){
       for(const i in req.body){
         if(UserMiddleware.validField(req.body[i], '' + i)){
-          console.log('valid: ' + i)
           valid = true;
         }else{
           delete req.body[i];

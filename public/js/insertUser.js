@@ -18,7 +18,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
       headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken}
     }
     fetch(url, fetchData)
-      .then(() => {
+      .then((resp) => {
         if(resp.ok){
           $(location).prop('href', './users.html');
         }else if(resp.status == 403){

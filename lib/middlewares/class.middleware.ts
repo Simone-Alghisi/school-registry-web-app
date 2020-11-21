@@ -89,7 +89,6 @@ export class ClassMiddleware {
     if(updatedClass){
       for(const i in req.body){
         if(ClassMiddleware.validField(req.body[i], '' + i)){
-          console.log('valid: ' + i)
           valid = true;
         }else{
           delete req.body[i];

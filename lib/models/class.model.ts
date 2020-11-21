@@ -1,4 +1,5 @@
 import { Schema } from 'mongoose';
+import { Types } from 'mongoose';
 import { MongooseService } from '../common/services/mongoose.service';
 import { CommonModel } from '../common/models/common.model'
 
@@ -171,6 +172,6 @@ export class ClassModel {
   }
 
   public isValidId(id:string): boolean{
-    return this.mongooseService.isValidId(id);
+		return this.mongooseService.isValidId(id);
   } 
 }
