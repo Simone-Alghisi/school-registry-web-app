@@ -242,8 +242,7 @@ import {
 		return new Promise((resolve, reject) => {
 			const url = '../api/v1/users/' + user._id;
 			// The data we are going to send in our request
-			let data = '{"name": "' + user.name + '", "surname": "' + user.surname + '", "email": "' + user.email + '", "password": "' +
-				user.password + '", "role": ' + user.role + ', "birth_date": "' + user.birth_date + '", "class_id": "' + user.class_id +
+			let data = '{"class_id": "' + user.class_id +
 				'", "teaches": ' + getTeachesJson(user) + '}';
 			// The parameters we are gonna pass to the fetch function
 			let fetchData = {
