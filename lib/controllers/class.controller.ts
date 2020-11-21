@@ -60,6 +60,12 @@ export class ClassController implements CRUDController{
     }
   }
 
+  /**
+   * Sayncronous function that updates a class in the DB
+   * and sends the code 200 in case of success, 500 otherwise
+   * @param req express Request object
+   * @param res express Response object
+   */
   async updateById(req: Request, res: Response): Promise<void> {
     const classService = ClassService.getInstance();
     req.body.id = req.params.id;
