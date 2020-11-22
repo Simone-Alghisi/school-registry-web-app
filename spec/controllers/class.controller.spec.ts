@@ -256,18 +256,6 @@ describe('ClassController', () => {
     });
   });
 
-  /*describe('#updateAll', () => {
-
-  });
-
-  describe('#deleteAll', () => {
-
-  });
-
-  describe('#updateById', () => {
-
-  });*/
-
   describe('#getById', () => {
     let classId: any;
     const invalidClassId = 1000;
@@ -351,4 +339,216 @@ describe('ClassController', () => {
   /*describe('#deleteById', () => {
 
   });*/
+
+  /*describe('#deleteAll', () => {
+
+  }); */
+
+  describe('#updateAll', () => {
+    it('should return the 403 Forbidden code: student should\'t be able to update all classes', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token0)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 403 Forbidden code: professor should\'t be able to update all classes', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 405 status code: method not allowed', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(405);
+        });
+    });
+
+    it('should return the json error message "Method not allowed"', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send()
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Method not allowed');
+        });
+    });
+
+  });
+
+  describe('#updateById', () => {
+    let validClassId: any;
+    const invalidClassId = 1000;
+    const invalidClassIdType = 'hello word'
+    const className: string = faker.name.findName(); 
+    const classObj = {
+      name: className
+    }
+    const newClass = JSON.stringify(classObj);
+
+    it('should return the 204 status code: no body', async () => {
+      const person: any = await getRandomClass();
+      validClassId = person._id;
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ validClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 404 status code: wrong type for id', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ invalidClassIdType)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(404);
+        });
+    });
+
+    it('should return the 404 status code: id not found', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ invalidClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(404);
+        });
+    });
+
+    it('should return the json error message "User not found"', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+invalidClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send()
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Class not found');
+        });
+    });
+
+    it('should return the 403 Forbidden code: student should\'t be able to update user', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ validClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token0)
+        .send(newClass)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 403 Forbidden code: professor should\'t be able to update user', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ validClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(newClass)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 200 status code', async () => {
+      const newClass:any = await getRandomClass();
+      validClassId = newClass._id;
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ validClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(newClass)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+
+    it('should return the 204 status code: no body', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ validClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: no field to edit', async () => {
+      const fake_class: Record<string, unknown> = {
+        name_: className
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ validClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_class)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: empty name field', async () => {
+      const fake_class: Record<string, unknown> = {
+        name_: ''
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ validClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_class)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for name', async () => {
+      const fake_class: Record<string, unknown> = {
+        name: 0,
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ validClassId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_class)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+  });
 });
