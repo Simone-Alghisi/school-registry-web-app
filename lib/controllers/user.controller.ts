@@ -17,8 +17,13 @@ export class UserController implements CRUDController{
    */
   async list(req: Request, res: Response): Promise<void>{
     const userService = UserService.getInstance();
+    let users: any;
     try{
-      const users = await userService.list();
+      if(req.query && Object.keys(req.query).length !== 0){
+        users = await userService.filterList(req.query);
+      }else{
+        users = await userService.list();
+      }
       res.status(200).send(users);
     }catch(e){
       res.status(500).json({error: 'Internal server error'});

@@ -161,9 +161,9 @@ describe('UserController', () => {
   });
 
   describe('#create', () => {
-    const personName: string = faker.name.findName();
-    const personSurname: string = faker.name.findName();
-    const personPassword: any = faker.name.findName();
+    const personName: string = faker.name.firstName();
+    const personSurname: string = faker.name.lastName();
+    const personPassword: any = faker.internet.password();
     const personEmail: string = faker.internet.email();
     const personRole: number = faker.random.number({
       'min': 0,
@@ -618,8 +618,8 @@ describe('UserController', () => {
   });
 
   describe('#findAndUpdateUserById', () => {
-    const personName: string = faker.name.findName();
-    const personSurname: string = faker.name.findName();
+    const personName: string = faker.name.firstName();
+    const personSurname: string = faker.name.lastName();
     const personEmail: string = faker.internet.email();
     const personPassword: string = faker.internet.password();
     let personId :any;
@@ -1012,8 +1012,8 @@ describe('UserController', () => {
   });
 
   describe('#getById', () => { 
-    const personName: string = faker.name.findName();
-    const personSurname: string = faker.name.findName();
+    const personName: string = faker.name.firstName();
+    const personSurname: string = faker.name.lastName();
     const personEmail: string = faker.internet.email()
     const personPassword: string = faker.internet.password();
     let personId: any;

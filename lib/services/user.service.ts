@@ -58,10 +58,15 @@ export class UserService implements CRUDService {
 
   async getById(resourceId: string): Promise<any>{
     const user = await this.userModel.userCollection.findById(resourceId).select(['-password', '-salt', '-__v']);
+    console.log(user);
     return user;
   }
 
   async getByEmail(email: string): Promise<any>{
     return await this.userModel.userCollection.findOne({email: email});
+  }
+
+  async filterList(parameters: any): Promise<any>{
+    return await this.userModel.userCollection.find(parameters).select(['-password', '-salt', '-__v']);
   }
 }

@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
  * It aims to manage all the operations that involves the generation of JWT
  */
 export class LoginController {
-  private static tokenExpiration = '15m';
+  private static tokenExpiration = '15d';
   private static refreshTokenExpiration = '2h';
 
   constructor() {}

@@ -20,7 +20,7 @@ describe('UserModel', () => {
     });
   
     it('should be valid if name is a string', function() {
-      chai.expect(UserMiddleware.validField(faker.name.findName(), 'name')).be.true;
+      chai.expect(UserMiddleware.validField(faker.name.firstName(), 'name')).be.true;
     });
   
     it('should be invalid if surname is empty', function() {
@@ -32,7 +32,7 @@ describe('UserModel', () => {
     });
   
     it('should be valid if surname is a string', function() {
-      chai.expect(UserMiddleware.validField(faker.name.findName(), 'surname')).be.true;
+      chai.expect(UserMiddleware.validField(faker.name.lastName(), 'surname')).be.true;
     });
   
     it('should be invalid if email is empty', function() {

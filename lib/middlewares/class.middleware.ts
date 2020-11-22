@@ -47,16 +47,16 @@ export class ClassMiddleware {
 		try{
 		  const properties: string[] = Object.keys(classModel.classSchema.paths);
 		  for(const key of Object.keys(req.body)){
-			if(properties.indexOf(key) === -1){
-			  delete req.body[key];
-			}
+			  if(properties.indexOf(key) === -1){
+			    delete req.body[key];
+			  }
 		  }
 		  next();
 		}catch(e){
 		  res.status(500).send({error: 'Internal server error'});
 		}
   }
-  
+
   async validateClassExists(req: Request, res: Response, next: NextFunction): Promise<void>{
     const classService = ClassService.getInstance();
     const classModel = ClassModel.getInstance();
@@ -100,5 +100,20 @@ export class ClassMiddleware {
     } else {
       res.status(204).send();
     }
+  }
+
+  discardUselessFieldsQuery(req: Request, res: Response, next: NextFunction): void{
+		const classModel = ClassModel.getInstance();
+    try{
+		  const properties: string[] = Object.keys(classModel.classSchema.paths);
+		  for(const key of Object.keys(req.query)){
+			  if(properties.indexOf(key) === -1){
+			    delete req.query[key];
+			  }
+		  }
+		  next();
+		}catch(e){
+		  res.status(500).send({error: 'Internal server error'});
+		}
   }
 }

@@ -9,4 +9,6 @@ export interface CRUDService {
   getById: (resourceId: string) => any,
   
   deleteById: (resourceId: string) => any,
+
+  filterList: (parameters: any) => any
 }

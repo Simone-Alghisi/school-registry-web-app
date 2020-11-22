@@ -87,7 +87,6 @@ import {
 			})
 			.then((data) => {
 				data.map((elem) => {
-					//TODO prendere solo quelli senza classe assegnata (e comunque i professori) da query forse è meglio
 					if ((!elem.class_id && elem.role === 0) || elem.role === 1) {
 						usersToInsertListElement.append($('<option>').val(elem._id).text(elem.name + " " + elem.surname));
 						usersToInsertList[elem._id] = elem;
@@ -245,7 +244,9 @@ import {
 			let data = '{"name": "' + user.name + '", "surname": "' + user.surname + '", "email": "' + user.email + '", "password": "' +
 				user.password + '", "role": ' + user.role + ', "birth_date": "' + user.birth_date + '", "class_id": "' + user.class_id +
 				'", "teaches": ' + getTeachesJson(user) + '}';
-			// The parameters we are gonna pass to the fetch function
+      // The parameters we are gonna pass to the fetch function
+      console.log(getTeachesJson(user));
+
 			let fetchData = {
 				method: 'PATCH',
 				body: data,
@@ -265,10 +266,12 @@ import {
 					}
 				})
 				.then((resp) => {
+          console.log(resp);
 					resolve();
 				})
 				.catch(
 					error => {
+            console.log('AJKHFDS');
 						console.error(error)
 						reject();
 					}
@@ -327,7 +330,6 @@ import {
 
 	$('#form').submit((event) => {
 		createClass();
-		//add students/professors	
 		event.preventDefault();
 	});
 

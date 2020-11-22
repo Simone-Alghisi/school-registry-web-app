@@ -62,7 +62,6 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
     );
   }
   
-  //Function called
   getUsers();
   setEventgetUserById();
 })(jQuery);

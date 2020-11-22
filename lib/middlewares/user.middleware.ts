@@ -23,15 +23,21 @@ export class UserMiddleware {
       const userModel = UserModel.getInstance();
       const user = new userModel.userCollection();
       user[fieldName] = field;
-      const error = user.validateSync();
-      if(error?.errors[fieldName]){
-        return false;
-      }else{
-        return true;
+      if(field !== '' && UserMiddleware.validateFieldRequired(fieldName)){
+        const error = user.validateSync();
+        if(error?.errors[fieldName]){
+          return false;
+        }
       }
+      return true;    
     }catch(e){
       return false;
     }
+  }
+
+  static validateFieldRequired(fieldName: string): boolean{
+    const userModel = UserModel.getInstance();
+    return userModel.userSchema.requiredPaths().indexOf(fieldName) > -1;
   }
 
   /**
@@ -224,5 +230,43 @@ export class UserMiddleware {
     }catch(e){
       res.status(500).send({error: 'Internal server error'});
     }
+  }
+
+  discardUselessFieldsQuery(req: Request, res: Response, next: NextFunction): void{
+    const userModel = UserModel.getInstance();
+    try{
+      const properties: string[] = Object.keys(userModel.userSchema.paths);
+		  for(const key of Object.keys(req.query)){
+			  if(properties.indexOf(key) === -1){
+			    delete req.query[key];
+			  }
+		  }
+		  next();
+		}catch(e){
+		  res.status(500).send({error: 'Internal server error'});
+		}
+  }
+
+  discardPasswordAndSaltQuery(req: Request, res: Response, next: NextFunction): void{
+    if(req.query){
+      delete req.query.password;
+      delete req.query.salt;
+    }
+    next();
+  }
+
+  setUnsetField(req: Request, res: Response, next: NextFunction): void{
+    let newBody = {$set: {}, $unset: {}};
+    for(const field in req.body){
+      console.log(field);
+      if(req.body[field] === "" && !UserMiddleware.validateFieldRequired(field)){
+        newBody.$unset[field] = 1;
+      }else{
+        newBody.$set[field] = req.body[field];
+      }
+    }
+    console.log(newBody);
+    req.body = newBody;
+    next();
   }
 }

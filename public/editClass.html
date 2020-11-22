@@ -9,7 +9,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Insert class</title>
+	<title>Edit class</title>
 
 	<!-- Custom fonts for this template-->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"
@@ -270,12 +270,15 @@
 												</div>
 											</div>
 										</div>
-										<div class="form-row justify-content-end">
-											<div class="form-group col-auto">
-												<button type="button" class="btn btn-secondary" onclick="location.href='./classes.html';">Annulla</button>
-												<button type="submit" class="btn btn-primary" id="submit">Conferma</button>
-											</div>
-										</div>
+                    <div class="form-row justify-content-between">
+                      <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-danger" id="delete">Elimina</button>
+                      </div>
+                      <div class="form-group col-md-auto">
+                        <button type="button" class="btn btn-secondary" onclick="location.href='./classes.html';">Annulla</button>
+                        <button type="submit" class="btn btn-primary" id="submit">Conferma</button>
+                      </div>
+                    </div>
 									</form>
 								</div>
 							</div>
@@ -292,6 +295,9 @@
 	</div>
 	<!-- End of Main Content -->
 
+	</div>
+	<!-- End of Content Wrapper -->
+
   <!-- Footer -->
   <footer class="sticky-footer bg-white">
     <div class="container my-auto">
@@ -301,9 +307,6 @@
     </div>
   </footer>
 	<!-- End of Footer -->
-
-	</div>
-	<!-- End of Content Wrapper -->
 
 	</div>
 	<!-- End of Page Wrapper -->
@@ -330,13 +333,14 @@
 
 	<!-- Page level plugins -->
 	<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
-
-	<!-- Custom scripts for all pages-->
+  <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+  
+  <!-- Custom scripts for all pages-->
   <script src="js/main.js"></script>
 
 	<!-- Custom script for users page -->
-	<script type="module" src="./js/insertClass.js"></script>
+  <script type="module" src="./js/editClass.js"></script>
+	<script type="module" src="./js/deleteClass.js"></script>
 
 </body>
 

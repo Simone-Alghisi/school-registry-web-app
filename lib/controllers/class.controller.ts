@@ -17,9 +17,14 @@ export class ClassController implements CRUDController{
    */
   async list(req: Request, res: Response): Promise<void>{
 		const classService = ClassService.getInstance();
+    let classes: any;
     try{
-      const users = await classService.list();
-      res.status(200).send(users);
+      if(req.query && Object.keys(req.query).length !== 0){
+        classes = await classService.filterList(req.params);
+      }else{
+        classes = await classService.list();
+      }
+      res.status(200).send(classes);
     }catch(e){
       res.status(500).json({error: 'Internal server error'});
     }
