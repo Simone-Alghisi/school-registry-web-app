@@ -9,11 +9,14 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Home</title>
+  <title>Edit class</title>
 
   <!-- Custom fonts for this template-->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"
+    type="text/css">
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
 
   <!-- Custom styles for this template-->
   <link href="css/style.css" rel="stylesheet">
@@ -26,7 +29,7 @@
 
     <!-- Sidebar -->
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-      
+
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon">
@@ -37,7 +40,7 @@
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
-      
+
       <!-- Example of items inside the Nav Bar - No collapse menu' -->
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
@@ -54,7 +57,7 @@
           <span>Utenti</span></a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="classes.html">
           <!-- icon for the nav item -->
           <i class="fas fa-fw fa-chalkboard-teacher"></i>
@@ -99,13 +102,15 @@
 
             <!-- Nav Item - Alerts -->
             <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
                 <!-- Counter - Alerts -->
                 <span class="badge badge-danger-alternative badge-counter">3+</span>
               </a>
               <!-- Dropdown - Alerts -->
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">
                   Alerts Center
                 </h6>
@@ -150,7 +155,8 @@
 
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-900 small">Username</span>
                 <div class="img-profile rounded-circle">
                   <i class="fas fa-user login-icon"></i>
@@ -175,7 +181,7 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Home</h1>
+            <h1 class="h3 mb-0 text-gray-800">Segreteria</h1>
           </div>
 
           <!-- Content Row -->
@@ -183,27 +189,124 @@
 
             <!-- Content Column -->
             <div class="col-lg-12 mb-4">
+
+              <!-- Project Card Example -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-card">Classi</h6>
+                </div>
+                <div class="card-body">
+                  <form id="form">
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
+                        <label for="className">Nome Classe</label>
+                        <input type="text" class="form-control" id="className" name="className"
+                          placeholder="Inserisci il nome della classe..." required>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-5">
+                        <label for="userToAdd">Inserisci utente</label>
+                        <select class="form-control" id="userToAdd" name="userToAdd">
+                          <option value="" selected="selected">Seleziona l'utente</option>
+                        </select>
+                      </div>
+                      <div class="form-group col-md-7">
+                        <label for="materia">Materia</label>
+                        <div class="row justify-content-between">
+                          <div class="col-md-10">
+                            <div class="form-group">
+                              <select class="form-control" id="materia" name="materia" disabled>
+                                <option value="" selected="selected">Nessuna</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-md-auto">
+                            <button class="btn btn-primary" id="aggiungi" name="aggiungi" type="button">Aggiungi</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <!--Tabella studenti classe-->
+                      <div class="form-group col-md-5">
+                        <div class="card mb-4">
+                          <div class="card-body">
+                            <div class="col-md-12 table-responsive">
+                              <table class="table table-bordered" id="studentsTable" width="100%" cellspacing="0">
+                                <thead>
+                                  <tr>
+                                    <th>Nome</th>
+                                    <th>Cognome</th>
+                                    <th>Rimuovi</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!--Tabella professori classe-->
+                      <div class="form-group col-md-7">
+                        <div class="card mb-4">
+                          <div class="card-body">
+                            <div class="col-md-12 table-responsive">
+                              <table class="table table-bordered" id="professorsTable" width="100%" cellspacing="0">
+                                <thead>
+                                  <tr>
+                                    <th>Nome</th>
+                                    <th>Cognome</th>
+                                    <th>Materia</th>
+                                    <th>Rimuovi</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-row justify-content-between">
+                      <div class="form-group col-md-4">
+                        <button type="button" class="btn btn-danger" id="delete">Elimina</button>
+                      </div>
+                      <div class="form-group col-md-auto">
+                        <button type="button" class="btn btn-secondary" onclick="location.href='./classes.html';">Annulla</button>
+                        <button type="submit" class="btn btn-primary" id="submit">Conferma</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
-
         </div>
-        <!-- /.container-fluid -->
 
       </div>
-      <!-- End of Main Content -->
-
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Emanuele Beozzo, Massimo Rizzoli, Samuele Bortolotti, Simone Alghisi 2020</span>
-          </div>
-        </div>
-      </footer>
-      <!-- End of Footer -->
-
     </div>
-    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- /.container-fluid -->
+
+  </div>
+  <!-- End of Main Content -->
+
+  </div>
+  <!-- End of Content Wrapper -->
+
+  <!-- Footer -->
+  <footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+      <div class="copyright text-center my-auto">
+        <span>Copyright &copy; Emanuele Beozzo, Massimo Rizzoli, Samuele Bortolotti, Simone Alghisi 2020</span>
+      </div>
+    </div>
+  </footer>
+  <!-- End of Footer -->
 
   </div>
   <!-- End of Page Wrapper -->
@@ -215,8 +318,12 @@
 
   <!-- Bootstrap core JavaScript-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+  </script>
 
   <!-- Core plugin JavaScript-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
@@ -227,9 +334,14 @@
   <!-- Page level plugins -->
   <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
-
+  
   <!-- Custom scripts for all pages-->
   <script src="js/main.js"></script>
+
+  <!-- Custom script for users page -->
+  <script type="module" src="./js/editClass.js"></script>
+  <script type="module" src="./js/deleteClass.js"></script>
+
 </body>
 
 </html>

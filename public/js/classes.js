@@ -30,5 +30,16 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
     })
   }
 
+  /**
+   * Set the get request to the edit page
+   */
+  function setEventgetClassById(){
+    $('#dataTable tbody').on('click', 'tr', function () {
+      let id = table.row(this).node().id;
+      $(location).prop('href', './editClass.html?id='+id);
+    });
+  }
+
   getClasses();
+  setEventgetClassById();
 }) (jQuery);

@@ -9,8 +9,8 @@ import { ClassMiddleware } from '../../lib/middlewares/class.middleware'
 import * as faker from 'faker';
 
 describe('ClassModel', () => {
-	describe('#validate', () => {
-		it('should be invalid if name is empty', function() {
+  describe('#validate', () => {
+    it('should be invalid if name is empty', function() {
       chai.expect(ClassMiddleware.validField('', 'name')).be.false;
     });
     
@@ -19,7 +19,7 @@ describe('ClassModel', () => {
     });
   
     it('should be valid if name is a string', function() {
-      chai.expect(ClassMiddleware.validField(faker.name.findName(), 'name')).be.true;
-		});	
-	});
+      chai.expect(ClassMiddleware.validField(faker.lorem.text(), 'name')).be.true;
+    });  
+  });
 });

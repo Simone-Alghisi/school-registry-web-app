@@ -20,7 +20,7 @@ describe('UserModel', () => {
     });
   
     it('should be valid if name is a string', function() {
-      chai.expect(UserMiddleware.validField(faker.name.findName(), 'name')).be.true;
+      chai.expect(UserMiddleware.validField(faker.name.firstName(), 'name')).be.true;
     });
   
     it('should be invalid if surname is empty', function() {
@@ -32,7 +32,7 @@ describe('UserModel', () => {
     });
   
     it('should be valid if surname is a string', function() {
-      chai.expect(UserMiddleware.validField(faker.name.findName(), 'surname')).be.true;
+      chai.expect(UserMiddleware.validField(faker.name.lastName(), 'surname')).be.true;
     });
   
     it('should be invalid if email is empty', function() {
@@ -56,7 +56,7 @@ describe('UserModel', () => {
     });
   
     it('should be valid if password is a string', function() {
-      chai.expect(UserMiddleware.validField(faker.name.firstName(), 'password')).be.true;
+      chai.expect(UserMiddleware.validField(faker.lorem.text(), 'password')).be.true;
     });
   
     it('should be invalid if salt is empty', function() {
@@ -68,7 +68,7 @@ describe('UserModel', () => {
     });
     
     it('should be valid if salt is a string', function() {
-      chai.expect(UserMiddleware.validField(faker.name.firstName(), 'salt')).be.true;
+      chai.expect(UserMiddleware.validField(faker.lorem.text(), 'salt')).be.true;
     });
   
     it('should be invalid if role is empty', function() {
@@ -76,7 +76,7 @@ describe('UserModel', () => {
     });
     
     it('should be invalid if role is a string', function() {
-      chai.expect(UserMiddleware.validField(faker.name.findName(), 'role')).be.false;
+      chai.expect(UserMiddleware.validField(faker.lorem.text(), 'role')).be.false;
     });
   
     it('should be invalid if role is above 2', function() {

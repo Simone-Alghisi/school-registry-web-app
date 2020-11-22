@@ -24,4 +24,9 @@ export interface CRUDService {
    * Removes a document by its id form the DB
    */
   deleteById: (resourceId: string) => any,
+  
+  /**
+   * Filter the document with the query parameters and returns the result
+   */
+  filterList: (parameters: any) => any
 }

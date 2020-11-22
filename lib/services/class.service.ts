@@ -50,5 +50,7 @@ export class ClassService implements CRUDService {
     return foundClass;
   }
 
-  async getByEmail(email: string): Promise<any>{}
+  async filterList(parameters: any): Promise<any>{
+    return await this.classModel.classCollection.find(parameters);
+  }
 }

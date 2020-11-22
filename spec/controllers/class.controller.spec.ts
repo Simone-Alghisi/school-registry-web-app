@@ -3,11 +3,9 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../lib/app';
 import * as faker from 'faker';
-import moment from 'moment';
 import { ClassModel } from '../../lib/models/class.model'
 import { ClassController } from '../../lib/controllers/class.controller';
 import { user_role_0, user_role_1, user_role_2, userAccessToken } from '../spec_helper';
-import { ClassService } from '../../lib/services/class.service';
 import { UserService } from '../../lib/services/user.service';
 
 chai.use(chaiHttp);
@@ -161,7 +159,7 @@ describe('ClassController', () => {
   });
 
   describe('#create', () => {
-    const className: string = faker.name.findName(); 
+    const className: string = faker.name.firstName(); 
     const classObj = {
       name: className
     }

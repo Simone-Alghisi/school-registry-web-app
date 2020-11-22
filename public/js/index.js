@@ -18,11 +18,11 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } fro
       }
       fetch(url, fetchData)
         .then((resp) => {
-					console.log(resp.status);
+          console.log(resp.status);
           if(resp.ok) {
             return resp.json();
           } else if(resp.status == 401) {
-						$('#loginError').text("Email e/o password non corretti");
+            $('#loginError').text("Email e/o password non corretti");
           } else {
             dealWithServerErrorCodes();
           }
@@ -40,8 +40,8 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } fro
     }
   
     $('#form').submit((event) => {
-			login();
-			event.preventDefault();
+      login();
+      event.preventDefault();
     });
 
     /**
