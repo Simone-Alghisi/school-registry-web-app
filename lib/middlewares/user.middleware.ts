@@ -1,4 +1,5 @@
 import { Response, Request, NextFunction } from 'express';
+import { CommonMiddleware } from '../common/middlewares/common.middleware';
 import { UserModel } from '../models/user.model';
 import { UserService } from '../services/user.service'
 
@@ -8,7 +9,7 @@ import { UserService } from '../services/user.service'
  * - In case of errors, the HTTP status code is returned
  * - Otherwise the request is allowed to pass
  */
-export class UserMiddleware {
+export class UserMiddleware extends CommonMiddleware{
   /**
    * Function that validate a field of the {@link User} class
    * @param req Express request
@@ -23,15 +24,23 @@ export class UserMiddleware {
       const userModel = UserModel.getInstance();
       const user = new userModel.userCollection();
       user[fieldName] = field;
-      const error = user.validateSync();
-      if(error?.errors[fieldName]){
+      if(field !== '' && UserMiddleware.validateFieldRequired(fieldName)){
+        const error = user.validateSync();
+        if(error?.errors[fieldName]){
+          return false;
+        }
+      }else if(field === ''){
         return false;
-      }else{
-        return true;
       }
+      return true;    
     }catch(e){
       return false;
     }
+  }
+
+  static validateFieldRequired(fieldName: string): boolean{
+    const userModel = UserModel.getInstance();
+    return userModel.userSchema.requiredPaths().indexOf(fieldName) > -1;
   }
 
   /**
@@ -224,5 +233,43 @@ export class UserMiddleware {
     }catch(e){
       res.status(500).send({error: 'Internal server error'});
     }
+  }
+
+  discardUselessFieldsQuery(req: Request, res: Response, next: NextFunction): void{
+    const userModel = UserModel.getInstance();
+    try{
+      const properties: string[] = Object.keys(userModel.userSchema.paths);
+      for(const key of Object.keys(req.query)){
+        if(properties.indexOf(key) === -1){
+          delete req.query[key];
+        }
+      }
+      next();
+    }catch(e){
+      res.status(500).send({error: 'Internal server error'});
+    }
+  }
+
+  discardPasswordAndSaltQuery(req: Request, res: Response, next: NextFunction): void{
+    if(req.query){
+      delete req.query.password;
+      delete req.query.salt;
+    }
+    next();
+  }
+
+  setUnsetField(req: Request, res: Response, next: NextFunction): void{
+    const newBody = {$set: {}, $unset: {}};
+    for(const field in req.body){
+      console.log(field);
+      if(req.body[field] === '' && !UserMiddleware.validateFieldRequired(field)){
+        newBody.$unset[field] = 1;
+      }else{
+        newBody.$set[field] = req.body[field];
+      }
+    }
+    console.log(newBody);
+    req.body = newBody;
+    next();
   }
 }

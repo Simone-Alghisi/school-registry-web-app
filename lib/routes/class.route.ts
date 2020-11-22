@@ -4,7 +4,6 @@ import { ConfigureRoutes } from '../common/interfaces/configureRoutes.interface'
 import { ClassController } from '../controllers/class.controller';
 import { ClassMiddleware } from '../middlewares/class.middleware';
 import { JwtMiddleware } from '../middlewares/jwt.middleware';
-import { CommonMiddleware } from '../common/middlewares/common.middleware';
 
 /**
  * ClassRoutes class, it extends the {@link CommonRoutes} class and implements the {@link ConfigureRoutes} interface.
@@ -33,8 +32,6 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
     const classMiddleware: ClassMiddleware = new ClassMiddleware();
     /** Instance of jwt middleware that checks if a client has a valid token*/
     const jwtMiddleware: JwtMiddleware = new JwtMiddleware();
-    /** Instance of common middler that checks if a jwt token has the correct role*/
-    const commonMiddleware: CommonMiddleware = new CommonMiddleware();
 
     /**
      * Route for the get method on the entire collection of classes
@@ -42,13 +39,14 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.get('/api/v1/classes', [
       jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.discardUselessFieldsQuery,
       classController.list
     ]);
 
     this.app.get('/api/v1/classes/:id', [
       jwtMiddleware.validateJWT,
-      classMiddleware.validateClassExists,
+      classMiddleware.validateUserExists,
       classController.getById
     ]);
 
@@ -60,20 +58,20 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.post('/api/v1/classes', [
       jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.onlySecretaryNeedsToDoThis,
       classMiddleware.validateName,
       classController.create
     ]);
 
     this.app.patch('/api/v1/classes', [
       jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.onlySecretaryNeedsToDoThis,
       classController.updateAll
     ]);
 
     this.app.patch('/api/v1/classes/:id', [
       jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.onlySecretaryNeedsToDoThis,
       classMiddleware.discardUselessFields,
       classMiddleware.validateClassExists,
       classMiddleware.validateUpdateBody,
@@ -83,7 +81,7 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
 
     this.app.delete('/api/v1/classes/:id',[
       jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.onlySecretaryNeedsToDoThis,
       classController.deleteById
     ]);
 
@@ -92,7 +90,7 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.delete('/api/v1/classes',[
       jwtMiddleware.validateJWT,
-      commonMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.onlySecretaryNeedsToDoThis,
       classController.deleteAll
     ]);
   }
