@@ -29,7 +29,7 @@ export class UserMiddleware extends CommonMiddleware{
         if(error?.errors[fieldName]){
           return false;
         }
-      }else if(field === ''){
+      }else if(field === '' && UserMiddleware.validateFieldRequired(fieldName)){
         return false;
       }
       return true;    
@@ -57,21 +57,6 @@ export class UserMiddleware extends CommonMiddleware{
       next();
     } else {
       res.status(404).json({ error: 'User not found' });
-    }
-  }
-
-  //TODO move it to /lib/middlewares/common.middleware.ts
-  /**
-   * Middleware that checks if the body of the request is empy for an update operation
-   * @param req Express Request
-   * @param res Express Response
-   * @param next Express NextFunction
-   */
-  validateUpdateBody(req: Request, res: Response, next: NextFunction): void{
-    if (req.body && Object.keys(req.body).length !== 0) {
-      next();
-    } else {
-      res.status(204).send();
     }
   }
 
@@ -261,14 +246,12 @@ export class UserMiddleware extends CommonMiddleware{
   setUnsetField(req: Request, res: Response, next: NextFunction): void{
     const newBody = {$set: {}, $unset: {}};
     for(const field in req.body){
-      console.log(field);
       if(req.body[field] === '' && !UserMiddleware.validateFieldRequired(field)){
         newBody.$unset[field] = 1;
       }else{
         newBody.$set[field] = req.body[field];
       }
     }
-    console.log(newBody);
     req.body = newBody;
     next();
   }

@@ -17,7 +17,6 @@ export class CommonMiddleware {
   onlySecretaryNeedsToDoThis(req: Request, res: Response, next: NextFunction): void{
     try {
       const userRole = parseInt(req.jwt.role, 10);
-      console.log('userRole: ' + userRole)
       if (userRole && userRole === 2) {
         next();
       } else {
@@ -38,7 +37,6 @@ export class CommonMiddleware {
   onlyProfessorNeedsToDoThis(req: Request, res: Response, next: NextFunction): void{
     try {
       const userRole = parseInt(req.jwt.role, 10);
-      console.log('userRole: ' + userRole)
       if (userRole && userRole === 1) {
         next();
       } else {
@@ -59,7 +57,6 @@ export class CommonMiddleware {
   onlyStudentNeedsToDoThis(req: Request, res: Response, next: NextFunction): void{
     try {
       const userRole = parseInt(req.jwt.role, 10);
-      console.log('userRole: ' + userRole)
       if (userRole && userRole === 0) {
         next();
       } else {
@@ -67,6 +64,20 @@ export class CommonMiddleware {
       }
     } catch (e) {
       res.status(403).json({ error: 'Forbidden' });
+    }
+  }
+
+   /**
+   * Middleware that checks if the body of the request is empy for an update operation
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
+  validateUpdateBody(req: Request, res: Response, next: NextFunction): void{
+    if (req.body && Object.keys(req.body).length !== 0) {
+      next();
+    } else {
+      res.status(204).send();
     }
   }
 }

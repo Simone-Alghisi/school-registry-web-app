@@ -94,7 +94,6 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
     })
     .then((resp) => {
-      console.log(resp.status);
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
@@ -104,13 +103,12 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       }
     })
     .then(function (data) {
-      console.log(data);
       if(!data.error){
         $('#className').val(data.name);
         getStudents(data);
         getProfessors(data);
       }else{
-        //$(location).prop('href', './classes.html');
+        $(location).prop('href', './classes.html');
       }
     })
     .catch(
@@ -191,7 +189,6 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
   function addProfessorWithAdd(subject, user){
     let canAdd = false;
     if (!modifiedUsers[user._id]) {
-      console.log(user);
       modifiedUsers[user._id] = copyUser(user);
       canAdd = true;
     } else if (!teacherTeaches(modifiedUsers[user._id], subject, classId)) {
@@ -251,7 +248,6 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     let toRemove = $(this).closest('tr');
     let idToRemove = toRemove[0].id;
 
-    console.log('id to remove: ' + idToRemove);
     modifiedUsers[idToRemove].class_id = '';
     if(!usersToInsertList[idToRemove]){
       addToUsersToInsertListElement(modifiedUsers[idToRemove]);
@@ -299,8 +295,6 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     modifiedUsers[idToRemove].teaches = modifiedUsers[idToRemove].teaches.filter((elem) => {
       return elem.subject !== subject || elem.class_id !== classId;
     });
-    
-    console.log('prof id to remove: ' + idToRemove);
 
     professorsTable.row(toRemove).remove().draw(false);
   });
@@ -315,12 +309,12 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     }
 
     return new Promise((resolve,reject) => {
-      if(user.role == 0){
-        data = JSON.stringify({ class_id: user.class_id });
+      if(modifiedUsers[user].role == 0){
+        data = JSON.stringify({ class_id: modifiedUsers[user].class_id });
       } else {
-        data = JSON.stringify({ teaches: user.teaches });
+        data = JSON.stringify({ teaches: modifiedUsers[user].teaches });
       }
-      let url = base_url + user.id; 
+      let url = base_url + user; 
       fetchData.body = data;
       fetch(url, fetchData)
       .then((resp) => {
@@ -345,23 +339,25 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     })
   }
 
-  function editClass(){
-    console.log(modifiedUsers);
+  async function editClass(){
 
-    modifiedUsers.forEach(async (user) => {
+    for(const user in modifiedUsers){
       await editUser(user);
-    })
+    }
 
     let class_url = '../api/v1/classes/' + classId;
+    let data = '{"name": "' + $('#className').val() + '"}';
 
-    fetch(class_url, {
+    let fetchData = {
       method: 'PATCH',
-      body: $('#className').val(),
+      body: data,
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
-    })
+    }
+
+    fetch(class_url, fetchData)
     .then((resp) => {
       if(resp.ok){
-        return;
+        $(location).prop('href', './classes.html');
       }else if(resp.status == 403){
         try{
           refreshToken();
@@ -381,7 +377,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
   
   $('#form').submit((event) => {
     editClass();
-    //console.log(modifiedUsers);
+    //(modifiedUsers);
     event.preventDefault();
   });
 
