@@ -89,9 +89,9 @@ describe('UserController', () => {
         token2 = data;
       });
 
-    console.log('token0: ' + token0);
-    console.log('token1: ' + token1);
-    console.log('token2: ' + token2);
+    //console.log('token0: ' + token0);
+    //console.log('token1: ' + token1);
+    //console.log('token2: ' + token2);
   });
 
   after(async () => {

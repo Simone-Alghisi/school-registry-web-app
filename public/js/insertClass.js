@@ -248,7 +248,6 @@ import {
         data = JSON.stringify({ teaches: user.teaches });
       }
       // The parameters we are gonna pass to the fetch function
-      console.log(data);
 
       let fetchData = {
         method: 'PATCH',
@@ -269,12 +268,10 @@ import {
           }
         })
         .then((resp) => {
-          console.log(resp);
           resolve();
         })
         .catch(
           error => {
-            console.log('AJKHFDS');
             console.error(error)
             reject();
           }

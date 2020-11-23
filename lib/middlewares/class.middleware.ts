@@ -91,15 +91,6 @@ export class ClassMiddleware extends CommonMiddleware{
       res.status(404).json({error: 'Class not found'});
     }
   }
-
-  //TODO move it to /lib/middlewares/common.middleware.ts
-  validateUpdateBody(req: Request, res: Response, next: NextFunction): void{
-    if (req.body && Object.keys(req.body).length !== 0) {
-      next();
-    } else {
-      res.status(204).send();
-    }
-  }
   
   async validateUpdateRequest(req: Request, res: Response, next: NextFunction): Promise<void>{
     const updatedClass = await ClassService.getInstance().getById(req.params.id);

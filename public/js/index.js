@@ -18,7 +18,7 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } fro
       }
       fetch(url, fetchData)
         .then((resp) => {
-          console.log(resp.status);
+          //console.log(resp.status);
           if(resp.ok) {
             return resp.json();
           } else if(resp.status == 401) {

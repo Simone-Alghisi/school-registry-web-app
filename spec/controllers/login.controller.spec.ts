@@ -21,17 +21,17 @@ describe('LoginController', () => {
       await userService.create(toInsert).then((id) => {
         userId = id;
       });
-      console.log('User created ' + userId);
+      //console.log('User created ' + userId);
     });
 
     after(async () => {
       //Need to wait for the promise
       await userService.deleteById(userId);
-      console.log('user deleted');
+      //console.log('user deleted');
     });
 
     it('should return the 200 OK code', async () => {
-      console.log('email: ' + user.email + ' password: ' + user.password)
+      //console.log('email: ' + user.email + ' password: ' + user.password)
       return chai
         .request(app)
         .post('/api/v1/login')
@@ -120,7 +120,7 @@ describe('LoginController', () => {
         .post('/api/v1/login/refresh')
         .send({ refreshToken: refreshToken })
         .then(res => {
-          console.log(refreshToken);
+          //console.log(refreshToken);
           chai.expect(res.status).to.eql(200);
         });
     });
