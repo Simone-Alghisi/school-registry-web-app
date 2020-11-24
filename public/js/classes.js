@@ -14,13 +14,13 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().catch(() => dealWithForbiddenErrorCode());
+        refreshToken().then(() => getClasses()).catch(() => dealWithForbiddenErrorCode());
       }else{
         dealWithServerErrorCodes();
       }
     })
     .then((data) => {
-      if(!data.error){
+      if(data && !data.error){
         data.map((elem) =>{
           table.row.add([
             elem.name

@@ -48,9 +48,9 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         if (resp.ok) {
           return resp.json();
         } else if (resp.status == 403) {
-          refreshToken().catch(() => dealWithForbiddenErrorCode());
+          refreshToken().then(() => getUsersToInsert()).catch(() => dealWithForbiddenErrorCode());
         } else {
-          //dealWithServerErrorCodes();
+          dealWithServerErrorCodes();
         }
       })
       .then((data) => {
@@ -97,13 +97,13 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().catch(() => dealWithForbiddenErrorCode());
+        refreshToken().then(() => getClass()).catch(() => dealWithForbiddenErrorCode());
       } else {
-        //dealWithServerErrorCodes();
+        dealWithServerErrorCodes();
       }
     })
     .then(function (data) {
-      if(!data.error){
+      if(data && !data.error){
         $('#className').val(data.name);
         getStudents(data);
         getProfessors(data);
@@ -127,9 +127,9 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().catch(() => dealWithForbiddenErrorCode());
+        refreshToken().then(() => getStudents(data)).catch(() => dealWithForbiddenErrorCode());
       } else {
-        //dealWithServerErrorCodes();
+        dealWithServerErrorCodes();
       }
     })
     .then((students) => {
@@ -150,9 +150,9 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().catch(() => dealWithForbiddenErrorCode());
+        refreshToken().then(() => getProfessors(data)).catch(() => dealWithForbiddenErrorCode());
       } else {
-        //dealWithServerErrorCodes();
+        dealWithServerErrorCodes();
       }
     })
     .then((professors) => {
@@ -272,13 +272,9 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         if(resp.ok){
           return resp.json();
         }else if(resp.status == 403){
-          try{
-            refreshToken();
-          }catch(error){
-            dealWithForbiddenErrorCode();
-          }
+          refreshToken().then(() => removeStudentFromClass(userId)).catch(() => dealWithForbiddenErrorCode());
         } else {
-          //dealWithServerErrorCodes();
+          dealWithServerErrorCodes();
         }
       })
       .catch( 
@@ -321,13 +317,9 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         if(resp.ok){
           resolve();
         }else if(resp.status == 403){
-          try{
-            refreshToken();
-          }catch(error){
-            dealWithForbiddenErrorCode();
-          }
+          refreshToken().then(() => editUser(userId)).catch(() => dealWithForbiddenErrorCode());
         } else {
-          //dealWithServerErrorCodes();
+          dealWithServerErrorCodes();
         }
       })
       .catch( 
@@ -359,13 +351,9 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       if(resp.ok){
         $(location).prop('href', './classes.html');
       }else if(resp.status == 403){
-        try{
-          refreshToken();
-        }catch(error){
-          dealWithForbiddenErrorCode();
-        }
+        refreshToken().then(() => editClass()).catch(() => dealWithForbiddenErrorCode());
       } else {
-        //dealWithServerErrorCodes();
+        dealWithServerErrorCodes();
       }
     })
     .catch( 

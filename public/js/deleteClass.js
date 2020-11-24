@@ -21,7 +21,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
         if(resp.ok){
           $(location).prop('href', './classes.html');
         }else if(resp.status == 403){
-          refreshToken().catch(() => dealWithForbiddenErrorCode());
+          refreshToken().then(() => deleteClass()).catch(() => dealWithForbiddenErrorCode());
         }else{
           dealWithServerErrorCodes();
         }

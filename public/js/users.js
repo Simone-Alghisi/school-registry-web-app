@@ -34,19 +34,19 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
   function getUsers(){
     fetch('../api/v1/users', {
       method: 'GET',
-      headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken}
+      headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
     })
-    .then((resp) => { 
+    .then((resp) => {
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().catch(() => dealWithForbiddenErrorCode());
+        refreshToken().then(() => getUsers()).catch(() => dealWithForbiddenErrorCode());
       } else {
         dealWithServerErrorCodes();
       }
     })
     .then(function (data) {
-      if(!data.error){
+      if(data && !data.error){
         data.map((elem) => {
           table.row.add([
             elem.name, 
@@ -62,6 +62,33 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
     );
   }
   
+  function lmao(){
+    console.log('Nella getUsers ' + window.sessionStorage.accessToken)
+    fetch('../api/v1/users', {
+      method: 'GET',
+      headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
+    })
+    .then((resp) => { 
+      console.log(resp);
+      return resp.json();
+    })
+    .then(function (data) {
+      if(data && !data.error){
+        data.map((elem) => {
+          table.row.add([
+            elem.name, 
+            elem.surname, 
+            elem.birth_date, 
+            roleMapping[elem.role]
+          ]).draw().node().id = elem._id;
+        })
+      }
+    })
+    .catch(
+      error => console.error(error)
+    );
+  }
+
   getUsers();
   setEventgetUserById();
 })(jQuery);

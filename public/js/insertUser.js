@@ -22,7 +22,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
         if(resp.ok){
           $(location).prop('href', './users.html');
         }else if(resp.status == 403){
-          refreshToken().catch(() => dealWithForbiddenErrorCode());
+          refreshToken().then(() => addUser()).catch(() => dealWithForbiddenErrorCode());
         } else {
           dealWithServerErrorCodes();
         }

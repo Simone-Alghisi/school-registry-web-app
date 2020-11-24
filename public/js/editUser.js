@@ -17,13 +17,13 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().catch(() => dealWithForbiddenErrorCode());
+        refreshToken().then(() => getUser()).catch(() => dealWithForbiddenErrorCode());
       } else {
         dealWithServerErrorCodes();
       }
     })
     .then(function (data) {
-      if(!data.error){
+      if(data && !data.error){
         $('#name').val(data.name);
         $('#surname').val(data.surname);
         $('#email').val(data.email);
@@ -58,11 +58,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
         if(resp.ok){
           return resp.json();
         }else if(resp.status == 403){
-          try{
-            refreshToken();
-          }catch(error){
-            dealWithForbiddenErrorCode();
-          }
+          refreshToken().then(() => editUser()).catch(() => dealWithForbiddenErrorCode());
         } else {
           dealWithServerErrorCodes();
         }

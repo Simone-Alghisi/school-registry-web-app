@@ -80,7 +80,7 @@ import {
         if (resp.ok) {
           return resp.json();
         } else if (resp.status == 403) {
-          refreshToken().catch(() => dealWithForbiddenErrorCode());
+          refreshToken().then(() => getUsersToInsert()).catch(() => dealWithForbiddenErrorCode());
         } else {
           dealWithServerErrorCodes();
         }
@@ -262,7 +262,7 @@ import {
           if (resp.ok) {
             return resp.json();
           } else if (resp.status == 403) {
-            refreshToken().catch(() => dealWithForbiddenErrorCode());
+            refreshToken().then(() => editUser(user)).catch(() => dealWithForbiddenErrorCode());
           } else {
             dealWithServerErrorCodes();
           }
@@ -305,7 +305,7 @@ import {
           //redirect to classes list
           $(location).prop('href', './classes.html');
         } else if (resp.status == 403) {
-          refreshToken().catch(() => dealWithForbiddenErrorCode());
+          refreshToken().then(() => createClass()).catch(() => dealWithForbiddenErrorCode());
         } else {
           dealWithServerErrorCodes();
         }

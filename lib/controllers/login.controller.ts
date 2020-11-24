@@ -23,7 +23,6 @@ export class LoginController {
     dotenv.config();
     const jwtSecret = process.env.JWT_SECRET || '';
     const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET || '';
-    //console.log('CREATE JWT');
     try{
       const token = jwt.sign({ email: req.body.email, role: req.body.role }, jwtSecret, {expiresIn: LoginController.tokenExpiration});
       const refToken = jwt.sign({ email: req.body.email, role: req.body.role }, jwtRefreshSecret, {expiresIn: LoginController.refreshTokenExpiration});
@@ -44,10 +43,9 @@ export class LoginController {
   async refreshJWT(req: Request, res: Response) {
     dotenv.config();
     const jwtSecret = process.env.JWT_SECRET || '';
-    //console.log('Refresh JWT');
     try{
-      const token = jwt.sign({ email: req.body.email, role: req.body.role }, jwtSecret, {expiresIn: LoginController.tokenExpiration});
-
+      const token = jwt.sign({ email: req.jwt.email, role: req.jwt.role }, jwtSecret, {expiresIn: LoginController.tokenExpiration});
+      
       res.status(200).json({ message: 'Refresh successful', accessToken: token});
     }catch (err) {
       console.log('FAILED REFRESH JWT' + err);

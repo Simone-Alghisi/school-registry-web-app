@@ -19,7 +19,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
         if(resp.ok){
           $(location).prop('href', './users.html');
         }else if(resp.status == 403){
-          refreshToken().catch(() => dealWithForbiddenErrorCode());
+          refreshToken().then(() => deleteUser()).catch(() => dealWithForbiddenErrorCode());
         }else{
           dealWithServerErrorCodes();
         }

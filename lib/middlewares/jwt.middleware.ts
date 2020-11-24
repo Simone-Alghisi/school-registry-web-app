@@ -53,7 +53,9 @@ export class JwtMiddleware {
    * @param next next function
    */
   validateRefreshTokenField(req: Request, res: Response, next: NextFunction):void {
+    console.log(req.body.refreshToken);
     if (req.body && req.body.refreshToken) {
+      console.log('passo');
       next();
     } else {
       res.status(401).send({error: 'Login failed'});
@@ -72,7 +74,7 @@ export class JwtMiddleware {
     const jwtRefreshSecret:string = process.env.JWT_REFRESH_SECRET ? process.env.JWT_REFRESH_SECRET : '';
     try{
       const decoded = jwt.verify(req.body.refreshToken, jwtRefreshSecret);
-      req.jwt = { role: decoded['role'] };
+      req.jwt = { role: decoded['role'], email: decoded['email'] };
       next();
     }catch (error) {
       console.log(error);
