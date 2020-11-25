@@ -31,7 +31,7 @@ JWT_SECRET=<jwt access token secret>
 JWT_REFRESH_SECRET=<jwt refresh token secret>
 ```
 
-# Run the application
+## Run the application
 
 Run the following command inside the `projectSe2group06` folder
 

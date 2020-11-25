@@ -12,10 +12,8 @@ import 'mocha';
 import chai from 'chai';
 import app from '../../lib/app';
 import { UserRoutes } from '../../lib/routes/user.route'
-import * as faker from 'faker';
 
 describe('UserRoutes', () => {
-  const routeName: string = faker.name.findName();
   const userRoutes: UserRoutes = new UserRoutes(app);
   
   describe('#constructor', () => {
@@ -38,7 +36,7 @@ describe('UserRoutes', () => {
       return chai.expect(userRoutes.getName()).to.be.a('string');
     });
     it('should return the route name', () => {
-      return chai.expect(userRoutes.getName()).to.equal(routeName);
+      return chai.expect(userRoutes.getName()).to.equal('UserRoutes');
     });
   });
 });
