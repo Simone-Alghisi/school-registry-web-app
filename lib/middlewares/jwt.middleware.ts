@@ -55,7 +55,6 @@ export class JwtMiddleware {
   validateRefreshTokenField(req: Request, res: Response, next: NextFunction):void {
     console.log(req.body.refreshToken);
     if (req.body && req.body.refreshToken) {
-      console.log('passo');
       next();
     } else {
       res.status(401).send({error: 'Login failed'});
