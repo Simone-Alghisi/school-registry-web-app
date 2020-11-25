@@ -116,7 +116,7 @@ describe('ClassController', () => {
   });
 
   describe('#list', () => {
-    it('should return the 403 Forbidden code: student should\'t be able to request classes', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to request classes', async () => {
       return chai
         .request(app)
         .get('/api/v1/classes')
@@ -126,7 +126,7 @@ describe('ClassController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: professor should\'t be able to request classes', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to request classes', async () => {
       return chai
         .request(app)
         .get('/api/v1/classes')
@@ -146,7 +146,7 @@ describe('ClassController', () => {
         });
     });
     
-    it('should return all the clssses', async () => {
+    it('should return all the classes', async () => {
       const nClasses: any = await getNumberOfClasses();
       return chai
         .request(app)
@@ -165,7 +165,7 @@ describe('ClassController', () => {
     }
     const newClass = JSON.stringify(classObj);
     
-    it('should return the 403 Forbidden code: student should\'t be able to add classes', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to add classes', async () => {
       return chai
         .request(app)
         .post('/api/v1/classes')
@@ -177,7 +177,7 @@ describe('ClassController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: professor should\'t be able to add classes', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to add classes', async () => {
       return chai
         .request(app)
         .post('/api/v1/classes')
@@ -287,7 +287,6 @@ describe('ClassController', () => {
         });
     });
 
-
     it('should return the 200 status code: secretary', async () => {
       const classElem: any = await getRandomClass();
       classId = classElem._id;
@@ -300,7 +299,6 @@ describe('ClassController', () => {
           chai.expect(res.status).to.eql(200);
         });
     });
-
 
     it('should return the 404 status code: wrong type for id', async () => {
       return chai
@@ -345,7 +343,7 @@ describe('ClassController', () => {
   }); */
 
   describe('#updateAll', () => {
-    it('should return the 403 Forbidden code: student should\'t be able to update all classes', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to update all classes', async () => {
       return chai
         .request(app)
         .patch('/api/v1/classes/')
@@ -357,7 +355,7 @@ describe('ClassController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: professor should\'t be able to update all classes', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to update all classes', async () => {
       return chai
         .request(app)
         .patch('/api/v1/classes/')
@@ -443,7 +441,7 @@ describe('ClassController', () => {
         });
     });
 
-    it('should return the json error message "User not found"', async () => {
+    it('should return the json error message "Class not found"', async () => {
       return chai
         .request(app)
         .patch('/api/v1/classes/'+invalidClassId)
@@ -455,7 +453,7 @@ describe('ClassController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: student should\'t be able to update user', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to update class', async () => {
       return chai
         .request(app)
         .patch('/api/v1/classes/'+ validClassId)
@@ -467,7 +465,7 @@ describe('ClassController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: professor should\'t be able to update user', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to update class', async () => {
       return chai
         .request(app)
         .patch('/api/v1/classes/'+ validClassId)

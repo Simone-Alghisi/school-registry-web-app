@@ -17,6 +17,7 @@ describe('LoginController', () => {
   describe('#createJWT', () => {
 
     before(async () => {
+      //must happen to create a deep copy
       const toInsert = JSON.parse(JSON.stringify(user));
       await userService.create(toInsert).then((id) => {
         userId = id;

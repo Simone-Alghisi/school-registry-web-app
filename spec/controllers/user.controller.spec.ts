@@ -128,7 +128,7 @@ describe('UserController', () => {
 
   describe('#list', () => {
     
-    it('should return the 403 Forbidden code: student should\'t be able to request users', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to request users', async () => {
       return chai
         .request(app)
         .get('/api/v1/users')
@@ -190,7 +190,7 @@ describe('UserController', () => {
     const user = JSON.stringify(userObj);
     const user2 = JSON.stringify(userObj2);
     
-    it('should return the 403 Forbidden code: student should\'t be able to add user', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to add user', async () => {
       return chai
         .request(app)
         .post('/api/v1/users')
@@ -202,7 +202,7 @@ describe('UserController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: professor should\'t be able to add user', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to add user', async () => {
       return chai
         .request(app)
         .post('/api/v1/users')
@@ -511,7 +511,7 @@ describe('UserController', () => {
   });
 
   describe('#deleteAll', () => {
-    it('should return the 403 Forbidden code: student should\'t be able to delete all users', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to delete all users', async () => {
       return chai
         .request(app)
         .delete('/api/v1/users')
@@ -521,11 +521,11 @@ describe('UserController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: professor should\'t be able to delete all users', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to delete all users', async () => {
       return chai
         .request(app)
         .delete('/api/v1/users')
-        .set('authorization', 'Bearer ' + token0)
+        .set('authorization', 'Bearer ' + token1)
         .then(res => {
           chai.expect(res.status).to.eql(403);
         });
@@ -556,7 +556,7 @@ describe('UserController', () => {
     let existingUserId: any;
     const notAUserId = 0;
 
-    it('should return the 403 Forbidden code: student should\'t be able to delete user', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to delete user', async () => {
       const randomUser:any = await getRandomUser();
       existingUserId = randomUser._id;
       return chai
@@ -568,13 +568,13 @@ describe('UserController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: student should\'t be able to delete user', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to delete user', async () => {
       const randomUser:any = await getRandomUser();
       existingUserId = randomUser._id;
       return chai
         .request(app)
         .delete('/api/v1/users/'+ existingUserId)
-        .set('authorization', 'Bearer ' + token0)
+        .set('authorization', 'Bearer ' + token1)
         .then(res => {
           chai.expect(res.status).to.eql(403);
         });
@@ -589,6 +589,7 @@ describe('UserController', () => {
         chai.expect(res.status).to.equal(404);
       });
     });
+
     it('should return the json error message: User not found', async () => {
       return chai
       .request(app)
@@ -598,6 +599,7 @@ describe('UserController', () => {
         chai.expect(res.body.error).to.equal('User not found');
       });
     });
+
     it('should return the 204 status code: valid user id', async () => {
       const randomUser:any = await getRandomUser();
       existingUserId = randomUser._id;
@@ -609,6 +611,7 @@ describe('UserController', () => {
           chai.expect(res.status).to.equal(204);
         });
     });
+
     it('should return the 404 status code: previously valid user id', async () => {
       return chai
         .request(app)
@@ -618,7 +621,8 @@ describe('UserController', () => {
           chai.expect(res.status).to.equal(404);
         });
     });
-    it('should return the json error message: previously valid user id', async () => {
+
+    it('should return the json error message "User not found": previously valid user id', async () => {
       return chai
         .request(app)
         .delete('/api/v1/users/' + existingUserId)
@@ -627,8 +631,9 @@ describe('UserController', () => {
           chai.expect(res.body.error).to.equal('User not found');
         });
     });
+
     //the element deleted should not be accessible
-    it('should return the 404 status code:    previously valid user id', () => {
+    it('should return the 404 status code: previously valid user id', () => {
       return chai
         .request(app)
         .get('/api/v1/users/' + existingUserId)
@@ -639,12 +644,11 @@ describe('UserController', () => {
     });
   });
 
-  describe('#findAndUpdateUserById', () => {
+  describe('#updateById', () => {
     const personName: string = faker.name.firstName();
     const personSurname: string = faker.name.lastName();
     const personEmail: string = faker.internet.email();
     const personPassword: string = faker.internet.password();
-    let personId :any;
     const personRole: number = faker.random.number({
       'min': 0,
       'max': 2
@@ -659,11 +663,14 @@ describe('UserController', () => {
       birth_date: personBirth_date
     }
     const user = JSON.stringify(userObj);
+    let validPersonId: any;
+    const invalidPersonId = 1000;
+    const invalidPersonIdType = 'hello word'
     
-    it('should return the 403 Forbidden code: student should\'t be able to update user', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to update user', async () => {
       return chai
         .request(app)
-        .patch('/api/v1/users/'+ personId)
+        .patch('/api/v1/users/'+ validPersonId)
         .set('content-type', 'application/json')
         .set('authorization', 'Bearer ' + token0)
         .send(user)
@@ -672,10 +679,10 @@ describe('UserController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: professor should\'t be able to update user', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to update user', async () => {
       return chai
         .request(app)
-        .patch('/api/v1/users/'+ personId)
+        .patch('/api/v1/users/'+ validPersonId)
         .set('content-type', 'application/json')
         .set('authorization', 'Bearer ' + token1)
         .send(user)
@@ -683,253 +690,6 @@ describe('UserController', () => {
           chai.expect(res.status).to.eql(403);
         });
     });
-
-    it('should return the 200 status code', async () => {
-      const person:any = await getRandomUser();
-      personId = person._id;
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(user)
-        .then(res => {
-          chai.expect(res.status).to.eql(200);
-        });
-    });
-    
-    it('should return the 204 status code: no body', async () => {
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send()
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: no field to edit', async () => {
-      const fake_usr: Record<string, unknown> = {
-        name_: personName,
-        surname_: personSurname,
-        email_: personEmail,
-        password_: personPassword,
-        role_: personRole
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 200 status code: some field missing but it\'s not a problem', async () => {
-      const fake_usr: Record<string, unknown> = {
-        name: personName,
-        surname: personSurname,
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(200);
-        });
-    });
-
-    it('should return the 204 status code: empty name field', async () => {
-      const fake_usr: Record<string, unknown> = {
-        name: ''
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: wrong type for name', async () => {
-      const fake_usr: Record<string, unknown> = {
-        name: 0,
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: empty surname field', async () => {
-      const fake_usr: Record<string, unknown> = {
-        surname: ''
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: wrong type for surname', async () => {
-      const fake_usr: Record<string, unknown> = {
-        surname: 0
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: empty email field', async () => {
-      const fake_usr: Record<string, unknown> = {
-        email: ''
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: wrong type for email', async () => {
-      const fake_usr: Record<string, unknown> = {
-        email: 0
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: empty password field', async () => {
-      const fake_usr: Record<string, unknown> = {
-        password: '',
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: wrong type for password', async () => {
-      const fake_usr: Record<string, unknown> = {
-        password: 0
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: empty role field', async () => {
-      const fake_usr: Record<string, unknown> = {
-        role: ''
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: wrong type for role', async () => {
-      const fake_usr: Record<string, unknown> = {
-        role: 'hello world'
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-    
-    it('should return the 204 status code: empty birth_date field', async () => {
-      const fake_usr: Record<string, unknown> = {
-        birth_date: ''
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
-    it('should return the 204 status code: wrong type for birth_date', async () => {
-      const fake_usr: Record<string, unknown> = {
-        birth_date: 0
-      };
-      return chai
-        .request(app)
-        .patch('/api/v1/users/'+ personId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send(fake_usr)
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-  });
-
-  describe('#updateById', () => { 
-    let validPersonId: any;
-    const invalidPersonId = 1000;
-    const invalidPersonIdType = 'hello word'
 
     it('should return the 204 status code: no body', async () => {
       const person: any = await getRandomUser();
@@ -980,11 +740,237 @@ describe('UserController', () => {
           chai.expect(res.body.error).to.equal('User not found');
         });
     });
+
+    it('should return the 200 status code', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(user)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+
+    it('should return the 204 status code: no field to edit', async () => {
+      const fake_usr: Record<string, unknown> = {
+        name_: personName,
+        surname_: personSurname,
+        email_: personEmail,
+        password_: personPassword,
+        role_: personRole
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 200 status code: some field missing but it\'s not a problem', async () => {
+      const fake_usr: Record<string, unknown> = {
+        name: personName,
+        surname: personSurname,
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+
+    it('should return the 204 status code: empty name field', async () => {
+      const fake_usr: Record<string, unknown> = {
+        name: ''
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for name', async () => {
+      const fake_usr: Record<string, unknown> = {
+        name: 0,
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: empty surname field', async () => {
+      const fake_usr: Record<string, unknown> = {
+        surname: ''
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for surname', async () => {
+      const fake_usr: Record<string, unknown> = {
+        surname: 0
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: empty email field', async () => {
+      const fake_usr: Record<string, unknown> = {
+        email: ''
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for email', async () => {
+      const fake_usr: Record<string, unknown> = {
+        email: 0
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: empty password field', async () => {
+      const fake_usr: Record<string, unknown> = {
+        password: '',
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for password', async () => {
+      const fake_usr: Record<string, unknown> = {
+        password: 0
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: empty role field', async () => {
+      const fake_usr: Record<string, unknown> = {
+        role: ''
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for role', async () => {
+      const fake_usr: Record<string, unknown> = {
+        role: 'hello world'
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+    
+    it('should return the 204 status code: empty birth_date field', async () => {
+      const fake_usr: Record<string, unknown> = {
+        birth_date: ''
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for birth_date', async () => {
+      const fake_usr: Record<string, unknown> = {
+        birth_date: 0
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/users/'+ validPersonId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(fake_usr)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
   });
 
-  describe('#updateAll', () => { 
-
-    it('should return the 403 Forbidden code: student should\'t be able to update all users', async () => {
+  describe('#updateAll', () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to update all users', async () => {
       return chai
         .request(app)
         .patch('/api/v1/users/')
@@ -996,7 +982,7 @@ describe('UserController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: professor should\'t be able to update all users', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to update all users', async () => {
       return chai
         .request(app)
         .patch('/api/v1/users/')
@@ -1056,7 +1042,7 @@ describe('UserController', () => {
     const invalidPersonId = 1000;
     const invalidPersonIdType = 'hello word'
 
-    it('should return the 403 Forbidden code: student should\'t be able to get a users', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to get a users', async () => {
       const person: any = await getRandomUser();
       personId = person._id;
       return chai
