@@ -362,6 +362,29 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+      
+    delete: 
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Delete a user with a specific id
+      summary: Delete a user
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: integer
+          required: true
+          description: 'Id of the user to delete'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '404':
+          description: 'User to delete not found'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   securitySchemes:
