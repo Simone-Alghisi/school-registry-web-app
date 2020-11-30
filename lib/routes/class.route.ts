@@ -63,12 +63,24 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
       classController.create
     ]);
 
+    /** 
+     * Route for the patch method on the entire collection of classes
+     * The middlewares check the validity of token and the role of the user
+     * The request is routed only to class controller function for updateAll
+    */
     this.app.patch('/api/v1/classes', [
       jwtMiddleware.validateJWT,
       classMiddleware.onlySecretaryNeedsToDoThis,
       classController.updateAll
     ]);
 
+    /**
+     * Route for the patch method (update resource) on a single class 
+     * The request is routed through a series of middlewares that check the existence of the id to update
+     * The middlewares also check the validity of the body and of the request
+     * The middlewares check the validity of token and the role of the user
+     * Then the request is routed to the appropriate class controller function for UpdateById
+    */
     this.app.patch('/api/v1/classes/:id', [
       jwtMiddleware.validateJWT,
       classMiddleware.onlySecretaryNeedsToDoThis,
@@ -79,14 +91,22 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
       classController.updateById
     ]);
 
+    /**
+     * Route for the delete method on a single class 
+     * The request is routed through a middleware that check the existence of the id of the class to delete
+     * The middlewares check the validity of token and the role of the user
+     * Then the request is routed to the appropriate class controller function for deleteById
+    */
     this.app.delete('/api/v1/classes/:id',[
       jwtMiddleware.validateJWT,
       classMiddleware.onlySecretaryNeedsToDoThis,
+      classMiddleware.validateClassExists,
       classController.deleteById
     ]);
 
-    /** Define the route for the delete method on the entire collection of users
-     * The request is routed only to user controller function for deleteAll
+    /** Define the route for the delete method on the entire collection of classes
+     * The middlewares check the validity of token and the role of the user
+     * The request is routed to class controller function for deleteAll
     */
     this.app.delete('/api/v1/classes',[
       jwtMiddleware.validateJWT,

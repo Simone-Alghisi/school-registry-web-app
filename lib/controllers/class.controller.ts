@@ -82,7 +82,28 @@ export class ClassController implements CRUDController{
     }
   }
 
-  async deleteAll(req: Request, res: Response): Promise<void> {}
+  /**
+   * Asyncronous functions for deletion of all classses which is not allowed, it sends back error code 405
+   * @param req express Request object
+   * @param res express Response object
+   */
+  async deleteAll(req: Request, res: Response): Promise<void> {
+    res.status(405).json({ error: 'Method not allowed' });
+  }
 
-  async deleteById(req: Request, res: Response): Promise<void> {}  
+  /**
+   * Asyncronous functions that deletes a single class with a specific id in the DB
+   * sends back the status code 204 otherwise 500
+   * @param req express Request object
+   * @param res express Response object
+   */
+  async deleteById(req: Request, res: Response): Promise<void> {
+    const classService = ClassService.getInstance();
+    try{
+      await classService.deleteById(req.params.id);
+      res.status(204).send();
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
+  }  
 }
