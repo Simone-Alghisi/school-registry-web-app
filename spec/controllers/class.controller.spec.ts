@@ -334,13 +334,140 @@ describe('ClassController', () => {
     });
   });
   
-  /*describe('#deleteById', () => {
+  describe('#deleteById', () => {
+    let existingClassId: any;
+    const notAClassId = 0;
 
-  });*/
+    it('should return the 403 Forbidden code: student shouldn\'t be able to delete a class', async () => {
+      const randomClass:any = await getRandomClass();
+      existingClassId = randomClass._id;
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ existingClassId)
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
 
-  /*describe('#deleteAll', () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to delete a class', async () => {
+      const randomClass:any = await getRandomClass();
+      existingClassId = randomClass._id;
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ existingClassId)
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
 
-  }); */
+    it('should return the 404 status code: Class not found', async () => {
+      return chai
+      .request(app)
+      .delete('/api/v1/classes/' + notAClassId)
+      .set('authorization', 'Bearer ' + token2)
+      .then(res => {
+        chai.expect(res.status).to.equal(404);
+      });
+    });
+
+    it('should return the json error message: Class not found', async () => {
+      return chai
+      .request(app)
+      .delete('/api/v1/classes/' + notAClassId)
+      .set('authorization', 'Bearer ' + token2)
+      .then(res => {
+        chai.expect(res.body.error).to.equal('Class not found');
+      });
+    });
+
+    it('should return the 204 status code: class deleted, valid class id', async () => {
+      const randomClass:any = await getRandomClass();
+      existingClassId = randomClass._id;
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/' + existingClassId)
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.equal(204);
+        });
+    });
+
+    it('should return the 404 status code: previously valid class id', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/' + existingClassId)
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.equal(404);
+        });
+    });
+
+    it('should return the json error message "Class not found": previously valid class id', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/' + existingClassId)
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Class not found');
+        });
+    });
+
+    //the element deleted should not be accessible
+    it('should return the 404 status code: previously valid class id', () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/' + existingClassId)
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.equal(404);
+        });
+    });
+
+  });
+
+  describe('#deleteAll', () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to delete all classes', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to delete all classes', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 405 status code: operation not allowed', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.equal(405);
+        });
+    });
+
+    it('should return the json error message "Method not allowed"', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Method not allowed');
+        });
+    });
+  });
 
   describe('#updateAll', () => {
     it('should return the 403 Forbidden code: student shouldn\'t be able to update all classes', async () => {
