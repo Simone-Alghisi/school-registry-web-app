@@ -42,23 +42,6 @@ export class ClassMiddleware extends CommonMiddleware{
       res.status(422).json({ error: 'Unprocessable entity' });
     }
   }
-  
-  async validateUserExists(req: Request, res: Response, next: NextFunction): Promise<void>{
-    const classService = ClassService.getInstance();
-    const classModel = ClassModel.getInstance();
-    let success = false;
-    if(classModel.isValidId(req.params.id)){
-      const classElem = await classService.getById(req.params.id);
-      if (classElem) {
-        success = true;
-      } 
-    }
-    if(success){
-      next();
-    }else{
-      res.status(404).json({error: 'Class not found'});
-    }
-  }
 
   discardUselessFields(req: Request, res: Response, next: NextFunction): void{
     const classModel = ClassModel.getInstance();
@@ -80,8 +63,8 @@ export class ClassMiddleware extends CommonMiddleware{
     const classModel = ClassModel.getInstance();
     let success = false;
     if(classModel.isValidId(req.params.id)){
-      const user = await classService.getById(req.params.id);
-      if (user) {
+      const classElem = await classService.getById(req.params.id);
+      if (classElem) {
         success = true;
       } 
     }

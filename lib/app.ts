@@ -4,6 +4,7 @@ import { UserRoutes } from './routes/user.route';
 import { ClassRoutes } from './routes/class.route';
 import { CommonRoutes } from './common/routes/common.routes'
 import { LoginRoutes } from './routes/login.route';
+import { GradeRoutes } from './routes/grade.route';
 
 declare global {
   namespace Express {
@@ -46,6 +47,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 routes.push(new UserRoutes(app));
 routes.push(new ClassRoutes(app));
 routes.push(new LoginRoutes(app));
+routes.push(new GradeRoutes(app));
 
 app.listen(port, () => {
   console.log('Server running on port: ' + port)
