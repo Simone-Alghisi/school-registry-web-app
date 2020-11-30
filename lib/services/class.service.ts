@@ -25,7 +25,9 @@ export class ClassService implements CRUDService {
     return newClass._id;
   }
 
-  async deleteById(resourceId: string): Promise<void>{}
+  async deleteById(resourceId: string): Promise<void>{
+    await this.classModel.classCollection.deleteOne({_id: resourceId});
+  }
 
   async list(): Promise<any>{
     return new Promise((resolve, reject) => {
