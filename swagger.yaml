@@ -367,20 +367,20 @@ paths:
       security:
         - bearerJwtAuthToken: []
       description: >-
-        Delete a user with a specific id
-      summary: Delete a user
+        Delete a class given a specific id
+      summary: Delete a class
       parameters: 
         - in: path
           name: id
           schema: 
             type: integer
           required: true
-          description: 'Id of the user to delete'
+          description: 'Id of the class to delete'
       responses:
         '204':
           $ref: '#/components/responses/NoContentResponse'
         '404':
-          description: 'User to delete not found'
+          description: 'Class to delete not found'
         '403':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
