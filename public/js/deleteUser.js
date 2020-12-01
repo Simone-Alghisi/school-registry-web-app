@@ -8,7 +8,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
   /**
    * Function that deletes an user
    */
-  function deleteUser(){
+  function deleteUser(attemptMade = false){
     const url = '../api/v1/users/' + userId;
     let fetchData = {
       method: 'DELETE',
@@ -19,7 +19,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
         if(resp.ok){
           $(location).prop('href', './users.html');
         }else if(resp.status == 403){
-          refreshToken().then(() => deleteUser()).catch(() => dealWithForbiddenErrorCode());
+          if(!attemptMade){
+            refreshToken().then(() => deleteUser(true)).catch(() => dealWithForbiddenErrorCode());
+          }else{
+            dealWithForbiddenErrorCode();
+          }
         }else{
           dealWithServerErrorCodes();
         }

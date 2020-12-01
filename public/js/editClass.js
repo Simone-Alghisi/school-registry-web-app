@@ -37,7 +37,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     subjectSelector.append($('<option>').val(key).text(subjectMapping[key]));
   }
   
-  function getUsersToInsert() {
+  function getUsersToInsert(attemptMade = false) {
     fetch('../api/v1/users', {
         method: 'GET',
         headers: {
@@ -48,7 +48,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         if (resp.ok) {
           return resp.json();
         } else if (resp.status == 403) {
-          refreshToken().then(() => getUsersToInsert()).catch(() => dealWithForbiddenErrorCode());
+          if(!attemptMade){
+            refreshToken().then(() => getUsersToInsert(true)).catch(() => dealWithForbiddenErrorCode());
+          }else{
+            dealWithForbiddenErrorCode();
+          }
         } else {
           dealWithServerErrorCodes();
         }
@@ -88,7 +92,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
   /**
    * 
    */
-  function getClass(){
+  function getClass(attemptMade = false){
     fetch('../api/v1/classes/' + classId, {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
@@ -97,7 +101,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().then(() => getClass()).catch(() => dealWithForbiddenErrorCode());
+        if(!attemptMade){
+          refreshToken().then(() => getClass(true)).catch(() => dealWithForbiddenErrorCode());
+        } else {
+          dealWithForbiddenErrorCode();
+        }
       } else {
         dealWithServerErrorCodes();
       }
@@ -116,7 +124,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     );
   }
 
-  function getStudents(data){
+  function getStudents(data, attemptMade = false){
     fetch('../api/v1/users?class_id='+ data._id +'&role=' + 0, {
       method: 'GET',
       headers: { 
@@ -127,7 +135,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().then(() => getStudents(data)).catch(() => dealWithForbiddenErrorCode());
+        if(!attemptMade){
+          refreshToken().then(() => getStudents(data, true)).catch(() => dealWithForbiddenErrorCode());
+        }else{
+          dealWithForbiddenErrorCode();
+        }
       } else {
         dealWithServerErrorCodes();
       }
@@ -139,7 +151,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     })
   }
 
-  function getProfessors(data){
+  function getProfessors(data, attemptMade = false){
     fetch('../api/v1/users?role=' + 1, {
       method: 'GET',
       headers: { 
@@ -150,7 +162,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().then(() => getProfessors(data)).catch(() => dealWithForbiddenErrorCode());
+        if(!attemptMade){
+          refreshToken().then(() => getProfessors(data, true)).catch(() => dealWithForbiddenErrorCode());
+        }else{
+          dealWithForbiddenErrorCode();
+        }
       } else {
         dealWithServerErrorCodes();
       }
@@ -259,7 +275,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
   /**
    * 
    */
-  function removeStudentFromClass(userId){
+  function removeStudentFromClass(userId, attemptMade = false){
     const url = '../api/v1/users/' + userId;
     let data = '{$unset: {class_id: 1 } }'
     let fetchData = {
@@ -272,7 +288,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         if(resp.ok){
           return resp.json();
         }else if(resp.status == 403){
-          refreshToken().then(() => removeStudentFromClass(userId)).catch(() => dealWithForbiddenErrorCode());
+          if(!attemptMade){
+            refreshToken().then(() => removeStudentFromClass(userId, true)).catch(() => dealWithForbiddenErrorCode());
+          }else{
+            dealWithForbiddenErrorCode();
+          }
         } else {
           dealWithServerErrorCodes();
         }
@@ -295,7 +315,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     professorsTable.row(toRemove).remove().draw(false);
   });
   
-  function editUser(user){
+  function editUser(user, attemptMade = false){
     
     let base_url = '../api/v1/users/';
     let data = '';
@@ -317,7 +337,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         if(resp.ok){
           resolve();
         }else if(resp.status == 403){
-          refreshToken().then(() => editUser(userId)).catch(() => dealWithForbiddenErrorCode());
+          if(!attemptMade){
+            refreshToken().then(() => editUser(userId, true)).catch(() => dealWithForbiddenErrorCode());
+          }else{
+            dealWithForbiddenErrorCode();
+          }
         } else {
           dealWithServerErrorCodes();
         }
@@ -331,7 +355,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     })
   }
 
-  async function editClass(){
+  async function editClass(attemptMade = false){
 
     for(const user in modifiedUsers){
       await editUser(user);
@@ -351,7 +375,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       if(resp.ok){
         $(location).prop('href', './classes.html');
       }else if(resp.status == 403){
-        refreshToken().then(() => editClass()).catch(() => dealWithForbiddenErrorCode());
+        if(!attemptMade){
+          refreshToken().then(() => editClass(true)).catch(() => dealWithForbiddenErrorCode());
+        }else{
+          dealWithForbiddenErrorCode();
+        }
       } else {
         dealWithServerErrorCodes();
       }

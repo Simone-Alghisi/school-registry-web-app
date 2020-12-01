@@ -6,7 +6,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
   /**
    * Function that sends the user data as a json to the RESTFUL api to add the user
    */
-  function addUser(){
+  function addUser(attemptMade = false){
     const url = '../api/v1/users/';
     // The data we are going to send in our request
     let data = '{"name": "'+ $('#name').val() + '", "surname": "' + $('#surname').val() + '", "email": "' + $('#email').val() + '", "password": "'
@@ -22,7 +22,11 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
         if(resp.ok){
           $(location).prop('href', './users.html');
         }else if(resp.status == 403){
-          refreshToken().then(() => addUser()).catch(() => dealWithForbiddenErrorCode());
+          if(!attemptMade){
+            refreshToken().then(() => addUser(true)).catch(() => dealWithForbiddenErrorCode());
+          } else {
+            dealWithForbiddenErrorCode();
+          }
         } else {
           dealWithServerErrorCodes();
         }

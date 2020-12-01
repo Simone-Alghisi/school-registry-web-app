@@ -69,7 +69,7 @@ import {
     }
   });
 
-  function getUsersToInsert() {
+  function getUsersToInsert(attemptMade = false) {
     fetch('../api/v1/users', {
         method: 'GET',
         headers: {
@@ -80,7 +80,11 @@ import {
         if (resp.ok) {
           return resp.json();
         } else if (resp.status == 403) {
-          refreshToken().then(() => getUsersToInsert()).catch(() => dealWithForbiddenErrorCode());
+          if(!attemptMade){
+            refreshToken().then(() => getUsersToInsert(true)).catch(() => dealWithForbiddenErrorCode());
+          } else {
+            dealWithForbiddenErrorCode();
+          }
         } else {
           dealWithServerErrorCodes();
         }
@@ -237,7 +241,7 @@ import {
     return tJson;
   }
 
-  function editUser(user) {
+  function editUser(user, attemptMade = false) {
     return new Promise((resolve, reject) => {
       const url = '../api/v1/users/' + user._id;
       // The data we are going to send in our request
@@ -262,7 +266,11 @@ import {
           if (resp.ok) {
             return resp.json();
           } else if (resp.status == 403) {
-            refreshToken().then(() => editUser(user)).catch(() => dealWithForbiddenErrorCode());
+            if(!attemptMade){
+              refreshToken().then(() => editUser(user, true)).catch(() => dealWithForbiddenErrorCode());
+            } else {
+              dealWithForbiddenErrorCode();
+            }
           } else {
             dealWithServerErrorCodes();
           }
@@ -279,7 +287,7 @@ import {
     });
   }
 
-  function createClass() {
+  function createClass(attemptMade = false) {
     const url = '../api/v1/classes/';
     let name = $('#className').val();
     // The data we are going to send in our request
@@ -305,7 +313,11 @@ import {
           //redirect to classes list
           $(location).prop('href', './classes.html');
         } else if (resp.status == 403) {
-          refreshToken().then(() => createClass()).catch(() => dealWithForbiddenErrorCode());
+          if(!attemptMade){
+            refreshToken().then(() => createClass(true)).catch(() => dealWithForbiddenErrorCode());
+          } else {
+            dealWithForbiddenErrorCode();
+          }
         } else {
           dealWithServerErrorCodes();
         }

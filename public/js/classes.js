@@ -5,7 +5,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
 
   let table = $('#dataTable').DataTable();
 
-  function getClasses(){
+  function getClasses(attempMade = false){
     fetch('../api/v1/classes', {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken}
@@ -14,7 +14,11 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().then(() => getClasses()).catch(() => dealWithForbiddenErrorCode());
+        if(!attempMade){
+          refreshToken().then(() => getClasses(true)).catch(() => dealWithForbiddenErrorCode());
+        }else{
+          dealWithForbiddenErrorCode();
+        }
       }else{
         dealWithServerErrorCodes();
       }

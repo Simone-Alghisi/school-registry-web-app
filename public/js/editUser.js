@@ -8,7 +8,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
   /**
    * 
    */
-  function getUser(){
+  function getUser(attemptMade = false){
     fetch('../api/v1/users/' + userId, {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
@@ -17,7 +17,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().then(() => getUser()).catch(() => dealWithForbiddenErrorCode());
+        if(!attemptMade){
+          refreshToken().then(() => getUser(true)).catch(() => dealWithForbiddenErrorCode());
+        }else{
+          dealWithForbiddenErrorCode();
+        }        
       } else {
         dealWithServerErrorCodes();
       }
@@ -42,7 +46,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
   /**
    * 
    */
-  function editUser(){
+  function editUser(attemptMade = false){
     const url = '../api/v1/users/' + userId;
     // The data we are going to send in our request
     let data = '{"name": "'+ $('#name').val() + '", "surname": "' + $('#surname').val() + '", "email": "' + $('#email').val() + '", "password": "'
@@ -58,7 +62,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
         if(resp.ok){
           return resp.json();
         }else if(resp.status == 403){
-          refreshToken().then(() => editUser()).catch(() => dealWithForbiddenErrorCode());
+          if(!attemptMade){
+            refreshToken().then(() => editUser(true)).catch(() => dealWithForbiddenErrorCode());
+          }else{
+            dealWithForbiddenErrorCode();
+          }
         } else {
           dealWithServerErrorCodes();
         }

@@ -91,12 +91,8 @@ export class UserModel {
     communications:[
       {
         sender: String,
-        communication: [
-          {
-            subject: String,
-            content: String
-          }
-        ]
+        subject: String,
+        content: String
       }
     ]
    });

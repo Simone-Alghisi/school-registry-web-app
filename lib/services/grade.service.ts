@@ -1,5 +1,5 @@
-import { CRUDService } from '../common/interfaces/crudService.interface';
 import { ClassModel } from '../models/class.model';
+import mongoose from 'mongoose';
 
 /**
  * Semplicemente la classe intermedia che interagisce con il model
@@ -20,7 +20,26 @@ export class GradeService /*implements CRUDService*/ {
   }
 
   async create(resource: any) : Promise<any>{
-
+    const newDocumentId = new mongoose.Types.ObjectId();
+    console.log('Sono qui: ' + resource.class_id);
+    await this.classModel.classCollection.updateOne(
+      { 
+        _id: resource.class_id,
+      }, 
+      {
+        $push: {
+          grades_list: { 
+            _id: newDocumentId,
+            value: resource.value, 
+            date: resource.date, 
+            subject: resource.subject,
+            student_id: resource.student_id,
+            description: resource.description 
+          }
+        }
+      }
+    );
+    return [resource.class_id, newDocumentId];
   }
 
   async deleteById(resourceId: string): Promise<void>{
