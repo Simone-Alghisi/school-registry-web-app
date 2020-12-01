@@ -420,6 +420,40 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+          
+    post: 
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Creates a new grades for one or more student of a class with a specific id
+      summary: Insert a new grande for students in a specific class
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: string
+            format: ObjectId
+          required: true
+          description: 'Id of the class to which insert the grades'
+      responses:
+        '201':
+          description: 'Location of created element in grades list of a specific class'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: 'Link to the newly created grades item in ClassGrades'     
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassGrades' 
 
 components:
   securitySchemes:
