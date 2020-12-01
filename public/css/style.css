@@ -4071,6 +4071,13 @@ input[type="button"].btn-block {
   cursor: default;
 }
 
+.nav-link.disabled-card-header {
+  color: #ffffff;
+  pointer-events: none;
+  cursor: default;
+}
+
+
 .nav-tabs {
   border-bottom: 1px solid #dddfeb;
 }
@@ -4098,6 +4105,12 @@ input[type="button"].btn-block {
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
   color: #6e707e;
+  background-color: #fff;
+  border-color: #dddfeb #dddfeb #fff;
+}
+
+.nav-link.active-card-header {
+  color: #000000;
   background-color: #fff;
   border-color: #dddfeb #dddfeb #fff;
 }
@@ -4565,6 +4578,11 @@ input[type="button"].btn-block {
   margin-bottom: 0;
   background-color: #c43800;
   border-bottom: 1px solid #e3e6f0;
+}
+
+.card-header-nav {
+  margin-bottom: 0;
+  background-color: #c43800;
 }
 
 .card-header:first-child {
