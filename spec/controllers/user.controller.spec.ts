@@ -127,14 +127,24 @@ describe('UserController', () => {
   });
 
   describe('#list', () => {
-    
-    it('should return the 403 Forbidden code: student shouldn\'t be able to request users', async () => {
+
+    it('students should be able to retrieve only their information: return one element', async () => {
       return chai
         .request(app)
         .get('/api/v1/users')
         .set('authorization', 'Bearer ' + token0)
         .then(res => {
-          chai.expect(res.status).to.eql(403);
+          chai.expect(res.body).to.have.lengthOf(1);
+        });
+    });
+
+    it('students should be able to retrieve only their information: return same email', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/users')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.body[0].email).to.eql(user_role_0.email);
         });
     });
 

@@ -33,7 +33,7 @@ export class JwtMiddleware {
         } else{
           const token = authorization[1];
           const decoded = jwt.verify(token, jwtSecret);
-          req.jwt =  { role: decoded['role'] };
+          req.jwt =  { email: decoded['email'], role: decoded['role'] };
           next();
         }
       } catch (error) {

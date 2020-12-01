@@ -39,7 +39,7 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.get('/api/v1/users', [
       jwtMiddleware.validateJWT,
-      userMiddleware.onlySecretaryNeedsToDoThis,
+      userMiddleware.requestMyDataIfIamNotASecretary,
       userMiddleware.discardUselessFieldsQuery,
       userMiddleware.discardPasswordAndSaltQuery,
       userController.list
