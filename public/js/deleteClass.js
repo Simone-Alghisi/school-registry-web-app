@@ -10,7 +10,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
    * Delete the students' reference to that class
    * @param user 
    */
-  async function removeClassReferencesStudents(){
+  async function removeClassReferencesStudents(attemptMade = false){
     return fetch('../api/v1/users?class_id=' + classId, {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken}
@@ -18,7 +18,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().then(() => deleteClass()).catch(() => dealWithForbiddenErrorCode());
+        if(!attempMade){
+          refreshToken().then(() => deleteClass(true)).catch(() => dealWithForbiddenErrorCode());
+        } else {
+          dealWithForbiddenErrorCode();
+        }
       }else{
         dealWithServerErrorCodes();
       }
@@ -36,7 +40,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
    * Delete the student class_id reference
    * @param userId
    */
-  async function deleteStudentReference(userId){
+  async function deleteStudentReference(userId, attemptMade = false){
     return fetch('../api/v1/users/' + userId, {
       method: 'PATCH',
       body: JSON.stringify({class_id: ''}),
@@ -47,7 +51,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
       if(resp.ok){
         return;
       }else if(resp.status == 403){
-        refreshToken().then(() => deleteClass()).catch(() => dealWithForbiddenErrorCode());
+        if(!attemptMade){
+          refreshToken().then(() => deleteStudentReference(userId, true)).catch(() => dealWithForbiddenErrorCode());
+        } else {
+          dealWithForbiddenErrorCode();
+        }
       }else{
         dealWithServerErrorCodes();
       }
@@ -59,7 +67,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
   /**
    * Delete the professors' reference to that class
    */
-  async function removeClassReferencesProfessors(){
+  async function removeClassReferencesProfessors(attempMade = false){
     return fetch('../api/v1/users?role=1', {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken}
@@ -67,7 +75,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().then(() => deleteClass()).catch(() => dealWithForbiddenErrorCode());
+        if(!attempMade){
+          refreshToken().then(() => removeClassReferencesProfessors(true)).catch(() => dealWithForbiddenErrorCode());
+        } else {
+          dealWithForbiddenErrorCode();
+        }
       }else{
         dealWithServerErrorCodes();
       }
@@ -85,7 +97,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
    * Delete the professor teaches reference
    * @param user 
    */
-  async function deleteProfessorReference(user){
+  async function deleteProfessorReference(user, attempMade = false){
     user.teaches = user.teaches.find( (t) => t.class_id !== classId);
     return fetch('../api/v1/users/' + user._id, {
       method: 'PATCH',
@@ -95,7 +107,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
       if(resp.ok){
         return;
       }else if(resp.status == 403){
-        refreshToken().then(() => deleteClass()).catch(() => dealWithForbiddenErrorCode());
+        if(!attempMade){
+          refreshToken().then(() => deleteProfessorReference(user, true)).catch(() => dealWithForbiddenErrorCode());
+        } else {
+          dealWithForbiddenErrorCode();
+        }
       }else{
         dealWithServerErrorCodes();
       }
@@ -115,7 +131,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
     );
   }
   
-  async function removeClassById(){
+  async function removeClassById(attemptMade = false){
     return fetch('../api/v1/classes/' + classId, {
       method: 'DELETE',
       headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken}
@@ -124,7 +140,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
       if(resp.ok){
         return;
       }else if(resp.status == 403){
-        refreshToken().then(() => deleteClass()).catch(() => dealWithForbiddenErrorCode());
+        if(!attemptMade){
+          refreshToken().then(() => removeClassById(true)).catch(() => dealWithForbiddenErrorCode());
+        } else {
+          dealWithForbiddenErrorCode();
+        }
       }else{
         dealWithServerErrorCodes();
       }

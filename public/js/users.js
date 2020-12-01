@@ -31,16 +31,21 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
    * Fetch all the users from the RESTFUL api
    * And load them into the table in the users.html page
    */
-  function getUsers(){
+  function getUsers(attemptMade = false){
     fetch('../api/v1/users', {
       method: 'GET',
       headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
     })
     .then((resp) => {
+      console.log(resp);
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){
-        refreshToken().then(() => getUsers()).catch(() => dealWithForbiddenErrorCode());
+        if(!attemptMade){
+          refreshToken().then(() => getUsers(true)).catch(() => dealWithForbiddenErrorCode());
+        } else {
+          dealWithForbiddenErrorCode();
+        }
       } else {
         dealWithServerErrorCodes();
       }
