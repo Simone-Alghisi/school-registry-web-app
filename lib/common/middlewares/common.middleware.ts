@@ -67,6 +67,23 @@ export class CommonMiddleware {
     }
   }
 
+  requestMyDataIfIamNotASecretary(req: Request, res: Response, next: NextFunction): void{
+    try {
+      const email = req.jwt.email;
+      const userRole = parseInt(req.jwt.role, 10);
+      if (email && userRole !== 2) {
+        req.query.email = email;
+        next();
+      } else if(userRole && userRole === 2){
+        next();
+      } else {
+        res.status(403).json({ error: 'Forbidden' });
+      }
+    } catch (e) {
+      res.status(403).json({ error: 'Forbidden' });
+    }
+  }
+
    /**
    * Middleware that checks if the body of the request is empy for an update operation
    * @param req Express Request

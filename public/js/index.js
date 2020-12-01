@@ -31,7 +31,31 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } fro
           if(data){
             window.sessionStorage.accessToken = data.accessToken;
             window.sessionStorage.refreshToken = data.refreshToken;
-            $(location).prop('href', './home.html');
+            let fetchData = {
+              method: 'GET',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
+            }
+            fetch('../api/v1/users', fetchData)
+              .then((resp) => {
+                if(resp.ok) {
+                  return resp.json();
+                } else {
+                  dealWithServerErrorCodes();
+                }
+              })
+              .then((data) => {
+                if(data.length > 1){
+                  $(location).prop('href', './home.html');
+                }
+                data = data[0];
+                if(data.role === 0){
+                  //TODO... homepage for the user
+                } else if(data.role === 1){
+                  $(location).prop('href', './homeProfessor.html');
+                } else {
+                  dealWithForbiddenErrorCode();
+                }
+              })
           }
         })
         .catch( 

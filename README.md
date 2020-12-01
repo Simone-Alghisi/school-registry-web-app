@@ -1,5 +1,7 @@
 # projectSe2group06
 
+![Deploy](https://github.com/Simone-Alghisi/projectSe2group06/workflows/Deploy/badge.svg)
+
 ## Get started with projectSe2group06
 
 Clone the repository on your machine
