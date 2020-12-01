@@ -44,6 +44,7 @@ export class ClassRoutes extends CommonRoutes implements ConfigureRoutes {
       classController.list
     ]);
 
+    //TODO define in a better way the users' permissions to perform this
     this.app.get('/api/v1/classes/:id', [
       jwtMiddleware.validateJWT,
       classMiddleware.validateClassExists,

@@ -1,10 +1,9 @@
 import { Application } from 'express'
 import { CommonRoutes } from '../common/routes/common.routes'
 import { ConfigureRoutes } from '../common/interfaces/configureRoutes.interface'
-//import { ClassController } from '../controllers/class.controller';
-import { ClassMiddleware } from '../middlewares/class.middleware';
 import { JwtMiddleware } from '../middlewares/jwt.middleware';
 import { GradeController } from '../controllers/grade.controller';
+import { GradeMiddleware } from '../middlewares/grade.middleware';
 
 
 /**
@@ -29,16 +28,29 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
 
 
     /** Instance of class middleware that checks every request on class resources*/
-    const classMiddleware: ClassMiddleware = new ClassMiddleware();
+    const gradeMiddlware: GradeMiddleware = new GradeMiddleware();
 
 
     /** Instance of jwt middleware that checks if a client has a valid token*/
     const jwtMiddleware: JwtMiddleware = new JwtMiddleware();
 
+    //TODO define in a better way the users' permissions to perform this
     this.app.get('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
-      classMiddleware.validateClassExists,
+      gradeMiddlware.validateClassExists,
       grade.list
+    ]);
+
+    //TODO define in a better way the users' permissions to perform this
+    this.app.post('/api/v1/classes/:id/grades',[
+      jwtMiddleware.validateJWT,
+      gradeMiddlware.validateClassExists,
+      gradeMiddlware.validateValue,
+      gradeMiddlware.validateDate,
+      gradeMiddlware.validateSubject,
+      gradeMiddlware.validateDescription,
+      gradeMiddlware.validateStudent,
+      grade.create
     ]);
   }
 }
