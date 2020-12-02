@@ -14,7 +14,7 @@ import * as faker from 'faker';
 import moment from 'moment';
 import { UserModel } from '../../lib/models/user.model'
 import { UserController } from '../../lib/controllers/user.controller';
-import { user_role_0, user_role_1, user_role_2, userAccessToken } from '../spec_helper';
+import { user_role_0, user_role_1, user_role_2, userAccessToken, dateFormat } from '../spec_helper';
 import { UserService } from '../../lib/services/user.service';
 
 chai.use(chaiHttp);
@@ -99,8 +99,6 @@ describe('UserController', () => {
     await userService.deleteById(idUser1);
     await userService.deleteById(idUser2);
   });
-
-  const dateFormat = 'YYYY-MM-DD';
 
   describe('CRUD interface implementation', () => {
     it('should implement the list function', () => {

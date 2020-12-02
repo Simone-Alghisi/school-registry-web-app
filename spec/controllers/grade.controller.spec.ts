@@ -3,10 +3,13 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../lib/app';
 import * as faker from 'faker';
+import moment from 'moment';
 import { ClassModel } from '../../lib/models/class.model'
 import { GradeController } from '../../lib/controllers/grade.controller';
-import { user_role_0, user_role_1, user_role_2, userAccessToken } from '../spec_helper';
+import { user_role_0, user_role_1, user_role_2, userAccessToken, some_class, dateFormat } from '../spec_helper';
 import { UserService } from '../../lib/services/user.service';
+import { ClassService } from '../../lib/services/class.service';
+import mongoose from 'mongoose';
 
 chai.use(chaiHttp);
 
@@ -17,21 +20,9 @@ let idUser2: string;
 let token0: string;
 let token1: string;
 let token2: string;
+let class_id: string;
+let student_id: string;
 
-async function getNumberOfClasses(){
-  return new Promise( (resolve, reject) => {
-    classModel.classCollection
-      .estimatedDocumentCount({})
-      .exec(
-        function (err, count) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(count);
-          }
-        })
-  });
-}
 
 async function getRandomClass(){
   return new Promise( (resolve, reject) => {
@@ -49,6 +40,25 @@ async function getRandomClass(){
   });
 }
 
+async function createClass(){
+  const classService: ClassService = ClassService.getInstance();
+  return await classService.create(some_class);
+}
+
+async function createUserOfThatClass(class_id: string){
+  const userService: UserService = UserService.getInstance();
+  return await userService.create({
+    name: faker.name.firstName(),
+    surname: faker.name.lastName(),
+    password: faker.internet.password(),
+    email: faker.internet.email(),
+    role: 0,
+    birth_date: moment(new Date()).format(dateFormat),
+    class_id: class_id
+  });
+}
+
+
 describe('GradeController', () => {
   const userService: UserService = UserService.getInstance();
   const gradeController = new GradeController();
@@ -63,6 +73,8 @@ describe('GradeController', () => {
     idUser0 = await userService.create(JSON.parse(JSON.stringify(user_role_0)));
     idUser1 = await userService.create(JSON.parse(JSON.stringify(user_role_1)));
     idUser2 = await userService.create(JSON.parse(JSON.stringify(user_role_2)));
+    class_id = await createClass();
+    student_id = await createUserOfThatClass(class_id);
 
     await userAccessToken(user_role_0.email, user_role_0.password)
       .then((data: any) => {
@@ -161,7 +173,206 @@ describe('GradeController', () => {
   });
 
   describe('#create', () => {
-    
+    it('should return the 403 error code: no token provided', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 422 error code: class does not exists', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + (new mongoose.Types.ObjectId) + '/grades')
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 422 error code: value below 0', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.random.number({min:-10, max:-1}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 error code: value above 10', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.random.number({min:11, max:100}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 error code: invalid type of value', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.lorem.text(),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 error code: invalid type of date', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: faker.random.number(), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 error code: invalid type of subject', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.lorem.text(),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 error code: invalid type of description', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.random.number(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 error code: invalid student id', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: new mongoose.Types.ObjectId
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 error code: missing field', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: moment(faker.date.past()).format(dateFormat),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 201 status code: grade created', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(201);
+        });
+    });
+
+    it('should have the proper location header', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.header.location).to.contains('api/v1/classes/' + class_id + '/grades/');
+        });
+    });
   });
 
   describe('#getById', () => {

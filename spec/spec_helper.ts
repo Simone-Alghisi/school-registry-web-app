@@ -4,10 +4,36 @@ import { RequestOptions } from 'https';
 import { ClientRequest, IncomingMessage } from 'http';
 import http from 'http';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
-const dateFormat = 'YYYY-MM-DD';
+/**
+ * Connection to the TEST Database
+ */
+
+const test_db_options = {
+  autoIndex: true,
+  poolSize: 10,
+  bufferMaxEntries: 0,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
+};
+
+const test_uri = process.env.MONGODB_TEST_URI || '';
+
+if(mongoose.connection.readyState === 0){
+  console.log('MongoDB connection in TEST');
+  mongoose.connect(test_uri, test_db_options).then(() => {
+    console.log('MongoDB TEST is connected');
+  }).catch( error => {
+    console.log('Failed connection in TEST');
+    console.log( error.stack );
+  });
+}
+
+export const dateFormat = 'YYYY-MM-DD';
 
 export const user_role_0 = {
   name: faker.name.firstName(),
@@ -34,6 +60,10 @@ export const user_role_2 = {
   email: faker.internet.email(),
   role: 2,
   birth_date: moment(new Date()).format(dateFormat)
+}
+
+export const some_class = {
+  name: faker.name.firstName()
 }
 
 export function userAccessToken(email: string, password: string) {

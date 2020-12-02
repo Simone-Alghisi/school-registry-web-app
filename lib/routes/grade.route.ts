@@ -44,7 +44,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     //TODO define in a better way the users' permissions to perform this
     this.app.post('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
-      gradeMiddlware.validateClassExists,
+      gradeMiddlware.validateClassExistsInCreate,
       gradeMiddlware.validateValue,
       gradeMiddlware.validateDate,
       gradeMiddlware.validateSubject,
