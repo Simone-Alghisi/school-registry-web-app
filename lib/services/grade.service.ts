@@ -21,7 +21,6 @@ export class GradeService /*implements CRUDService*/ {
 
   async create(resource: any) : Promise<any>{
     const newDocumentId = new mongoose.Types.ObjectId();
-    console.log('Sono qui: ' + resource.class_id);
     await this.classModel.classCollection.updateOne(
       { 
         _id: resource.class_id,

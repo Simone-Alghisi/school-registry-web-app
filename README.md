@@ -1,6 +1,6 @@
 # projectSe2group06
 
-![Deploy](https://github.com/Simone-Alghisi/projectSe2group06/workflows/Deploy/badge.svg)
+![Deploy & Tests](https://github.com/Simone-Alghisi/projectSe2group06/workflows/Deploy/badge.svg)
 
 ## Get started with projectSe2group06
 
@@ -29,6 +29,7 @@ An example of the file is the following
 ```bash=
 PORT=8080
 MONGODB_URI=mongodb://[username:password@]127.0.0.1:27017/db
+MONGODB_TEST_URI=mongodb://[test_username:test_password@]127.0.0.1:27017/db_test
 JWT_SECRET=<jwt access token secret>
 JWT_REFRESH_SECRET=<jwt refresh token secret>
 ```

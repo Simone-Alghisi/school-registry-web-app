@@ -5,7 +5,8 @@
 
 import 'mocha';
 import chai from 'chai';
-import { UserMiddleware } from '../../lib/middlewares/user.middleware'
+import { UserMiddleware } from '../../lib/middlewares/user.middleware';
+import { dateFormat } from '../spec_helper'
 import * as faker from 'faker';
 import moment from 'moment';
 
@@ -105,7 +106,6 @@ describe('UserModel', () => {
     });
     
     it('should be valid if birth_date is an valid string', function() {
-      const dateFormat = 'YYYY-MM-DD';
       chai.expect(UserMiddleware.validField(moment(faker.date.past()).format(dateFormat), 'birth_date')).be.true;    
     });
   });

@@ -2,6 +2,8 @@ import { Response, Request, NextFunction } from 'express';
 import { ClassMiddleware } from '../middlewares/class.middleware';
 import { UserModel } from '../models/user.model';
 import { UserService } from '../services/user.service';
+import { ClassModel } from '../models/class.model';
+import { ClassService } from '../services/class.service'
 import { CommonModel } from '../common/models/common.model'
 
 export class GradeMiddleware extends ClassMiddleware{
@@ -10,8 +12,24 @@ export class GradeMiddleware extends ClassMiddleware{
     super();
   }
 
+  async validateClassExistsInCreate(req: Request, res: Response, next: NextFunction): Promise<void>{
+    const classService = ClassService.getInstance();
+    const classModel = ClassModel.getInstance();
+    let success = false;
+    if(classModel.isValidId(req.params.id)){
+      const classElem = await classService.getById(req.params.id);
+      if (classElem) {
+        success = true;
+      } 
+    }
+    if(success){
+      next();
+    }else{
+      res.status(422).json({ error: 'Unprocessable entity' });
+    }
+  }
+
   async validateStudent(req: Request, res: Response, next: NextFunction) : Promise<void>{
-    console.log('Sono qui: user');
     const userService = UserService.getInstance();
     const userModel = UserModel.getInstance();
     let success = false;
@@ -29,8 +47,7 @@ export class GradeMiddleware extends ClassMiddleware{
   }
 
   validateValue(req: Request, res: Response, next: NextFunction) :void{
-    console.log('Sono qui: value');
-    if (req.body && CommonModel.isNumber(req.body.value)) {
+    if (req.body && CommonModel.isNumber(req.body.value)  && parseInt(req.body.value) >= 0 && parseInt(req.body.value) <= 10) {
       next();
     } else {
       res.status(422).json({ error: 'Unprocessable entity' });
@@ -38,7 +55,6 @@ export class GradeMiddleware extends ClassMiddleware{
   }
 
   validateDate(req: Request, res: Response, next: NextFunction) :void{
-    console.log('Sono qui: date');
     if (req.body && CommonModel.isValidStringDate(req.body.date)) {
       next();
     } else {
@@ -47,7 +63,6 @@ export class GradeMiddleware extends ClassMiddleware{
   }
 
   validateSubject(req: Request, res: Response, next: NextFunction) :void{
-    console.log('Sono qui: subject');
     if (req.body && CommonModel.isNumber(req.body.subject)) {
       next();
     } else {
@@ -56,7 +71,6 @@ export class GradeMiddleware extends ClassMiddleware{
   }
 
   validateDescription(req: Request, res: Response, next: NextFunction) :void{
-    console.log('Sono qui: description');
     if (req.body && CommonModel.validateString(req.body.description)) {
       next();
     } else {
