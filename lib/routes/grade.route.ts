@@ -5,7 +5,6 @@ import { JwtMiddleware } from '../middlewares/jwt.middleware';
 import { GradeController } from '../controllers/grade.controller';
 import { GradeMiddleware } from '../middlewares/grade.middleware';
 
-
 /**
  * GradeRoutes class, it extends the {@link CommonRoutes} class and implements the {@link ConfigureRoutes} interface.
  * It aims to manage all the requests received for the resource _/classes/{id}/grades_.
@@ -43,6 +42,13 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     ]);
 
     //TODO define in a better way the users' permissions to perform this
+    /**
+     * Route for the post method (create resource) on a single grade 
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The middlewares also check that the referred class exist
+     * The middlewares check the validity of the value, date, subject, descript, student
+     * Then the request is routed to the appropriate grade controller function for create
+    */
     this.app.post('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
       gradeMiddlware.validateClassExistsInCreate,

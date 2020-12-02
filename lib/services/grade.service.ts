@@ -4,24 +4,48 @@ import {
 import mongoose from 'mongoose';
 
 /**
- * Semplicemente la classe intermedia che interagisce con il model
+ * GradeService class
+ * It aims to manage perform all the operations that involve the _classes/{id}/grades_ resource
+ * by interacting with the database
  */
 export class GradeService /*implements CRUDService*/ {
+  /**
+   * GradeService instance
+   */
   private static instance: GradeService;
-  classModel: ClassModel;
+  /**
+   * Class model 
+   */
+  classModel: ClassModel; 
 
-  constructor() {
+  /**
+   * Constructor which initialize the class model instance
+   */
+  constructor(){ 
     this.classModel = ClassModel.getInstance();
   }
 
+  /**
+   * Function which retrieves the GradeService instance
+   * by creating it if not present
+   * 
+   * @returns GradeService instance
+   */
   static getInstance(): GradeService {
     if (!GradeService.instance) {
       GradeService.instance = new GradeService();
     }
     return GradeService.instance;
   }
-
-  async create(resource: any): Promise < any > {
+  
+  /**
+   * Asynchronous function which creates a grade resource given all the required parameter
+   * @param resource 
+   * 
+   * @returns class id, in which the student is enrolled
+   * @returns grade id, which correspond to the one just created by the function
+   */
+  async create(resource: any) : Promise<any>{
     const newDocumentId = new mongoose.Types.ObjectId();
     await this.classModel.classCollection.updateOne({
       _id: resource.class_id,

@@ -5,11 +5,23 @@ import { CommonModel } from '../common/models/common.model'
 
 /**Class which specifies the schema for a user in the DB */
 export class UserModel {
+  /**
+   * MongooseService instance
+   */
   mongooseService: MongooseService = MongooseService.getInstance();
+  /**
+   * UserModel instance
+   */
   private static instance: UserModel;
 
+  /**
+   * DatabaseSchema
+   */
   dbSchema = this.mongooseService.getMongoose().Schema;
 
+  /**
+   * User resource schema
+   */
   userSchema: Schema = new this.dbSchema({
     name: { 
       type: String,
@@ -97,10 +109,16 @@ export class UserModel {
     ]
    });
 
+  /**
+   * User model
+   */
   userCollection = this.mongooseService.getMongoose().model('users', this.userSchema);
 
   constructor(){}
 
+  /**
+   * Function which returns the instance of UserModel class
+   */
   public static getInstance(): UserModel{
     if (!this.instance) {
       this.instance = new UserModel();
@@ -108,8 +126,15 @@ export class UserModel {
     return this.instance;
   }
 
+  /**
+   * Function that validates a mongoose.Types.ObjectId value
+   * 
+   * @param id 
+   * 
+   * @returns true if valid
+   * @returns false if not valid
+   */
   public isValidId(id:string): boolean{
-    //return this.mongooseService.isValidId(id);
     return Types.ObjectId.isValid(id);
   } 
 }

@@ -6,6 +6,9 @@ import { CommonRoutes } from './common/routes/common.routes'
 import { LoginRoutes } from './routes/login.route';
 import { GradeRoutes } from './routes/grade.route';
 
+/**
+ * Exdends the Express request object with a jwt field
+ */
 declare global {
   namespace Express {
     interface Request {
@@ -29,8 +32,13 @@ const routes: CommonRoutes[] = [];
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+/**
+ * Exposing public folder
+ */
 app.use('/', express.static('public'));
-// Enabling CORS, respond to the OPTION HTTP verb
+/**
+ * Enabling CORS, respond to the OPTION HTTP verb
+ */
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -43,12 +51,17 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 
-//Routes defined
+/**
+ * Routes that needs to be configured
+ */
 routes.push(new UserRoutes(app));
 routes.push(new ClassRoutes(app));
 routes.push(new LoginRoutes(app));
 routes.push(new GradeRoutes(app));
 
+/**
+ * Configuring all the routes
+ */
 app.listen(port, () => {
   console.log('Server running on port: ' + port)
   routes.forEach((route: CommonRoutes) => {
@@ -56,7 +69,9 @@ app.listen(port, () => {
   });
 });
 
-//Default 404 handler
+/**
+ * Default 404 handler
+ */
 app.use((req: Request, res: Response) => {
   res.status(404);
   res.json({ error: 'Not found' });

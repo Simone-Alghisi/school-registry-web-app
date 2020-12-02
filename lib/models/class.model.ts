@@ -4,11 +4,23 @@ import { CommonModel } from '../common/models/common.model'
 
 /**Class which specifies the schema for a class in the DB */
 export class ClassModel {
+  /**
+   * MongooseService instance
+   */
   mongooseService: MongooseService = MongooseService.getInstance();
+  /**
+   * Class Model instance
+   */
   private static instance: ClassModel;
 
+  /**
+   * MongoDB schema
+   */
   dbSchema = this.mongooseService.getMongoose().Schema;
 
+  /**
+   * Class Resource Schema
+   */
   classSchema: Schema = new this.dbSchema({
     name: { 
       type: String,
@@ -155,10 +167,16 @@ export class ClassModel {
     }]
   });
 
+  /**
+   * Class model
+   */
   classCollection = this.mongooseService.getMongoose().model('classes', this.classSchema);
 
   constructor(){}
 
+  /**
+   * Function which returns the instance of ClassModel class
+   */
   public static getInstance(): ClassModel{
     if (!this.instance) {
       this.instance = new ClassModel();
@@ -166,6 +184,14 @@ export class ClassModel {
     return this.instance;
   }
 
+  /**
+   * Function that validates a mongoose.Types.ObjectId value
+   * 
+   * @param id 
+   * 
+   * @returns true if valid
+   * @returns false if not valid
+   */
   public isValidId(id:string): boolean{
     return this.mongooseService.isValidId(id);
   } 

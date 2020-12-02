@@ -38,6 +38,13 @@ export class UserMiddleware extends CommonMiddleware{
     }
   }
 
+  /**
+   * Function that checks if a field is required given its name
+   * @param fieldName 
+   * 
+   * @returns true if the field is required
+   * @returns false if the field is not required
+   */
   static validateFieldRequired(fieldName: string): boolean{
     const userModel = UserModel.getInstance();
     return userModel.userSchema.requiredPaths().indexOf(fieldName) > -1;
@@ -171,6 +178,13 @@ export class UserMiddleware extends CommonMiddleware{
     }
   }
 
+  /**
+   * Function which removes the salt parameter from the body
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   discardSaltField(req: Request, res: Response, next: NextFunction): void{
     if (req.body && req.body.salt) {
       delete req.body.salt;
@@ -178,6 +192,14 @@ export class UserMiddleware extends CommonMiddleware{
     next();
   }
 
+  /**
+   * Asynchronous function which checks if there is not another email
+   * which is equal to the one specified in the request body
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   async validateUniqueEmail(req: Request, res: Response, next: NextFunction): Promise<void>{
     const userService = UserService.getInstance();
     const user = await userService.getByEmail(req.body.email);
@@ -188,6 +210,14 @@ export class UserMiddleware extends CommonMiddleware{
     }
   }
 
+  /**
+   * Asynchronous function which checks if there is a user
+   * who has an id which is equal to the one specified in the request parameters
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   async validateUserExists(req: Request, res: Response, next: NextFunction): Promise<void>{
     const userService = UserService.getInstance();
     const userModel = UserModel.getInstance();
@@ -205,6 +235,14 @@ export class UserMiddleware extends CommonMiddleware{
     }
   }
 
+  /**
+   * Function which discards all the fields that are not contained in
+   * the Schema of the User resource from the request body
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   discardUselessFields(req: Request, res: Response, next: NextFunction): void{
     const userModel = UserModel.getInstance();
     try{
@@ -220,6 +258,14 @@ export class UserMiddleware extends CommonMiddleware{
     }
   }
 
+  /**
+   * Function which discards all the fields that are not contained in
+   * the Schema of the User resource from the request query
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   discardUselessFieldsQuery(req: Request, res: Response, next: NextFunction): void{
     const userModel = UserModel.getInstance();
     try{
@@ -235,6 +281,13 @@ export class UserMiddleware extends CommonMiddleware{
     }
   }
 
+  /**
+   * Function which discards passwords and salt from the request query
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   discardPasswordAndSaltQuery(req: Request, res: Response, next: NextFunction): void{
     if(req.query){
       delete req.query.password;
@@ -243,6 +296,14 @@ export class UserMiddleware extends CommonMiddleware{
     next();
   }
 
+  /**
+   * Function which modifies the request body inserting the $set and $unset
+   * values required by MongoDB in order to delete one or multiple fields.
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   setUnsetField(req: Request, res: Response, next: NextFunction): void{
     const newBody = {$set: {}, $unset: {}};
     for(const field in req.body){

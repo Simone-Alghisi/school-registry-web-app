@@ -6,7 +6,7 @@ import { Response, Request, NextFunction } from 'express';
  */
 export class CommonMiddleware {  
   constructor() {}
-
+  
   /**
    * Middleware that checks if the user is a secretary. If he is then the next function is called
    * Otherwise the 403 forbidden HTTP code is returned
@@ -67,6 +67,15 @@ export class CommonMiddleware {
     }
   }
 
+  /**
+   * Middleware that checks if the user is a professor then he or she can request students
+   * If he or she us a professor or a student can request only data about himself or herself
+   * If he or she is a secretary, then he or she can request all the data about all the users in the system
+   * Otherwise the 403 forbidden HTTP code is returned
+   * @param req request
+   * @param res response
+   * @param next next function
+   */
   requestMyStudentIfIamAProfessor(req: Request, res: Response, next: NextFunction): void{
     try {
       const email = req.jwt.email;
