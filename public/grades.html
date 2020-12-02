@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Insert grade</title>
+  <title>Check Grades</title>
 
   <!-- Custom fonts for this template-->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" type="text/css">
@@ -41,7 +41,7 @@
       <!-- Example of items inside the Nav Bar - No collapse menu' -->
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="./homeProfessor.html">
           <!-- icon for the nav item -->
           <i class="fa fa-home"></i>
           <span>Homepage</span></a>
@@ -204,7 +204,7 @@
                 <div class="card-header" >
                   <ul class="nav nav-tabs nav-justified card-header-tabs">
                     <li class="nav-item font-weight-bold text-card"><a class="nav-link disabled-card-header" href="#">Comunicazioni</a></li>
-                    <li class="nav-item font-weight-bold text-card"><a id='navViewGrades' class="nav-link active-card-header" href="#">Voti</a></li>
+                    <li class="nav-item font-weight-bold text-card"><a class="nav-link active-card-header" href="#" id="navViewGrades">Voti</a></li>
                     <li class="nav-item font-weight-bold text-card"><a class="nav-link disabled-card-header" href="#">Verifiche</a></li>
                     <li class="nav-item font-weight-bold text-card"><a class="nav-link disabled-card-header" href="#">Compiti</a></li>
                     <li class="nav-item font-weight-bold text-card"><a class="nav-link disabled-card-header" href="#">Materiale</a></li>
@@ -212,39 +212,26 @@
                   <!--<h6 class="m-0 font-weight-bold text-card">Crea nuovo utente</h6>-->
                 </div>
                 <div class="card-body">
-                  <form method='POST' id="form">
-                    <div class="form-row">
-                      <div class="form-group col-md-8">
-                        <label for="description">Argomento</label>
-                        <input type="text" class="form-control" id="description" name="description" placeholder="Inserisci l'argomento..." required>
-                      </div>
-                      <div class="form-group col-md-4">
-                        <label for="date">Data voto</label>
-                        <input type="date" class="form-control" id="date" name="date" required>
-                      </div>
+                  <div class="row">
+                    <div class="col-md-12 table-responsive">
+                      <table class="table table-bordered" id="studentsTable" width="100%" cellspacing="0">
+                        <thead>
+                          <tr>
+                            <th>Studente</th>
+                            <th>Numero Voti</th>
+                            <th>Media</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
                     </div>
-                    <div class="row">
-                      <div class="col-md-12 table-responsive">
-                        <table class="table table-bordered" id="studentsTable" width="100%" cellspacing="0">
-                          <thead>
-                            <tr>
-                              <th>Nome</th>
-                              <th>Cognome</th>
-                              <th>Voto</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                          </tbody>
-                        </table>
-                      </div>
+                  </div>
+                  <div class="row justify-content-end">
+                    <div class="col-auto">
+                      <button id="addGrades" class="btn btn-danger btn-circle"><i class="fas fa-fw fa-plus"></i></button>
                     </div>
-                    <div class="form-row justify-content-end">
-                      <div class="form-group col-auto">
-                        <button type="button" class="btn btn-secondary" id="back" onclick="location.href='#';">Annulla</button>
-                        <button type="submit" class="btn btn-primary" id="submit">Conferma</button>
-                      </div>
-                    </div>
-                  </form>
+                  </div>
                 </div>
               </div>
 
@@ -278,7 +265,7 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-  <!-- Logout Modal-->
+  <!-- Select Class Modal-->
   <div class="modal fade" id="classModal" tabindex="-1" role="dialog" aria-labelledby="classModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -292,6 +279,49 @@
           <select class="form-control" id="materia" name="materia" disabled>
             
           </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
+          <button id="confirm" class="btn btn-primary" href="#" disabled>Conferma</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Select Class Modal-->
+  <div class="modal fade" id="gradesModal" tabindex="-1" role="dialog" aria-labelledby="gradesModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="gradesModalLable">Voti per lo studente</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Grades List -->
+          <div class="form-group col-md-12">
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12 table-responsive">
+                    <table class="table table-bordered" id="gradesTable" width="100%" cellspacing="0">
+                      <thead>
+                        <tr>
+                          <th>Elimina Voto</th>
+                          <th>Argomento</th>
+                          <th>Data</th>
+                          <th>Voto</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
@@ -323,7 +353,7 @@
   <script src="js/plugins/datatables.js"></script>
 
   <!-- Custom script for users page -->
-  <script type="module" src="js/insertGrades.js"></script>
+  <script type="module" src="js/grades.js"></script>
 </body>
 
 </html>

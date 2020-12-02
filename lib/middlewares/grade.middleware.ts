@@ -130,4 +130,25 @@ export class GradeMiddleware extends ClassMiddleware{
       res.status(422).json({ error: 'Unprocessable entity' });
     }
   }
+
+  /**
+   * Removes fields which are not present in class.grades_list
+   * @param req Request object
+   * @param res Response object
+   * @param next Next function
+   */
+  discardUselessFieldsQuery(req: Request, res: Response, next: NextFunction): void{
+    const classModel = ClassModel.getInstance();
+    try{
+      const properties: string[] = Object.keys(classModel.classSchema.obj.grades_list[0]);
+      for(const key of Object.keys(req.query)){
+        if(properties.indexOf(key) === -1){
+          delete req.query[key];
+        }
+      }
+      next();
+    }catch(e){
+      res.status(500).send({error: 'Internal server error'});
+    }
+  }
 }
