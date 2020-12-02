@@ -425,7 +425,7 @@ paths:
       security:
         - bearerJwtAuthToken: []
       description: >-
-        Creates a new grades for one or more student of a class with a specific id
+        Creates a new grades for one student of a class with a specific id
       summary: Insert a new grande for students in a specific class
       parameters: 
         - in: path
@@ -453,7 +453,79 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ClassGrades' 
+              $ref: '#/components/schemas/GradeElement' 
+              
+    patch:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Update all the grades of the student of a specific class
+      summary: Update all the grades given a certain class
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: string
+            format: ObjectId
+          required: true
+          description: 'Id of the class associated with the grades'
+      responses:
+        '405':
+          description: 'Method not allowed'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        content:
+          application/json:
+           schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/GradeElement'
+                
+  /classes/{classId}/grades/{gradeId}:
+    patch: 
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Update a grade of a student given his or her id and the class identifier he or she belongs to
+      summary: Update a class
+      parameters:
+        - in: path
+          name: classId
+          required: true
+          description: 'Id of the class to update'
+          schema: 
+            type: string
+            format: ObjectId
+        - in: path
+          name: gradeId
+          required: true
+          description: 'Id of the grade to update'
+          schema: 
+            type: string
+            format: ObjectId
+      requestBody:
+        content:
+          application/json:
+           schema:
+              $ref: '#/components/schemas/UpdatedGradeElement'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GradeElement"
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '404':
+          description: 'id not found or invalid'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   securitySchemes:
@@ -661,6 +733,18 @@ components:
         - student_id
         
     GradeElement:
+      allOf:
+        - $ref: '#/components/schemas/UpdatedGradeElement'
+        - type: object
+      type: object
+      required:
+        - subject
+        - student_id
+        - value
+        - date
+        - description
+        
+    UpdatedGradeElement:
       type: object
       properties:
         subject: 
@@ -680,12 +764,6 @@ components:
           description: 'when the grade is assigned'
         description:
           type: string
-      required:
-        - subject
-        - student_id
-        - value
-        - date
-        - description
         
     UpdatedClass:
       type: object
@@ -747,7 +825,7 @@ components:
         - name
 
     ClassGrades:
-      type: array
+      type: object
       description: 'grades of the class'
       items:
         $ref: '#/components/schemas/GradeElement'
