@@ -3,6 +3,12 @@ import { ClassModel } from '../models/class.model';
 import { ClassService } from '../services/class.service';
 import { CommonMiddleware } from '../common/middlewares/common.middleware';
 
+/**
+ * ClassMiddleware class, it extends the {@link CommonMiddleware} class.
+ * It aims to manage all the requests received for the class resource:
+ * - In case of errors, the HTTP status code is returned
+ * - Otherwise the request is allowed to pass
+ */
 export class ClassMiddleware extends CommonMiddleware{
   /**
    * Function that validate a field of the {@link Class} class
@@ -43,6 +49,14 @@ export class ClassMiddleware extends CommonMiddleware{
     }
   }
 
+  /**
+   * Method which removes all the fields from the body of the request
+   * that are not contained in the Class Schema
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   discardUselessFields(req: Request, res: Response, next: NextFunction): void{
     const classModel = ClassModel.getInstance();
     try{
@@ -58,6 +72,13 @@ export class ClassMiddleware extends CommonMiddleware{
     }
   }
   
+  /**
+   * Method that checks if a it exists a class that has the same class id 
+   * contained in the parameters of the request
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   async validateClassExists(req: Request, res: Response, next: NextFunction): Promise<void>{
     const classService = ClassService.getInstance();
     const classModel = ClassModel.getInstance();
@@ -75,6 +96,18 @@ export class ClassMiddleware extends CommonMiddleware{
     }
   }
   
+  /**
+   * Function which checks if there is something to do with respect to the fields
+   * contained in the request body
+   * 
+   * If a field is not valid it will be removed
+   * If there is no vaid field remained in the request than there is nothing to do
+   * for the update method, so 204 HTTP verb will be returned
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   async validateUpdateRequest(req: Request, res: Response, next: NextFunction): Promise<void>{
     const updatedClass = await ClassService.getInstance().getById(req.params.id);
     let valid = false;
@@ -94,6 +127,14 @@ export class ClassMiddleware extends CommonMiddleware{
     }
   }
 
+  /**
+   * Method which removes all the fields from the query of the request
+   * that are not contained in the Class Schema
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   discardUselessFieldsQuery(req: Request, res: Response, next: NextFunction): void{
     const classModel = ClassModel.getInstance();
     try{

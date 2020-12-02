@@ -6,12 +6,26 @@ import { ClassModel } from '../models/class.model';
 import { ClassService } from '../services/class.service'
 import { CommonModel } from '../common/models/common.model'
 
+/**
+ * GradeMiddleware class, it extends the {@link ClassMiddleware} class.
+ * It aims to manage all the requests received for the class resource:
+ * - In case of errors, the HTTP status code is returned
+ * - Otherwise the request is allowed to pass
+ */
 export class GradeMiddleware extends ClassMiddleware{
 
   constructor(){
     super();
   }
 
+  /**
+   * Asynchronous function which checks if the class id contained in the 
+   * parameters of the request corresponds to a class stored in the database
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   async validateClassExistsInCreate(req: Request, res: Response, next: NextFunction): Promise<void>{
     const classService = ClassService.getInstance();
     const classModel = ClassModel.getInstance();
@@ -29,6 +43,14 @@ export class GradeMiddleware extends ClassMiddleware{
     }
   }
 
+  /**
+   * Asynchronous function which checks if the student id contained in the 
+   * body of the request corresponds to a student stored in the database
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   async validateStudent(req: Request, res: Response, next: NextFunction) : Promise<void>{
     const userService = UserService.getInstance();
     const userModel = UserModel.getInstance();
@@ -46,6 +68,13 @@ export class GradeMiddleware extends ClassMiddleware{
     }
   }
 
+  /**
+   * Function which validates the value contained in the request
+   * A valid value should be an integer and should be between 0 and 10 (both the extremes included)
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   validateValue(req: Request, res: Response, next: NextFunction) :void{
     if (req.body && CommonModel.isNumber(req.body.value)  && parseInt(req.body.value) >= 0 && parseInt(req.body.value) <= 10) {
       next();
@@ -54,6 +83,14 @@ export class GradeMiddleware extends ClassMiddleware{
     }
   }
 
+  /**
+   * Function which validates the date contained in the request
+   * A valid date should have the common format and it should be a string
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   validateDate(req: Request, res: Response, next: NextFunction) :void{
     if (req.body && CommonModel.isValidStringDate(req.body.date)) {
       next();
@@ -62,6 +99,14 @@ export class GradeMiddleware extends ClassMiddleware{
     }
   }
 
+  /**
+   * Function which validates the subject contained in the request
+   * A valid subject should be an integer
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   validateSubject(req: Request, res: Response, next: NextFunction) :void{
     if (req.body && CommonModel.isNumber(req.body.subject)) {
       next();
@@ -70,6 +115,14 @@ export class GradeMiddleware extends ClassMiddleware{
     }
   }
 
+  /**
+   * Function which validates the description of a grade
+   * A valid description should be a string 
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
   validateDescription(req: Request, res: Response, next: NextFunction) :void{
     if (req.body && CommonModel.validateString(req.body.description)) {
       next();

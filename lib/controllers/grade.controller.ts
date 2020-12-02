@@ -25,6 +25,16 @@ export class GradeController implements CRUDController{
     }
   }
 
+  /**
+   * Asyncronous functions that creates a grade associated to the student and the class where 
+   * he or she belongs given the proper parameters.
+   * It returns 201 status code with the grade resource location if the database is able to
+   * insert the value
+   * It returns 500 if the database fails in inserting the new record.
+   * 
+   * @param req express Request object
+   * @param res express Response object
+   */
   async create(req: Request, res: Response): Promise<void> {
     const gradeService = GradeService.getInstance();
     try{
