@@ -49,7 +49,10 @@ export class GradeService /*implements CRUDService*/ {
    * @param classId id of the class
    */
   async list(classId: any): Promise < any > {
-    const foundGrades = await this.classModel.classCollection.findById(classId).select(['-_id']).select(['grades_list']);
+    let foundGrades = await this.classModel.classCollection.findById(classId).select(['-_id']).select(['grades_list']);
+    if (foundGrades) {
+      foundGrades = foundGrades['grades_list'];
+    }
     return foundGrades;
   }
 
