@@ -19,8 +19,8 @@ import {
   //console.log(subject);
   let usersWithGrades = [];
   let grades_list = '';
-  $('#navViewGrades').attr("href", './checkGrades.html?class=' + class_id + '&subject=' + subject);
-  $('#back').attr("onclick", "location.href='./checkGrades.html?class=" + class_id + "&subject=" + subject + "';");
+  $('#navViewGrades').attr("href", './grades.html?class=' + class_id + '&subject=' + subject);
+  $('#back').attr("onclick", "location.href='./grades.html?class=" + class_id + "&subject=" + subject + "';");
 
   //datatables
   let studentsTable = $('#studentsTable').DataTable({
@@ -149,7 +149,7 @@ import {
       if(value != 0) 
         await fetchGrade(studentGrade);
     }
-    $(location).prop('href', './checkGrades.html?class=' + class_id + '&subject=' + subject);
+    $(location).prop('href', './grades.html?class=' + class_id + '&subject=' + subject);
   }
 
   $('#form').submit((event) => {

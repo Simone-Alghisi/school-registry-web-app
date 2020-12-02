@@ -413,7 +413,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClassGrades'
+                type: array
+                items:
+                  $ref: '#/components/schemas/GradeElement'
         '404':
           description: 'Class not found'
         '403':
@@ -459,7 +461,7 @@ paths:
       security:
         - bearerJwtAuthToken: []
       description: >-
-        Update all the grades of the student of a specific class
+        Update all the grades of the students of a specific class
       summary: Update all the grades given a certain class
       parameters: 
         - in: path
@@ -483,6 +485,28 @@ paths:
               type: array
               items:
                 $ref: '#/components/schemas/GradeElement'
+    
+    delete:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Delete all the grades of the students in a specific class
+      summary: Delete all the grades given a certain class
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: string
+            format: ObjectId
+          required: true
+          description: 'Id of the class associated with the grades to delete'
+      responses:
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
                 
   /classes/{classId}/grades/{gradeId}:
     patch: 
@@ -522,6 +546,72 @@ paths:
           $ref: '#/components/responses/NoContentResponse'
         '404':
           description: 'id not found or invalid'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns the data of a grade with a specific id
+      summary: Return a grade
+      parameters: 
+        - in: path
+          name: classId
+          required: true
+          description: 'Id of the class where there is the grade to retrieve'
+          schema: 
+            type: string
+            format: ObjectId
+        - in: path
+          name: gradeId
+          required: true
+          description: 'Id of the grade to retrieve'
+          schema: 
+            type: string
+            format: ObjectId
+      responses:
+        '200':
+          description: 'Data of single grade'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradeElement'
+        '404':
+          description: 'Grade or class not found'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
+    delete: 
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+         Delete a grade of the student in a specific class
+      summary: Delete a grade of given student in a certain class
+      parameters: 
+        - in: path
+          name: classId
+          required: true
+          description: 'Id of the class where there is the grade to delete'
+          schema: 
+            type: string
+            format: ObjectId
+        - in: path
+          name: gradeId
+          required: true
+          description: 'Id of the grade to delete'
+          schema: 
+            type: string
+            format: ObjectId
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContentResponse'
+        '404':
+          description: 'Class not found or grade to delete not found'
         '403':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
@@ -698,40 +788,6 @@ components:
         - description
         - subject
         
-    Grade:
-      type: object
-      properties:
-        value:
-          type: number
-          format: float
-          description: 'the value of the grade'
-        date:
-          type: string
-          format: date
-          description: 'when the grade is assigned'
-        subject: 
-          type: string
-          description: 'the subject of the grade'
-      required:
-        - value
-        - date
-        - subject
-        
-    Student:
-      type: object
-      properties:
-        student_id:
-          type: string
-          format: ObjectId
-          description: 'the id of the student'
-        grades:
-          type: array
-          description: 'the grades of A student for a specific subject'
-          items:
-            $ref: '#/components/schemas/Grade'
-      required:
-        - student_id
-        
     GradeElement:
       allOf:
         - $ref: '#/components/schemas/UpdatedGradeElement'
@@ -823,12 +879,6 @@ components:
       required:
         - id
         - name
-
-    ClassGrades:
-      type: object
-      description: 'grades of the class'
-      items:
-        $ref: '#/components/schemas/GradeElement'
         
     Teach:
       type: object
