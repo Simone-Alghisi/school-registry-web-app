@@ -490,11 +490,6 @@ components:
           type: string
           description: 'birth date of the user'
           format: date
-        communications:
-          type: array
-          description: 'communications sent to the user'
-          items:
-            $ref: '#/components/schemas/Communication'
         class_id:
           type: string
           format: ObjectId
@@ -504,6 +499,19 @@ components:
           description: 'list of the subjects teached in classes'
           items: 
             $ref: '#/components/schemas/Teach'
+        communications:
+          type: object
+          properties:
+            sender: 
+              type: string
+              format: ObjectId
+              description: 'the id of the sender of the communication'
+            subject:
+              type: string
+              description: 'the subject of the message'
+            content:
+              type: string
+              description: 'the content of the message'
             
     User:
       allOf:
@@ -561,22 +569,6 @@ components:
       required:
         - subject
         - content
-        
-    Communication:
-      type: object
-      properties:
-        sender_id: 
-          type: string
-          format: ObjectId
-          description: 'the id of the sender of the communication'
-        messages:
-          type: array
-          description: 'the messages sent by the sender'
-          items: 
-            $ref: '#/components/schemas/Message'
-      required:
-        - sender_id
-        
     Homework:
       type: object
       properties:
@@ -674,13 +666,26 @@ components:
         subject: 
           type: integer
           description: 'the subject of the grade'
-        students:
-          type: array
-          description: 'the grades of THE students for a specific subject'
-          items:
-            $ref: '#/components/schemas/Student'
+        student_id:
+          type: string
+          format: ObjectId
+          description: 'the id of the student'
+        value:
+          type: number
+          format: float
+          description: 'the value of the grade'
+        date:
+          type: string
+          format: date
+          description: 'when the grade is assigned'
+        description:
+          type: string
       required:
         - subject
+        - student_id
+        - value
+        - date
+        - description
         
     UpdatedClass:
       type: object
@@ -697,11 +702,20 @@ components:
           description: 'schedule of the class'
           items:
             $ref: '#/components/schemas/Lecture'
-        communications: 
-          type: array
-          description: 'communications sent to the class'
-          items:
-            $ref: '#/components/schemas/Communication'
+        communications:
+          type: object
+          properties:
+            sender_id: 
+              type: string
+              format: ObjectId
+              description: 'the id of the sender of the communication'
+            messages:
+              type: array
+              description: 'the messages sent by the sender'
+              items: 
+                $ref: '#/components/schemas/Message'
+          required:
+            - sender_id
         homeworks:
           type: array
           description: 'homeworks assigned to the class'
