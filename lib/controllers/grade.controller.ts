@@ -18,8 +18,13 @@ export class GradeController implements CRUDController{
   async list(req: Request, res: Response): Promise<void>{
     const gradeService = GradeService.getInstance();
     try{
-      const foundGrades = await gradeService.list(req.params.id);
-      res.status(200).send(foundGrades.grades_list);
+      let foundGrades;
+      if(req.query && Object.keys(req.query).length !== 0){
+        foundGrades = await gradeService.filterList(req.params.id, req.query);
+      } else {
+        foundGrades = await gradeService.list(req.params.id);
+      }
+      res.status(200).send(foundGrades);
     }catch(e){
       res.status(500).json({error: 'Internal server error'});
     }
