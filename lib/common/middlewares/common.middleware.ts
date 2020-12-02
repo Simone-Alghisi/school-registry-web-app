@@ -67,11 +67,14 @@ export class CommonMiddleware {
     }
   }
 
-  requestMyDataIfIamNotASecretary(req: Request, res: Response, next: NextFunction): void{
+  requestMyStudentIfIamAProfessor(req: Request, res: Response, next: NextFunction): void{
     try {
       const email = req.jwt.email;
       const userRole = parseInt(req.jwt.role, 10);
-      if (email && userRole !== 2) {
+      const usertRoleToGet = parseInt(req.query.role+'', 10);
+      if(email && userRole === 1 && usertRoleToGet === 0) {
+        next();
+      } else if (email && userRole !== 2) {
         req.query.email = email;
         next();
       } else if(userRole && userRole === 2){
