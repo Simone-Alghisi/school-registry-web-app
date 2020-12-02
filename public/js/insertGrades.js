@@ -1,14 +1,26 @@
 import {
+  getUrlVars,
   refreshToken,
   dealWithForbiddenErrorCode,
   dealWithServerErrorCodes
 } from './common.js';
 
+import {
+  prepareClassOnLoad,
+  setClassName
+} from './commonProfessor.js';
+
 (function ($) {
   "use strict";
 
+  let class_id = getUrlVars()['class'];
+  let subject = getUrlVars()['subject'];
+  //console.log(class_id);
+  //console.log(subject);
   let usersWithGrades = [];
-  let grades_list = ''
+  let grades_list = '';
+  $('#navViewGrades').attr("href", './checkGrades.html?class=' + class_id + '&subject=' + subject);
+  $('#back').attr("onclick", "location.href='./checkGrades.html?class=" + class_id + "&subject=" + subject + "';");
 
   //datatables
   let studentsTable = $('#studentsTable').DataTable({
@@ -37,8 +49,9 @@ import {
 
   //TODO CHANGE CLASS ID 
   function getStudents(attemptMade = false){
-    let id = '5fc66d0c4e419629d4cee3fa';
-    fetch('../api/v1/users?class_id='+ /*data._id*/id +'&role=' + 0, {
+    let url = '../api/v1/users?class_id='+ class_id +'&role=' + 0;
+    //console.log(url);
+    fetch(url, {
       method: 'GET',
       headers: { 
         'Authorization': 'Bearer ' +  window.sessionStorage.accessToken
@@ -58,6 +71,7 @@ import {
       }
     })
     .then((students) => {
+      //console.log(students);
       students.forEach((user) => {
         addStudent(user);
       })
@@ -75,8 +89,7 @@ import {
 
   function fetchGrade(gradeElement,  attemptMade = false) {
     return new Promise((resolve, reject) => {
-      let id = '5fc66d0c4e419629d4cee3fa';
-      const url = '../api/v1/classes/' + id + '/grades';
+      const url = '../api/v1/classes/' + class_id + '/grades';
 
       let data;
       data = JSON.stringify(gradeElement);
@@ -93,7 +106,7 @@ import {
       fetch(url, fetchData)
         .then((resp) => {
           if (resp.ok) {
-            return resp.json();
+            return;
           } else if (resp.status == 403) {
             if(!attemptMade){
               refreshToken().then(() => fetchGrade(gradeElement, true)).catch(() => dealWithForbiddenErrorCode());
@@ -116,15 +129,10 @@ import {
     });
   }
 
-  //TODO CHANGE CLASS ID AND SUBJECT
   async function sendGrades() {
     let description =  $('#description').val();
-    let subject = 0;
     let date =  $('#date').val();
     let studentGrade = {};
-    // The data we are going to send in our request
-   
-    //console.log(usersWithGrades);
 
     for (let key in usersWithGrades) {
       let studentId = usersWithGrades[key]._id;
@@ -134,14 +142,14 @@ import {
 
       //console.log(studentGrade);
       studentGrade['description'] = description;
-      //TODO change
       studentGrade['subject'] = subject; 
       studentGrade['date'] = date;
       studentGrade['student_id'] = studentId;
       studentGrade['value'] = value;
-      if(value !== 0)
+      if(value != 0) 
         await fetchGrade(studentGrade);
     }
+    $(location).prop('href', './checkGrades.html?class=' + class_id + '&subject=' + subject);
   }
 
   $('#form').submit((event) => {
@@ -150,5 +158,7 @@ import {
   });
 
   getStudents();
+  setClassName();
+  prepareClassOnLoad();
 
 })(jQuery);
