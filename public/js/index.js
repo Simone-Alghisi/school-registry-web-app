@@ -1,4 +1,4 @@
-import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } from './common.js';
+import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser, dealWithForbiddenErrorCode } from './common.js';
 
 (function ($) {
     "use strict";
@@ -46,14 +46,15 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } fro
               .then((data) => {
                 if(data.length > 1){
                   $(location).prop('href', './home.html');
-                }
-                data = data[0];
-                if(data.role === 0){
-                  //TODO... homepage for the user
-                } else if(data.role === 1){
-                  $(location).prop('href', './homeProfessor.html');
                 } else {
-                  dealWithForbiddenErrorCode();
+                  data = data[0];
+                  if(data.role === 0){
+                    //TODO... homepage for the user
+                  } else if(data.role === 1){
+                    $(location).prop('href', './homeProfessor.html');
+                  } else {
+                    dealWithForbiddenErrorCode();
+                  }
                 }
               })
           }
