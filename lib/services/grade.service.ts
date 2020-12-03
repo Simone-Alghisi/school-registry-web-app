@@ -90,8 +90,11 @@ export class GradeService /*implements CRUDService*/ {
    * @param resourceId id of the grade
    */
   async getById(classId: any, resourceId: string): Promise < any > {
-    let _id = resourceId;
-    return this.filterList(classId,{_id});
+    let foundGrades = await this.classModel.classCollection.findOne({'_id': classId, 'grades_list._id': resourceId}, {'grades_list.$._id': resourceId});
+    if (foundGrades) {
+      foundGrades = foundGrades['grades_list'][0];
+    }
+    return foundGrades;
   }
 
   /**
@@ -100,7 +103,6 @@ export class GradeService /*implements CRUDService*/ {
    * @param parameters query parameters
    */
   async filterList(classId: any, parameters: any): Promise < any > {
-    console.log(parameters);
     let foundGrades = await this.classModel.classCollection.findById(classId).select(['-_id']).select(['grades_list']);
     if (foundGrades) {
       foundGrades = foundGrades['grades_list'];
