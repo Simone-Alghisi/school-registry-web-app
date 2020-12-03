@@ -34,11 +34,30 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     const jwtMiddleware: JwtMiddleware = new JwtMiddleware();
 
     //TODO define in a better way the users' permissions to perform this
+    /**
+     * Route for the get method (retreive resource) for the grades of a class
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The middlewares remove all the invalid query fields
+     * The middlewares also check that the referred class exist
+     * Then the request is routed to the appropriate grade controller function for list
+    */
     this.app.get('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
       gradeMiddlware.discardUselessFieldsQuery,
       gradeMiddlware.validateClassExists,
       grade.list
+    ]);
+
+    /**
+     * Route for the get method (retreive resource) on a single grade of a class
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The middlewares check that the referred class exist
+     * Then the request is routed to the appropriate grade controller function for getById
+    */
+    this.app.get('/api/v1/classes/:id/grades/:idg',[
+      jwtMiddleware.validateJWT,
+      gradeMiddlware.validateClassExists,
+      grade.getById
     ]);
 
     //TODO define in a better way the users' permissions to perform this
