@@ -10,7 +10,7 @@ export class GradeController implements CRUDController{
   constructor() {}
 
   /**
-   * Asyncronous functions that retrieves the list of grades of a class from the DB
+   * Asyncronous functions that retrieves the list of grades of a class
    * and sends it back with the status code 200 otherwise 500
    * @param req express Request object
    * @param res express Response object
@@ -55,8 +55,21 @@ export class GradeController implements CRUDController{
     
   }
   
+  /**
+   * Asyncronous functions that retrieves a specific grade of a class
+   * and sends it back with the status code 200 otherwise 500
+   * @param req express Request object
+   * @param res express Response object
+   */
   async getById(req: Request, res: Response): Promise<void> {
-
+    const gradeService = GradeService.getInstance();
+    try{
+      let foundGrades;
+      foundGrades = await gradeService.getById(req.params.id,req.params.idg);
+      res.status(200).send(foundGrades);
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
   }
 
   async updateById(req: Request, res: Response): Promise<void> {
