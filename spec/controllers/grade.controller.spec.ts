@@ -43,7 +43,7 @@ async function getRandomClass(){
 
 function getRandomGrade(classInstance: any){
   const key = Math.floor(Math.random() * (classInstance.grades_list.length - 0) ) + 0;
-  return classInstance.grades_list[key]._id;
+  return classInstance.grades_list[key];
 }
 
 async function createClass(){
@@ -381,7 +381,92 @@ describe('GradeController', () => {
   });
 
   describe('#getById', () => {
-    
+    let classInstance: any;
+    let validGradeId: any;
+    let invalidGradeIdType: any = 'hello world'
+    let validGrade: any;
+    let invalidGradeId: any = '5fc75b8d8e9d0909585e3210';
+    const classService: ClassService = ClassService.getInstance();
+
+    it('should return the 200 status code: student', async () => {
+      classInstance = await classService.getById(class_id);
+      validGradeId = getRandomGrade(classInstance)._id;
+      return chai
+        .request(app)
+        .get('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+    it('should return the 200 status code: professor', async () => {
+      classInstance = await classService.getById(class_id);
+      validGradeId = getRandomGrade(classInstance)._id;
+      return chai
+        .request(app)
+        .get('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+    it('should return the 200 status code: secretary', async () => {
+      classInstance = await classService.getById(class_id);
+      validGradeId = getRandomGrade(classInstance)._id;
+      return chai
+        .request(app)
+        .get('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+    it('should return the 404 status code: wrong type for id', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/' + class_id + '/grades/' + invalidGradeIdType)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.eql(404);
+        });
+    });
+    it('should return the 404 status code: grade id not found', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/'+ class_id + '/grades/' + invalidGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.eql(404);
+        });
+    });
+    it('should return the json error message "Grade or class not found"', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/'+ class_id + '/grades/' + invalidGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Grade or class not found');
+        });
+    });
+    it('should return the correct grade entry', async () => {
+      classInstance = await classService.getById(class_id);
+      validGrade = getRandomGrade(classInstance);
+      validGradeId = validGrade._id;
+      return chai
+        .request(app)
+        .get('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(JSON.stringify(res.body)).to.equal(JSON.stringify(validGrade));
+        });
+    });
   });
   
   describe('#deleteById', () => {
@@ -398,9 +483,9 @@ describe('GradeController', () => {
 
   describe('#updateById', () => {
     let classInstance: any;
-    const invalidClassId = 1000;
     let validGradeId: any;
     const invalidGradeId = 1000;
+    const invalideGradeIdType = 'hello world';
     const gradeDate: string = moment(faker.date.past()).format(dateFormat);
     const gradeDescription: string = faker.lorem.text();
     const gradeValue: number = faker.random.number({min:0, max:10});
@@ -414,14 +499,168 @@ describe('GradeController', () => {
 
     it('should return the 204 status code: no body', async () => {
       classInstance = await classService.getById(class_id);
-      validGradeId = getRandomGrade(classInstance);
-      console.log(validGradeId);
+      validGradeId = (getRandomGrade(classInstance))._id;
       return chai
         .request(app)
         .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
         .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
+        .set('authorization', 'Bearer ' + token1)
         .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 404 status code: wrong type for id', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + invalideGradeIdType)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(404);
+        });
+    });
+
+    it('should return the 404 status code: id not found', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + invalidGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(404);
+        });
+    });
+
+    it('should return the json error message "Grade or class not found"', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + invalidGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send()
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Grade or class not found');
+        });
+    });
+
+    it('should return the 200 status code', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(gradeJSON)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+
+    it('should return the 204 status code: no field to edit', async () => {
+      const fake_grade: Record<string, unknown> = {
+        date_: gradeDate,
+        value_: gradeValue,
+        description_: gradeDescription
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(fake_grade)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: empty date field', async () => {
+      const fake_grade: Record<string, unknown> = {
+        date: '',
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(fake_grade)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for date', async () => {
+      const fake_grade: Record<string, unknown> = {
+        date: 'hello world',
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(fake_grade)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: empty description field', async () => {
+      const fake_grade: Record<string, unknown> = {
+        description: '',
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(fake_grade)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for description', async () => {
+      const fake_grade: Record<string, unknown> = {
+        description: 0,
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(fake_grade)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: empty value field', async () => {
+      const fake_grade: Record<string, unknown> = {
+        value: '',
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(fake_grade)
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
+
+    it('should return the 204 status code: wrong type for value', async () => {
+      const fake_grade: Record<string, unknown> = {
+        description: 'hello world',
+      };
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .send(fake_grade)
         .then(res => {
           chai.expect(res.status).to.eql(204);
         });
