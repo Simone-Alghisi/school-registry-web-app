@@ -34,7 +34,6 @@ import {
     grades_list += '<option value="' + key + '">' + gradesMapping[key] + '</option>';
   }
 
-  //TODO CHANGE CLASS ID 
   function getStudents(attemptMade = false){
     let url = '../api/v1/users?class_id='+ class_id +'&role=' + 0;
     //console.log(url);

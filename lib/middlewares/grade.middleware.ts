@@ -135,6 +135,25 @@ export class GradeMiddleware extends ClassMiddleware{
   }
 
   /**
+   * Function which validates the type of the value contained in the request
+   * A valid value should be an integer and should be between 0 and 10 (both the extremes included)
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
+  validateValueType(req: Request, res: Response, next: NextFunction) :void{
+    if (req.body && (req.body.value || req.body.value === "")) {
+      if(CommonModel.isNumber(req.body.value) && parseInt(req.body.value) >= 0 && parseInt(req.body.value) <= 10) {
+        next();
+      } else {
+        res.status(204).json({ error: 'No content'});
+      }
+    } else {
+      next();
+    }
+  }
+
+  /**
    * Function which validates the date contained in the request
    * A valid date should have the common format and it should be a string
    * 
@@ -147,6 +166,26 @@ export class GradeMiddleware extends ClassMiddleware{
       next();
     } else {
       res.status(422).json({ error: 'Unprocessable entity' });
+    }
+  }
+
+  /**
+   * Function which validates the type of date filed contained in the request
+   * A valid date should have the common format and it should be a string
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
+  validateDateType(req: Request, res: Response, next: NextFunction) :void{
+    if (req.body && (req.body.date || req.body.date === "")) {
+      if (CommonModel.isValidStringDate(req.body.date)) {
+        next();
+      } else {
+        res.status(204).json({ error: 'No content' });
+      }
+    } else {
+      next();
     }
   }
 
@@ -183,6 +222,26 @@ export class GradeMiddleware extends ClassMiddleware{
   }
 
   /**
+   * Function which validates the type of the description field of a grade
+   * A valid description should be a string 
+   * 
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
+  validateDescriptionType(req: Request, res: Response, next: NextFunction) :void{
+    if (req.body && (req.body.description || req.body.description === "")) {
+      if (req.body && CommonModel.validateString(req.body.description)) {
+        next();
+      } else {
+        res.status(204).json({ error: 'No content' });
+      }
+    } else {
+      next();
+    }
+  }
+
+  /**
    * Removes fields which are not present in class.grades_list
    * @param req Request object
    * @param res Response object
@@ -203,6 +262,12 @@ export class GradeMiddleware extends ClassMiddleware{
     }
   }
   
+  /**
+   * Removes fields different from date, description and value 
+   * @param req Request object
+   * @param res Response object
+   * @param next Next function
+   */
   discardUselessFields(req: Request, res: Response, next: NextFunction){
     let set = {};
     try{

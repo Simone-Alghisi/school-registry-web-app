@@ -55,6 +55,12 @@ export class ClassController implements CRUDController{
     res.status(405).json({ error: 'Method not allowed' });
   }
   
+  /**
+   * Asyncronous functions that retrieves a specific class
+   * and sends it back with the status code 200 otherwise 500
+   * @param req express Request object
+   * @param res express Response object
+   */
   async getById(req: Request, res: Response): Promise<void> {
     const classService = ClassService.getInstance();
     try{

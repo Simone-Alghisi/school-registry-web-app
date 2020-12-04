@@ -52,6 +52,11 @@ export class GradeController implements CRUDController{
     }
   }
 
+  /**
+   * Asyncronous functions for the update of all grades which is not allowed, it sends back error code 405
+   * @param req express Request object
+   * @param res express Response object
+   */
   async updateAll(req: Request, res: Response): Promise<void> {
     res.status(405).json({ error: 'Method not allowed' });
   }
@@ -73,6 +78,12 @@ export class GradeController implements CRUDController{
     }
   }
 
+  /**
+   * Asyncronous functions that update a specific grade in a class
+   * and sends it back with the status code 200 otherwise 500
+   * @param req express Request object
+   * @param res express Response object
+   */
   async updateById(req: Request, res: Response): Promise<void> {
     const gradeService = GradeService.getInstance();
     try{
@@ -85,6 +96,11 @@ export class GradeController implements CRUDController{
     }
   }
 
+  /**
+   * Asyncronous functions for the deletion of all grades which is not allowed, it sends back error code 405
+   * @param req express Request object
+   * @param res express Response object
+   */
   async deleteAll(req: Request, res: Response): Promise<void> {
     res.status(405).json({ error: 'Method not allowed' });
   }
