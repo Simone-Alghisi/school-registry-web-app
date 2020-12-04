@@ -22,17 +22,14 @@ describe('LoginController', () => {
       await userService.create(toInsert).then((id) => {
         userId = id;
       });
-      //console.log('User created ' + userId);
     });
 
     after(async () => {
       //Need to wait for the promise
       await userService.deleteById(userId);
-      //console.log('user deleted');
     });
 
     it('should return the 200 OK code', async () => {
-      //console.log('email: ' + user.email + ' password: ' + user.password)
       return chai
         .request(app)
         .post('/api/v1/login')

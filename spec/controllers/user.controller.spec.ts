@@ -88,10 +88,6 @@ describe('UserController', () => {
       .then((data: any) => {
         token2 = data;
       });
-
-    //console.log('token0: ' + token0);
-    //console.log('token1: ' + token1);
-    //console.log('token2: ' + token2);
   });
 
   after(async () => {
@@ -126,6 +122,12 @@ describe('UserController', () => {
 
   describe('#list', () => {
 
+    let nUser: any;
+
+    before(async () => {
+      nUser = await getNumberOfUsers();
+    })
+
     it('students should be able to retrieve only their information: return one element', async () => {
       return chai
         .request(app)
@@ -157,13 +159,12 @@ describe('UserController', () => {
     });
     
     it('should return all the users', async () => {
-      const nUser: any = await getNumberOfUsers();
       return chai
         .request(app)
         .get('/api/v1/users')
         .set('authorization', 'Bearer ' + token2)
         .then(res => {
-          chai.expect(res.body).to.have.lengthOf(nUser);
+          chai.expect(res.body.length).to.be.within(nUser - 1, nUser + 1);
         });
     });
   });
@@ -563,10 +564,14 @@ describe('UserController', () => {
   describe('#deleteById', () => {
     let existingUserId: any;
     const notAUserId = 0;
+    let randomUser:any;
+
+    before(async () => {
+      randomUser = await getRandomUser();
+      existingUserId = randomUser._id;
+    })
 
     it('should return the 403 Forbidden code: student shouldn\'t be able to delete user', async () => {
-      const randomUser:any = await getRandomUser();
-      existingUserId = randomUser._id;
       return chai
         .request(app)
         .delete('/api/v1/users/'+ existingUserId)
@@ -577,8 +582,6 @@ describe('UserController', () => {
     });
 
     it('should return the 403 Forbidden code: professor shouldn\'t be able to delete user', async () => {
-      const randomUser:any = await getRandomUser();
-      existingUserId = randomUser._id;
       return chai
         .request(app)
         .delete('/api/v1/users/'+ existingUserId)
@@ -609,8 +612,6 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: valid user id', async () => {
-      const randomUser:any = await getRandomUser();
-      existingUserId = randomUser._id;
       return chai
         .request(app)
         .delete('/api/v1/users/' + existingUserId)
@@ -661,6 +662,7 @@ describe('UserController', () => {
       'min': 0,
       'max': 2
     });
+
     const personBirth_date: string = moment(faker.date.past()).format(dateFormat);
     const userObj = {
       name: personName, 
@@ -671,10 +673,16 @@ describe('UserController', () => {
       birth_date: personBirth_date
     }
     const user = JSON.stringify(userObj);
-    let validPersonId: any;
     const invalidPersonId = 1000;
     const invalidPersonIdType = 'hello word'
     
+    let validPersonId: any;
+
+    before(async () => {
+      const person: any = await getRandomUser();
+      validPersonId = person.id;
+    })
+
     it('should return the 403 Forbidden code: student shouldn\'t be able to update user', async () => {
       return chai
         .request(app)
@@ -700,8 +708,6 @@ describe('UserController', () => {
     });
 
     it('should return the 204 status code: no body', async () => {
-      const person: any = await getRandomUser();
-      validPersonId = person._id;
       return chai
         .request(app)
         .patch('/api/v1/users/'+ validPersonId)
@@ -712,6 +718,7 @@ describe('UserController', () => {
           chai.expect(res.status).to.eql(204);
         });
     });
+
 
     it('should return the 404 status code: wrong type for id', async () => {
       return chai
@@ -1049,10 +1056,14 @@ describe('UserController', () => {
     const user = JSON.stringify(userObj);
     const invalidPersonId = 1000;
     const invalidPersonIdType = 'hello word'
+    let person: any;
+
+    before(async () => {
+      person = await getRandomUser();
+      personId = person._id;
+    })
 
     it('should return the 403 Forbidden code: student shouldn\'t be able to get a users', async () => {
-      const person: any = await getRandomUser();
-      personId = person._id;
       return chai
         .request(app)
         .get('/api/v1/users/' + personId)
@@ -1065,8 +1076,6 @@ describe('UserController', () => {
     });
 
     it('should return the 200 status code', async () => {
-      const person: any = await getRandomUser();
-      personId = person._id;
       return chai
         .request(app)
         .patch('/api/v1/users/'+ personId)
