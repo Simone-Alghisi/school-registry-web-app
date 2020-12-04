@@ -82,8 +82,19 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
       grade.create
     ]);
 
+    /**
+     * Route for the patch method (update resource) on a single grade element 
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The request is routed also through a series of middlewares that check the existence of the id of the class
+     * and the existence of the id of the grades to update
+     * The middlewares also check the validity of the body and the various fields of the request
+     * Then the request is routed to the appropriate grade controller function for UpdateById
+    */
     this.app.patch('/api/v1/classes/:id/grades/:idg',[
       jwtMiddleware.validateJWT,
+      gradeMiddleware.validateValueType,
+      gradeMiddleware.validateDateType,
+      gradeMiddleware.validateDescriptionType,
       gradeMiddleware.discardUselessFields,
       gradeMiddleware.validateClassExists,
       gradeMiddleware.validateGradeExists,
@@ -92,12 +103,25 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
       grade.updateById
     ]);
 
+    /** 
+     * Route for the patch method on the entire list of grades
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The request is routed also through a series of middlewares that check the existence of the id of the class
+     * The request is then routed to grade controller function for updateAll
+    */
     this.app.patch('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
       gradeMiddleware.validateClassExists,
       grade.updateAll
     ]);
 
+    /**
+     * Route for the delete method on a single grade 
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The request is routed also through a series of middlewares that check the existence of the id of the class
+     * and the existence of the id of the grades to update
+     * Then the request is routed to the appropriate user controller function for deleteById
+    */
     this.app.delete('/api/v1/classes/:id/grades/:idg',[
       jwtMiddleware.validateJWT,
       gradeMiddleware.validateClassExists,
@@ -105,10 +129,14 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
       grade.deleteById
     ]);
 
+    /** Define the route for the delete method on the entire list of grades in a class
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The request is routed also through a series of middlewares that check the existence of the id of the class
+     * The request is then routed to user controller function for deleteAll
+    */
     this.app.delete('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
       gradeMiddleware.validateClassExists,
-      gradeMiddleware.validateGradeExists,
       grade.deleteAll
     ]);
   }

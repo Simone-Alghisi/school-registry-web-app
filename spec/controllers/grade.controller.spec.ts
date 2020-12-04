@@ -130,9 +130,16 @@ describe('GradeController', () => {
   });
 
   describe('#list', () => {
-    it('should return the 200 OK: student should be able to request grades', async () => {
+    let classId: any;
+    let grades_list: any;
+
+    before(async () => {
       classElem = await getRandomClass();
-      let classId = classElem._id;
+      classId = classElem._id;
+      grades_list = classElem.grades_list
+    })
+
+    it('should return the 200 OK: student should be able to request grades', async () => {
       return chai
         .request(app)
         .get('/api/v1/classes/' + classId + '/grades')
@@ -143,7 +150,6 @@ describe('GradeController', () => {
     });
 
     it('should return the 200 OK: professor should be able to request grades', async () => {
-      let classId = classElem._id;
       return chai
         .request(app)
         .get('/api/v1/classes/' + classId + '/grades')
@@ -154,7 +160,6 @@ describe('GradeController', () => {
     });
 
     it('should return the 200 OK: secretary should be able to request grades', async () => {
-      let classId = classElem._id;
       return chai
         .request(app)
         .get('/api/v1/classes/' + classId + '/grades')
@@ -165,8 +170,6 @@ describe('GradeController', () => {
     });
     
     it('should return all the grades_list of the class', async () => {
-      let classId = classElem._id;
-      let grades_list = classElem.grades_list;
       return chai
         .request(app)
         .get('/api/v1/classes/' + classId + '/grades')
@@ -496,10 +499,13 @@ describe('GradeController', () => {
     }
     const gradeJSON = JSON.stringify(gradeObj);
     const classService: ClassService = ClassService.getInstance();
+    
+    before(async() => {
+      classInstance = await classService.getById(class_id);
+      validGradeId = getRandomGrade(classInstance);
+    })
 
     it('should return the 204 status code: no body', async () => {
-      classInstance = await classService.getById(class_id);
-      validGradeId = (getRandomGrade(classInstance))._id;
       return chai
         .request(app)
         .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
