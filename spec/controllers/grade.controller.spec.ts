@@ -22,6 +22,7 @@ let token1: string;
 let token2: string;
 let class_id: string;
 let student_id: string;
+let classElem: any;
 
 
 async function getRandomClass(){
@@ -38,6 +39,11 @@ async function getRandomClass(){
           }
         })
   });
+}
+
+function getRandomGrade(classInstance: any){
+  const key = Math.floor(Math.random() * (classInstance.grades_list.length - 0) ) + 0;
+  return classInstance.grades_list[key]._id;
 }
 
 async function createClass(){
@@ -124,7 +130,6 @@ describe('GradeController', () => {
   });
 
   describe('#list', () => {
-    let classElem: any;
     it('should return the 200 OK: student should be able to request grades', async () => {
       classElem = await getRandomClass();
       let classId = classElem._id;
@@ -392,6 +397,34 @@ describe('GradeController', () => {
   });
 
   describe('#updateById', () => {
+    let classInstance: any;
+    const invalidClassId = 1000;
+    let validGradeId: any;
+    const invalidGradeId = 1000;
+    const gradeDate: string = moment(faker.date.past()).format(dateFormat);
+    const gradeDescription: string = faker.lorem.text();
+    const gradeValue: number = faker.random.number({min:0, max:10});
+    const gradeObj = {
+      date: gradeDate,
+      description: gradeDescription,
+      value: gradeValue
+    }
+    const gradeJSON = JSON.stringify(gradeObj);
+    const classService: ClassService = ClassService.getInstance();
 
+    it('should return the 204 status code: no body', async () => {
+      classInstance = await classService.getById(class_id);
+      validGradeId = getRandomGrade(classInstance);
+      console.log(validGradeId);
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send()
+        .then(res => {
+          chai.expect(res.status).to.eql(204);
+        });
+    });
   });
 });
