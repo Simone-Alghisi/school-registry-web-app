@@ -59,6 +59,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     this.app.get('/api/v1/classes/:id/grades/:idg',[
       jwtMiddleware.validateJWT,
       gradeMiddleware.validateClassExists,
+      gradeMiddleware.validateGradeExists,
       grade.getById
     ]);
 
@@ -81,13 +82,34 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
       grade.create
     ]);
 
-    this.app.patch('/api/v1/classes/:id/grades/:grade_id',[
+    this.app.patch('/api/v1/classes/:id/grades/:idg',[
       jwtMiddleware.validateJWT,
       gradeMiddleware.discardUselessFields,
       gradeMiddleware.validateClassExists,
+      gradeMiddleware.validateGradeExists,
       gradeMiddleware.validateUpdateBody,
       gradeMiddleware.validateUpdateRequest,
       grade.updateById
+    ]);
+
+    this.app.patch('/api/v1/classes/:id/grades',[
+      jwtMiddleware.validateJWT,
+      gradeMiddleware.validateClassExists,
+      grade.updateAll
+    ]);
+
+    this.app.delete('/api/v1/classes/:id/grades/:idg',[
+      jwtMiddleware.validateJWT,
+      gradeMiddleware.validateClassExists,
+      gradeMiddleware.validateGradeExists,
+      grade.deleteById
+    ]);
+
+    this.app.delete('/api/v1/classes/:id/grades',[
+      jwtMiddleware.validateJWT,
+      gradeMiddleware.validateClassExists,
+      gradeMiddleware.validateGradeExists,
+      grade.deleteAll
     ]);
   }
 }

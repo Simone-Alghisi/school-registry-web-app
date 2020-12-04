@@ -64,8 +64,20 @@ export class GradeService /*implements CRUDService*/ {
     return [resource.class_id, newDocumentId];
   }
 
-  async deleteById(resourceId: string): Promise < void > {
-
+  /**
+   * Deletes a grade from a class in the db
+   * @param resource request parameters containing the class id _id_ and the grade id _idg_
+   */
+  async deleteById(resource: any): Promise < void > {
+    await this.classModel.classCollection.updateOne({
+      _id: resource.id
+    },{
+      $pull: {
+        grades_list: {
+          _id: resource.idg
+        }
+      }      
+    });
   }
 
   /**

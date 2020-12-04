@@ -5,6 +5,7 @@ import { UserService } from '../services/user.service';
 import { ClassModel } from '../models/class.model';
 import { ClassService } from '../services/class.service'
 import { CommonModel } from '../common/models/common.model'
+import { GradeService } from '../services/grade.service';
 
 /**
  * GradeMiddleware class, it extends the {@link ClassMiddleware} class.
@@ -40,6 +41,56 @@ export class GradeMiddleware extends ClassMiddleware{
       next();
     }else{
       res.status(422).json({ error: 'Unprocessable entity' });
+    }
+  }
+
+  /**
+   * Method that checks if it exists a class that has the same class id 
+   * contained in the parameters of the request
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
+  async validateClassExists(req: Request, res: Response, next: NextFunction): Promise<void>{
+    const classService = ClassService.getInstance();
+    const classModel = ClassModel.getInstance();
+    let success = false;
+    if(classModel.isValidId(req.params.id)){
+      const classElem = await classService.getById(req.params.id);
+      if (classElem) {
+        success = true;
+      } 
+    }
+    if(success){
+      next();
+    }else{
+      res.status(404).json({error: 'Grade or class not found'});
+    }
+  }
+
+  /**
+   * Method that checks if it exists a grade that has the same class id 
+   * contained in the parameters of the request
+   * @param req Express Request
+   * @param res Express Response
+   * @param next Express NextFunction
+   */
+  async validateGradeExists(req: Request, res: Response, next: NextFunction): Promise<void>{
+    const gradeService = GradeService.getInstance();
+    const classModel = ClassModel.getInstance();
+    let success = false;
+    if(classModel.isValidId(req.params.id)){
+        if(classModel.isValidId(req.params.idg)){
+        const geadeElem = await gradeService.getById(req.params.id, req.params.idg);
+        if (geadeElem) {
+          success = true;
+        }
+      }
+    }
+    if(success){
+      next();
+    }else{
+      res.status(404).json({error: 'Grade or class not found'});
     }
   }
 

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { CRUDController } from '../common/interfaces/crudController.interface'
+import { CommonModel } from '../common/models/common.model';
 import { GradeService } from '../services/grade.service';
 
 /**
@@ -52,7 +53,7 @@ export class GradeController implements CRUDController{
   }
 
   async updateAll(req: Request, res: Response): Promise<void> {
-    
+    res.status(405).json({ error: 'Method not allowed' });
   }
   
   /**
@@ -76,7 +77,8 @@ export class GradeController implements CRUDController{
     const gradeService = GradeService.getInstance();
     try{
       req.body.class_id = req.params.id;
-      req.body.grade_id = req.params.grade_id;
+      req.body.grade_id = req.params.idg;
+      console.log(req.body);
       const updatedGrade = await gradeService.updateById(req.body);
       res.status(200).send(updatedGrade);
     }catch(e){
@@ -85,10 +87,22 @@ export class GradeController implements CRUDController{
   }
 
   async deleteAll(req: Request, res: Response): Promise<void> {
-
+    res.status(405).json({ error: 'Method not allowed' });
   }
 
+  /**
+   * Asyncronous functions that deletes a specific grade of a class
+   * and sends the status code 204 id succesful otherwise 500
+   * @param req express Request object
+   * @param res express Response object
+   */
   async deleteById(req: Request, res: Response): Promise<void> {
-
+    const gradeService = GradeService.getInstance();
+    try{
+      await gradeService.deleteById(req.params);
+      res.status(204).send();
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
   }  
 }
