@@ -213,7 +213,9 @@ export class GradeMiddleware extends ClassMiddleware{
         }
         delete req.body[key];
       }
-      req.body['$set'] = set;
+      if(!(Object.keys(set).length === 0)){
+        req.body['$set'] = set;
+      }
       next();
     }catch(e){
       res.status(500).send({error: 'Internal server error'});

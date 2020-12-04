@@ -78,7 +78,6 @@ export class GradeController implements CRUDController{
     try{
       req.body.class_id = req.params.id;
       req.body.grade_id = req.params.idg;
-      console.log(req.body);
       const updatedGrade = await gradeService.updateById(req.body);
       res.status(200).send(updatedGrade);
     }catch(e){
