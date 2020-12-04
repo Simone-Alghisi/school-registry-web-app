@@ -618,18 +618,6 @@ describe('ClassController', () => {
         });
     });
 
-    it('should return the 204 status code: no body', async () => {
-      return chai
-        .request(app)
-        .patch('/api/v1/classes/'+ validClassId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send()
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
-        });
-    });
-
     it('should return the 204 status code: no field to edit', async () => {
       const fake_class: Record<string, unknown> = {
         name_: className
