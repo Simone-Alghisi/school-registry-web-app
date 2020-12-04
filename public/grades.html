@@ -290,7 +290,7 @@
 
   <!-- Select Class Modal-->
   <div class="modal fade" id="gradesModal" tabindex="-1" role="dialog" aria-labelledby="gradesModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="gradesModalLable">Voti per lo studente</h5>
@@ -298,14 +298,14 @@
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body modal-lg">
           <!-- Grades List -->
           <div class="form-group col-md-12">
             <div class="card mb-4">
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-12 table-responsive">
-                    <table class="table table-bordered" id="gradesTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
                       <thead>
                         <tr>
                           <th>Elimina Voto</th>
@@ -314,7 +314,7 @@
                           <th>Voto</th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody id="gradesTable">
                       </tbody>
                     </table>
                   </div>
@@ -325,7 +325,7 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
-          <button id="confirm" class="btn btn-primary" href="#" disabled>Conferma</a>
+          <button id="confirmEdit" class="btn btn-primary" href="#">Conferma</a>
         </div>
       </div>
     </div>
@@ -354,6 +354,7 @@
 
   <!-- Custom script for users page -->
   <script type="module" src="js/grades.js"></script>
+  <script type="module" src="js/editGrade.js"></script>
 </body>
 
 </html>

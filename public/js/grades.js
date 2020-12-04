@@ -1,21 +1,21 @@
+export { students, student_id, class_id, subject };
+
 import { getUrlVars } from './common.js';
-import { prepareClassOnLoad, setClassName } from './commonProfessor.js';
+import { prepareClassOnLoad, setClassName, gradesMapping } from './commonProfessor.js';
+
+let students = [];
+let student_id;
+const vars = getUrlVars();
+let class_id = vars['class'];
+let subject = vars['subject'];
 
 (function ($){
   "use strict";
 
   let grades_list = [];
   let studentsRetrieved = [];
-  let students = [];
   let table = $('#studentsTable').DataTable();
-  let gradeTable = $('#gradesTable').DataTable({
-    'paging': false,
-    'searching': false,
-    'info': false
-  });
-  const vars = getUrlVars();
-  let class_id = vars['class']
-  let subject = vars['subject'];
+  let gradeTable = $('#gradesTable');
 
   function retrieveStudents(attemptMade = false){
     const url = '../api/v1/users?role=0&class_id=' + class_id;
@@ -117,19 +117,25 @@ import { prepareClassOnLoad, setClassName } from './commonProfessor.js';
 
   function setEventShowStudentGrades(){
     $('#studentsTable tbody').on('click', 'tr', function () {
-      gradeTable.clear();
-      let student_id = table.row(this).node().id;
+      gradeTable.empty();
+      student_id = table.row(this).node().id;
       let student = students[student_id];
       $('#gradesModalLable').text('Storico Voti di ' + student.surname + ' ' + student.name);
       let grade;
       for(const key in student.grades){
         grade = student.grades[key];
-        gradeTable.row.add([
-          '<button type="button" class="btn btn-danger removeGrade">Rimuovi</button>',
-          grade.description,
-          grade.date,
-          grade.value
-        ]).draw().node().id = grade._id;
+        let grades_list = '<select id="value" class="form-control">';
+        for (let key in gradesMapping) {
+          if(key != 0)
+            grades_list += '<option value="' + key + '" ' + (grade.value == key ? 'selected' : '') + '>' + gradesMapping[key] + '</option>';
+        }
+        grades_list += '</select>';
+        gradeTable.append('<tr id="' + grade._id + '"><td>' +
+          '<button type="button" class="btn btn-danger removeGrade">Rimuovi</button></td>' +
+          '<td><input type="text" id="description" class="form-control"  value="' + grade.description + '"/></td>' + 
+          '<td><input type="date" id="date" class="form-control"  value="' + grade.date + '"/></td>' +
+          '<td>' + grades_list + '</td></tr>'
+        )
       }
       $("#gradesModal").modal("show");
       //TODO... implement delete single grade here

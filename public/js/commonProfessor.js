@@ -1,7 +1,20 @@
-export { prepareClassOnLoad, setClassName };
+export { prepareClassOnLoad, setClassName, gradesMapping };
 
 import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes, getUrlVars } from './common.js';
 
+let gradesMapping = {
+  '0': 'Nessun voto',
+  '1': '1',
+  '2': '2',
+  '3': '3',
+  '4': '4',
+  '5': '5',
+  '6': '6',
+  '7': '7',
+  '8': '8',
+  '9': '9',
+  '10': '10'
+}
 
 let subjectMapping = {
   0: 'Matematica',
