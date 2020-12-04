@@ -545,7 +545,7 @@ paths:
         '204':
           $ref: '#/components/responses/NoContentResponse'
         '404':
-          description: 'id not found or invalid'
+          description: 'Grade or class not found'
         '403':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
@@ -611,7 +611,7 @@ paths:
         '204':
           $ref: '#/components/responses/NoContentResponse'
         '404':
-          description: 'Class not found or grade to delete not found'
+          description: 'Grade or class not found'
         '403':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
