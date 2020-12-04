@@ -7,7 +7,8 @@ import {
 
 import {
   prepareClassOnLoad,
-  setClassName
+  setClassName,
+  gradesMapping
 } from './commonProfessor.js';
 
 (function ($) {
@@ -28,20 +29,6 @@ import {
     'searching': false,
     'info': false
   });
-
-  let gradesMapping = {
-    '0': 'Nessun voto',
-    '1': '1',
-    '2': '2',
-    '3': '3',
-    '4': '4',
-    '5': '5',
-    '6': '6',
-    '7': '7',
-    '8': '8',
-    '9': '9',
-    '10': '10'
-  }
 
   for (let key in gradesMapping) {
     grades_list += '<option value="' + key + '">' + gradesMapping[key] + '</option>';
@@ -137,10 +124,6 @@ import {
     for (let key in usersWithGrades) {
       let studentId = usersWithGrades[key]._id;
       let value = $('#' + studentId + ' option:selected').val();
-      //console.log(studentId);
-      //console.log($('#' + studentId + ' option:selected').val());
-
-      //console.log(studentGrade);
       studentGrade['description'] = description;
       studentGrade['subject'] = subject; 
       studentGrade['date'] = date;
