@@ -81,7 +81,8 @@ export class GradeService /*implements CRUDService*/ {
   }
 
   async updateById(resource: any): Promise < any > {
-
+    await this.classModel.classCollection.updateOne({'_id': resource.class_id, 'grades_list._id': resource.grade_id}, {'$set': resource['$set']});
+    return await this.getById(resource.class_id, resource.grade_id);
   }
 
   async getById(resourceId: string): Promise < any > {

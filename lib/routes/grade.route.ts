@@ -5,6 +5,8 @@ import { JwtMiddleware } from '../middlewares/jwt.middleware';
 import { GradeController } from '../controllers/grade.controller';
 import { GradeMiddleware } from '../middlewares/grade.middleware';
 
+//TODO... Decides who can access to these methods
+
 /**
  * GradeRoutes class, it extends the {@link CommonRoutes} class and implements the {@link ConfigureRoutes} interface.
  * It aims to manage all the requests received for the resource _/classes/{id}/grades_.
@@ -27,7 +29,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
 
 
     /** Instance of class middleware that checks every request on class resources*/
-    const gradeMiddlware: GradeMiddleware = new GradeMiddleware();
+    const gradeMiddleware: GradeMiddleware = new GradeMiddleware();
 
 
     /** Instance of jwt middleware that checks if a client has a valid token*/
@@ -36,8 +38,8 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     //TODO define in a better way the users' permissions to perform this
     this.app.get('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
-      gradeMiddlware.discardUselessFieldsQuery,
-      gradeMiddlware.validateClassExists,
+      gradeMiddleware.discardUselessFieldsQuery,
+      gradeMiddleware.validateClassExists,
       grade.list
     ]);
 
@@ -51,13 +53,22 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.post('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
-      gradeMiddlware.validateClassExistsInCreate,
-      gradeMiddlware.validateValue,
-      gradeMiddlware.validateDate,
-      gradeMiddlware.validateSubject,
-      gradeMiddlware.validateDescription,
-      gradeMiddlware.validateStudent,
+      gradeMiddleware.validateClassExistsInCreate,
+      gradeMiddleware.validateValue,
+      gradeMiddleware.validateDate,
+      gradeMiddleware.validateSubject,
+      gradeMiddleware.validateDescription,
+      gradeMiddleware.validateStudent,
       grade.create
+    ]);
+
+    this.app.patch('/api/v1/classes/:id/grades/:grade_id',[
+      jwtMiddleware.validateJWT,
+      gradeMiddleware.discardUselessFields,
+      gradeMiddleware.validateClassExists,
+      gradeMiddleware.validateUpdateBody,
+      gradeMiddleware.validateUpdateRequest,
+      grade.updateById
     ]);
   }
 }

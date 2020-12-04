@@ -60,7 +60,15 @@ export class GradeController implements CRUDController{
   }
 
   async updateById(req: Request, res: Response): Promise<void> {
-
+    const gradeService = GradeService.getInstance();
+    try{
+      req.body.class_id = req.params.id;
+      req.body.grade_id = req.params.grade_id;
+      const updatedGrade = await gradeService.updateById(req.body);
+      res.status(200).send(updatedGrade);
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
   }
 
   async deleteAll(req: Request, res: Response): Promise<void> {

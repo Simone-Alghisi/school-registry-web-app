@@ -151,4 +151,22 @@ export class GradeMiddleware extends ClassMiddleware{
       res.status(500).send({error: 'Internal server error'});
     }
   }
+  
+  discardUselessFields(req: Request, res: Response, next: NextFunction){
+    let set = {};
+    try{
+      const properties: string[] = ['date', 'description', 'value'];
+      for(const key of Object.keys(req.body)){
+        if(!(properties.indexOf(key) === -1)){
+          set['grades_list.$.' + key] = req.body[key];
+        }
+        delete req.body[key];
+      }
+      req.body['$set'] = set;
+      next();
+    }catch(e){
+      res.status(500).send({error: 'Internal server error'});
+    }
+  }
+  
 }
