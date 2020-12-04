@@ -52,6 +52,7 @@ async function getRandomClass(){
 describe('ClassController', () => {
   const userService: UserService = UserService.getInstance();
   const classController = new ClassController();
+  let nClasses: any;
 
   classModel = ClassModel.getInstance();
 
@@ -78,10 +79,8 @@ describe('ClassController', () => {
       .then((data: any) => {
         token2 = data;
       });
-
-    //console.log('token0: ' + token0);
-    //console.log('token1: ' + token1);
-    //console.log('token2: ' + token2);
+    
+    nClasses = await getNumberOfClasses();
   });
 
   after(async () => {
@@ -147,13 +146,12 @@ describe('ClassController', () => {
     });
     
     it('should return all the classes', async () => {
-      const nClasses: any = await getNumberOfClasses();
       return chai
         .request(app)
         .get('/api/v1/classes')
         .set('authorization', 'Bearer ' + token2)
         .then(res => {
-          chai.expect(res.body).to.have.lengthOf(nClasses);
+          chai.expect(res.body.length).to.be.within(nClasses - 1, nClasses + 1);
         });
     });
   });
@@ -258,12 +256,16 @@ describe('ClassController', () => {
 
   describe('#getById', () => {
     let classId: any;
+    let classElem: any;
     const invalidClassId = 1000;
     const invalidClassIdType = 'hello word';
 
-    it('should return the 200 status code: student', async () => {
-      const classElem: any = await getRandomClass();
+    before(async() => {
+      classElem = await getRandomClass();
       classId = classElem._id;
+    })
+
+    it('should return the 200 status code: student', async () => {
       return chai
         .request(app)
         .get('/api/v1/classes/'+ classId)
@@ -275,8 +277,6 @@ describe('ClassController', () => {
     });
 
     it('should return the 200 status code: professor', async () => {
-      const classElem: any = await getRandomClass();
-      classId = classElem._id;
       return chai
         .request(app)
         .get('/api/v1/classes/'+ classId)
@@ -288,8 +288,6 @@ describe('ClassController', () => {
     });
 
     it('should return the 200 status code: secretary', async () => {
-      const classElem: any = await getRandomClass();
-      classId = classElem._id;
       return chai
         .request(app)
         .get('/api/v1/classes/'+ classId)
@@ -337,10 +335,14 @@ describe('ClassController', () => {
   describe('#deleteById', () => {
     let existingClassId: any;
     const notAClassId = 0;
+    let randomClass:any;
+
+    before(async () => {
+      randomClass = await getRandomClass();
+      existingClassId = randomClass._id;
+    })
 
     it('should return the 403 Forbidden code: student shouldn\'t be able to delete a class', async () => {
-      const randomClass:any = await getRandomClass();
-      existingClassId = randomClass._id;
       return chai
         .request(app)
         .delete('/api/v1/classes/'+ existingClassId)
@@ -351,8 +353,6 @@ describe('ClassController', () => {
     });
 
     it('should return the 403 Forbidden code: professor shouldn\'t be able to delete a class', async () => {
-      const randomClass:any = await getRandomClass();
-      existingClassId = randomClass._id;
       return chai
         .request(app)
         .delete('/api/v1/classes/'+ existingClassId)
@@ -383,8 +383,6 @@ describe('ClassController', () => {
     });
 
     it('should return the 204 status code: class deleted, valid class id', async () => {
-      const randomClass:any = await getRandomClass();
-      existingClassId = randomClass._id;
       return chai
         .request(app)
         .delete('/api/v1/classes/' + existingClassId)
@@ -414,7 +412,6 @@ describe('ClassController', () => {
         });
     });
 
-    //the element deleted should not be accessible
     it('should return the 404 status code: previously valid class id', () => {
       return chai
         .request(app)
@@ -529,10 +526,14 @@ describe('ClassController', () => {
       name: className
     }
     const newClass = JSON.stringify(classObj);
+    let person: any;
+
+    before(async() => {
+      person = await getRandomClass();
+      validClassId = person._id;
+    })
 
     it('should return the 204 status code: no body', async () => {
-      const person: any = await getRandomClass();
-      validClassId = person._id;
       return chai
         .request(app)
         .patch('/api/v1/classes/'+ validClassId)
@@ -605,8 +606,6 @@ describe('ClassController', () => {
     });
 
     it('should return the 200 status code', async () => {
-      const newClass:any = await getRandomClass();
-      validClassId = newClass._id;
       return chai
         .request(app)
         .patch('/api/v1/classes/'+ validClassId)
@@ -615,18 +614,6 @@ describe('ClassController', () => {
         .send(newClass)
         .then(res => {
           chai.expect(res.status).to.eql(200);
-        });
-    });
-
-    it('should return the 204 status code: no body', async () => {
-      return chai
-        .request(app)
-        .patch('/api/v1/classes/'+ validClassId)
-        .set('content-type', 'application/json')
-        .set('authorization', 'Bearer ' + token2)
-        .send()
-        .then(res => {
-          chai.expect(res.status).to.eql(204);
         });
     });
 
