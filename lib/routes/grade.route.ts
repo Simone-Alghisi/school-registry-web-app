@@ -58,7 +58,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.get('/api/v1/classes/:id/grades/:idg',[
       jwtMiddleware.validateJWT,
-      gradeMiddlware.validateClassExists,
+      gradeMiddleware.validateClassExists,
       grade.getById
     ]);
 
