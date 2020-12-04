@@ -386,14 +386,18 @@ describe('GradeController', () => {
   describe('#getById', () => {
     let classInstance: any;
     let validGradeId: any;
-    let invalidGradeIdType: any = 'hello world'
     let validGrade: any;
+    let invalidGradeIdType: any = 'hello world'
     let invalidGradeId: any = '5fc75b8d8e9d0909585e3210';
     const classService: ClassService = ClassService.getInstance();
 
-    it('should return the 200 status code: student', async () => {
+    before(async () => {
       classInstance = await classService.getById(class_id);
-      validGradeId = getRandomGrade(classInstance)._id;
+      validGrade = getRandomGrade(classInstance);
+      validGradeId = validGrade._id;
+    })
+
+    it('should return the 200 status code: student', async () => {
       return chai
         .request(app)
         .get('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
@@ -403,9 +407,8 @@ describe('GradeController', () => {
           chai.expect(res.status).to.eql(200);
         });
     });
+
     it('should return the 200 status code: professor', async () => {
-      classInstance = await classService.getById(class_id);
-      validGradeId = getRandomGrade(classInstance)._id;
       return chai
         .request(app)
         .get('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
@@ -415,9 +418,8 @@ describe('GradeController', () => {
           chai.expect(res.status).to.eql(200);
         });
     });
+
     it('should return the 200 status code: secretary', async () => {
-      classInstance = await classService.getById(class_id);
-      validGradeId = getRandomGrade(classInstance)._id;
       return chai
         .request(app)
         .get('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
@@ -427,6 +429,7 @@ describe('GradeController', () => {
           chai.expect(res.status).to.eql(200);
         });
     });
+
     it('should return the 404 status code: wrong type for id', async () => {
       return chai
         .request(app)
@@ -437,6 +440,7 @@ describe('GradeController', () => {
           chai.expect(res.status).to.eql(404);
         });
     });
+
     it('should return the 404 status code: grade id not found', async () => {
       return chai
         .request(app)
@@ -447,6 +451,7 @@ describe('GradeController', () => {
           chai.expect(res.status).to.eql(404);
         });
     });
+
     it('should return the json error message "Grade or class not found"', async () => {
       return chai
         .request(app)
@@ -457,10 +462,8 @@ describe('GradeController', () => {
           chai.expect(res.body.error).to.equal('Grade or class not found');
         });
     });
+
     it('should return the correct grade entry', async () => {
-      classInstance = await classService.getById(class_id);
-      validGrade = getRandomGrade(classInstance);
-      validGradeId = validGrade._id;
       return chai
         .request(app)
         .get('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
@@ -502,7 +505,7 @@ describe('GradeController', () => {
     
     before(async() => {
       classInstance = await classService.getById(class_id);
-      validGradeId = getRandomGrade(classInstance);
+      validGradeId = (getRandomGrade(classInstance))._id;
     })
 
     it('should return the 204 status code: no body', async () => {
@@ -659,7 +662,7 @@ describe('GradeController', () => {
 
     it('should return the 204 status code: wrong type for value', async () => {
       const fake_grade: Record<string, unknown> = {
-        description: 'hello world',
+        value: 'hello world',
       };
       return chai
         .request(app)

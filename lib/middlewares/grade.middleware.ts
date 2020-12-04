@@ -230,7 +230,7 @@ export class GradeMiddleware extends ClassMiddleware{
    * @param next Express NextFunction
    */
   validateDescriptionType(req: Request, res: Response, next: NextFunction) :void{
-    if (req.body && (req.body.description || req.body.description === "")) {
+    if (req.body && (req.body.description !== undefined || req.body.description === "")) {
       if (req.body && CommonModel.validateString(req.body.description)) {
         next();
       } else {
