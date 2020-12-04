@@ -41,9 +41,9 @@ async function getRandomClass(){
   });
 }
 
-async function getRandomGrade(classInstance: any){
-  const grades_list = classInstance.grades_list;
-  console.log(grades_list)
+function getRandomGrade(classInstance: any){
+  const key = Math.floor(Math.random() * (classInstance.grades_list.length - 0) ) + 0;
+  return classInstance.grades_list[key]._id;
 }
 
 async function createClass(){
@@ -414,10 +414,11 @@ describe('GradeController', () => {
 
     it('should return the 204 status code: no body', async () => {
       classInstance = await classService.getById(class_id);
-      getRandomGrade(classInstance);
+      validGradeId = getRandomGrade(classInstance);
+      console.log(validGradeId);
       return chai
         .request(app)
-        .patch('/api/v1/classes/'+ class_id)
+        .patch('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
         .set('content-type', 'application/json')
         .set('authorization', 'Bearer ' + token2)
         .send()
