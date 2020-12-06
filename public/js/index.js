@@ -49,7 +49,7 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser, deal
                 } else {
                   data = data[0];
                   if(data.role === 0){
-                    //TODO... homepage for the user
+                    $(location).prop('href', './homeStudent.html');
                   } else if(data.role === 1){
                     $(location).prop('href', './homeProfessor.html');
                   } else {
