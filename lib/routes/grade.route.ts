@@ -45,6 +45,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.get('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
+      gradeMiddleware.requestGradeIfIamAStudent,
       gradeMiddleware.discardUselessFieldsQuery,
       gradeMiddleware.validateClassExists,
       grade.list
@@ -58,6 +59,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.get('/api/v1/classes/:id/grades/:idg',[
       jwtMiddleware.validateJWT,
+      gradeMiddleware.requestGradeIfIamAStudent,
       gradeMiddleware.validateClassExists,
       gradeMiddleware.validateGradeExists,
       grade.getById
@@ -73,6 +75,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.post('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
+      gradeMiddleware.onlyProfessorAndSecretaryNeedToDoThis,
       gradeMiddleware.validateClassExistsInCreate,
       gradeMiddleware.validateValue,
       gradeMiddleware.validateDate,
@@ -92,6 +95,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.patch('/api/v1/classes/:id/grades/:idg',[
       jwtMiddleware.validateJWT,
+      gradeMiddleware.onlyProfessorAndSecretaryNeedToDoThis,
       gradeMiddleware.validateValueType,
       gradeMiddleware.validateDateType,
       gradeMiddleware.validateDescriptionType,
@@ -111,6 +115,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.patch('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
+      gradeMiddleware.onlyProfessorAndSecretaryNeedToDoThis,
       gradeMiddleware.validateClassExists,
       grade.updateAll
     ]);
@@ -124,6 +129,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.delete('/api/v1/classes/:id/grades/:idg',[
       jwtMiddleware.validateJWT,
+      gradeMiddleware.onlyProfessorAndSecretaryNeedToDoThis,
       gradeMiddleware.validateClassExists,
       gradeMiddleware.validateGradeExists,
       grade.deleteById
@@ -136,6 +142,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     */
     this.app.delete('/api/v1/classes/:id/grades',[
       jwtMiddleware.validateJWT,
+      gradeMiddleware.onlyProfessorAndSecretaryNeedToDoThis,
       gradeMiddleware.validateClassExists,
       grade.deleteAll
     ]);

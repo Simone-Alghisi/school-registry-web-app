@@ -30,8 +30,8 @@ export class LoginController {
     const jwtSecret = process.env.JWT_SECRET || '';
     const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET || '';
     try{
-      const token = jwt.sign({ email: req.body.email, role: req.body.role }, jwtSecret, {expiresIn: LoginController.tokenExpiration});
-      const refToken = jwt.sign({ email: req.body.email, role: req.body.role }, jwtRefreshSecret, {expiresIn: LoginController.refreshTokenExpiration});
+      const token = jwt.sign({ _id: req.body._id, email: req.body.email, role: req.body.role }, jwtSecret, {expiresIn: LoginController.tokenExpiration});
+      const refToken = jwt.sign({ _id: req.body._id, email: req.body.email, role: req.body.role }, jwtRefreshSecret, {expiresIn: LoginController.refreshTokenExpiration});
 
       res.status(200).json({ message: 'Login successful', accessToken: token, refreshToken: refToken});
     }catch (err) {
@@ -50,7 +50,7 @@ export class LoginController {
     dotenv.config();
     const jwtSecret = process.env.JWT_SECRET || '';
     try{
-      const token = jwt.sign({ email: req.jwt.email, role: req.jwt.role }, jwtSecret, {expiresIn: LoginController.tokenExpiration});
+      const token = jwt.sign({ _id: req.jwt._id, email: req.jwt.email, role: req.jwt.role }, jwtSecret, {expiresIn: LoginController.tokenExpiration});
       
       res.status(200).json({ message: 'Refresh successful', accessToken: token});
     }catch (err) {

@@ -68,8 +68,28 @@ export class CommonMiddleware {
   }
 
   /**
+   * Middleware that checks if the user is a a professor or a secretary. If he is then the next function is called
+   * Otherwise the 403 forbidden HTTP code is returned
+   * @param req request
+   * @param res response
+   * @param next next function
+   */
+  onlyProfessorAndSecretaryNeedToDoThis(req: Request, res: Response, next: NextFunction): void{
+    try {
+      const userRole = parseInt(req.jwt.role, 10);
+      if (userRole && (userRole === 1 || userRole === 2)) {
+        next();
+      } else {
+        res.status(403).json({ error: 'Forbidden' });
+      }
+    } catch (e) {
+      res.status(403).json({ error: 'Forbidden' });
+    }
+  }
+
+  /**
    * Middleware that checks if the user is a professor then he or she can request students
-   * If he or she us a professor or a student can request only data about himself or herself
+   * If he or she is a professor or a student can request only data about himself or herself
    * If he or she is a secretary, then he or she can request all the data about all the users in the system
    * Otherwise the 403 forbidden HTTP code is returned
    * @param req request
@@ -96,6 +116,31 @@ export class CommonMiddleware {
     }
   }
 
+  /**
+   * Middleware that checks if the user is a professor or a secretary then he or she can request grades
+   * If he or she is a student, then he or she can request only data about himself or herself
+   * Otherwise the 403 forbidden HTTP code is returned
+   * @param req request
+   * @param res response
+   * @param next next function
+   */
+  requestGradeIfIamAStudent(req: Request, res: Response, next: NextFunction): void{
+    try {
+      const id = req.jwt._id;
+      const userRole = parseInt(req.jwt.role, 10);
+      if(id && (userRole === 1 || userRole == 2)) {
+        next();
+      } else if (id && userRole !== 2) {
+        req.query.student_id = id;
+        next();
+      } else {
+        res.status(403).json({ error: 'Forbidden' });
+      }
+    } catch (e) {
+      res.status(403).json({ error: 'Forbidden' });
+    }
+  }
+
    /**
    * Middleware that checks if the body of the request is empy for an update operation
    * @param req Express Request
@@ -109,4 +154,6 @@ export class CommonMiddleware {
       res.status(204).send();
     }
   }
+
+
 }

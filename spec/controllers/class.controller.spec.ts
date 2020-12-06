@@ -265,14 +265,14 @@ describe('ClassController', () => {
       classId = classElem._id;
     })
 
-    it('should return the 200 status code: student', async () => {
+    it('should return the 403 status code: student', async () => {
       return chai
         .request(app)
         .get('/api/v1/classes/'+ classId)
         .set('content-type', 'application/json')
         .set('authorization', 'Bearer ' + token0)
         .then(res => {
-          chai.expect(res.status).to.eql(200);
+          chai.expect(res.status).to.eql(403);
         });
     });
 
