@@ -178,6 +178,64 @@ describe('GradeController', () => {
           chai.expect(JSON.stringify(res.body)).to.eql(JSON.stringify(grades_list));
         });
     });
+
+    it('should return the 200 OK: professor should be able to request grades filtering by subject', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/' + classId + '/grades?subject=0')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+
+    it('should return the 200 OK: secretary should be able to request grades filtering by subject', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/' + classId + '/grades?subject=0')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });it('should return the 200 OK: professor should be able to request grades filtering by subject', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/' + classId + '/grades?subject=0')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+
+    it('should return the 200 OK: secretary should be able to request grades filtering by subject', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/' + classId + '/grades?subject=0')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+
+    it('should return the 200 ok: filtering by subject', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/' + classId + '/grades?subject=0')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
+
+    it('should return the 200 ok: filtering by subject', async () => {
+      return chai
+        .request(app)
+        .get('/api/v1/classes/' + classId + '/grades?subject=0')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(200);
+        });
+    });
   });
 
   describe('#create', () => {
@@ -185,6 +243,23 @@ describe('GradeController', () => {
       return chai
         .request(app)
         .post('/api/v1/classes/' + class_id + '/grades')
+        .send({
+          value: faker.random.number({min:0, max:10}),  
+          date: moment(faker.date.past()).format(dateFormat), 
+          subject: faker.random.number({min:0, max:4}),
+          description: faker.lorem.text(),
+          student_id: student_id
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 403 error code: student not allowed', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/classes/' + class_id + '/grades')
+        .set('authorization', 'Bearer ' + token0)
         .send({
           value: faker.random.number({min:0, max:10}),  
           date: moment(faker.date.past()).format(dateFormat), 
@@ -348,11 +423,11 @@ describe('GradeController', () => {
         });
     });
 
-    it('should return the 201 status code: grade created', async () => {
+    it('should return the 201 status code: grade created (performed by secretary)', async () => {
       return chai
         .request(app)
         .post('/api/v1/classes/' + class_id + '/grades')
-        .set('authorization', 'Bearer ' + token1)
+        .set('authorization', 'Bearer ' + token2)
         .send({
           value: faker.random.number({min:0, max:10}),  
           date: moment(faker.date.past()).format(dateFormat), 
@@ -365,7 +440,7 @@ describe('GradeController', () => {
         });
     });
 
-    it('should have the proper location header', async () => {
+    it('should have the proper location header (performed by teacher)', async () => {
       return chai
         .request(app)
         .post('/api/v1/classes/' + class_id + '/grades')
@@ -390,14 +465,16 @@ describe('GradeController', () => {
     let invalidGradeIdType: any = 'hello world'
     let invalidGradeId: any = '5fc75b8d8e9d0909585e3210';
     const classService: ClassService = ClassService.getInstance();
+    const userService: UserService = UserService.getInstance();
 
     before(async () => {
       classInstance = await classService.getById(class_id);
       validGrade = getRandomGrade(classInstance);
       validGradeId = validGrade._id;
+      await userService.updateById({_id: idUser0, class_id: class_id});
     })
 
-    it('should return the 200 status code: student', async () => {
+    it('should return the 200 status code: his/her grades', async () => {
       return chai
         .request(app)
         .get('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
