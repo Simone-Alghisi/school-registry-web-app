@@ -616,6 +616,56 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    
+  /communications:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns the list of all the communications in the system
+      summary: Returns all the communications
+      responses:
+        '200':
+          description: 'Collection of Communications'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Communication'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
+  /communications/{id}:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns the data of a communication with a specific id
+      summary: Return a communication
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: string
+            format: ObjectId
+          required: true
+          description: 'Id of the communication to insert'
+      responses:
+        '200':
+          description: 'Data of the communication'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Communication'
+        '404':
+          description: 'Communication not found'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   securitySchemes:
@@ -662,18 +712,10 @@ components:
           items: 
             $ref: '#/components/schemas/Teach'
         communications:
-          type: object
-          properties:
-            sender: 
-              type: string
-              format: ObjectId
-              description: 'the id of the sender of the communication'
-            subject:
-              type: string
-              description: 'the subject of the message'
-            content:
-              type: string
-              description: 'the content of the message'
+          type: array
+          description: 'list of communicatoins associated with the user'
+          items:
+            $ref: '#/components/schemas/Communication'
             
     User:
       allOf:
@@ -927,6 +969,20 @@ components:
         accessToken:
           type: string
           description: 'New access token'
+          
+    Communication:
+      type: object
+      properties:
+        sender: 
+          type: string
+          format: ObjectId
+          description: 'the id of the sender of the communication'
+        subject:
+          type: string
+          description: 'the subject of the message'
+        content:
+          type: string
+          description: 'the content of the message'
   
   responses:
     LoginFailedError:
