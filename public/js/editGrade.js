@@ -1,5 +1,5 @@
 import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } from './common.js';
-import { student_id, students, class_id, subject } from './grades.js';
+import { student_id, students, class_id, subject, gradesToRemove} from './grades.js';
 
 (function ($) {
   "use strict";
@@ -99,7 +99,41 @@ import { student_id, students, class_id, subject } from './grades.js';
     });
   }
 
+  function deleteGrade(gradeId, attemptMade = false){
+    const url = '../api/v1/classes/' + class_id + '/grades/' + gradeId;
+    let fetchData = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
+    }
+    return fetch(url, fetchData)
+      .then((resp) => {
+        if(resp.ok) {
+          console.log('deleted');
+          return;
+        } else if(resp.status == 403){
+          if(!attemptMade){
+            refreshToken().then(() => deleteGrade(gradeId, true)).catch(() => dealWithForbiddenErrorCode());
+          }else{
+            dealWithForbiddenErrorCode();
+          }
+        }else if(resp.status == 404){
+          //già cancellato, nessun problema
+          return;
+        } else {
+          dealWithServerErrorCodes();
+        }
+      });
+  }
+
+  async function deleteGrades(){
+    for(let i=0; i < gradesToRemove.length; i++){
+      await deleteGrade(gradesToRemove[i]);
+      console.log("REMOVE: " + gradesToRemove[i]);
+    }
+  }
+
   $('#confirmEdit').click(() => {
+    deleteGrades();
     updateGrades();
   });
   

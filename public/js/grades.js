@@ -1,9 +1,10 @@
-export { students, student_id, class_id, subject };
+export { students, student_id, class_id, subject, gradesToRemove };
 
 import { getUrlVars } from './common.js';
 import { prepareClassOnLoad, setClassName, gradesMapping } from './commonProfessor.js';
 
 let students = [];
+let gradesToRemove = [];
 let student_id;
 const vars = getUrlVars();
 let class_id = vars['class'];
@@ -138,9 +139,20 @@ let subject = vars['subject'];
         )
       }
       $("#gradesModal").modal("show");
-      //TODO... implement delete single grade here
     });
   }
+
+  $('#gradesModal').on('click', 'button.removeGrade', function(e) {
+    let toRemove = $(this).closest('tr');
+    let idToRemove = toRemove[0].id;
+    $('#'+idToRemove).prop('hidden', true);
+    gradesToRemove.push(idToRemove);
+  });
+
+  $('#gradesModal').on('hidden.bs.modal', function(e){
+    gradesToRemove = [];
+  });
+  
 
   $('#addGrades').attr("onclick", "location.href='./insertGrades.html?class=" + class_id + "&subject=" + subject + "';");
   $('#navViewGrades').attr("href", "./grades.html?class=" + class_id + "&subject=" + subject);
