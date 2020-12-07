@@ -33,6 +33,7 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
     /** Instance of jwt middleware that checks if a client has a valid token*/
     const jwtMiddleware: JwtMiddleware = new JwtMiddleware();
 
+    //TODO: change to onlySecretaryNeedsToDoThis and fix test cases
     /**
      * Route for the get method on the entire collection of users
      * The request is routed only to user controller function for get all (list)

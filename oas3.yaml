@@ -179,7 +179,26 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-          
+
+  /yourself:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns your data
+      summary: Returns the data of the logged user who accessed the resource
+      responses:
+        '200':
+          description: 'Data of the user who accessed the resource'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Yourself'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'          
+
   /login:
     post:
       description: Login to the service providing the credentials
@@ -756,7 +775,53 @@ components:
         - id
         - role
         - birth_date
+
+    Secretary:
+      properties:
+        email:
+          type: string
+          description: 'email of the user'
+          format: email
+        id:
+          type: string
+          format: ObjectId
+          description: 'ID of the user'
+        role:
+          type: integer
+          description: 'role of the user'
+      required:
+        - email
+        - id
+        - role
         
+    Student:
+      allOf:
+        - $ref: '#/components/schemas/Secretary'
+        - type: object 
+      properties:
+        class_id: 
+          type: string
+          format: ObjectId
+          description: 'ID of the class where a student belong'
+      
+    Teacher:
+      allOf:
+        - $ref: '#/components/schemas/Secretary'
+        - type: object 
+      properties:
+        teaches:
+          type: array
+          description: 'list of the subjects teached in classes'
+          items: 
+            $ref: '#/components/schemas/Teach'
+        
+    Yourself:
+      oneOf:
+        - $ref: '#/components/schemas/Teacher'
+        - $ref: '#/components/schemas/Student'
+        - $ref: '#/components/schemas/Secretary'
+      type: object
+
     Lecture:
       type: object
       properties:
