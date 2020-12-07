@@ -57,7 +57,7 @@ async function retrieveClasses(attemptMade = false){
     method: 'GET',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
   }
-  return fetch('../api/v1/users', fetchData).then((resp) => {
+  return fetch('../api/v1/yourself', fetchData).then((resp) => {
     if(resp.ok){
       return resp.json();
     } else if(resp.status == 403){
@@ -71,7 +71,7 @@ async function retrieveClasses(attemptMade = false){
     }
   }).then((data) => {
     if(data){
-      teaches = data[0].teaches;
+      teaches = data.teaches;
       return;
     }
   });

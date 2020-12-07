@@ -6,6 +6,7 @@ import { CommonRoutes } from './common/routes/common.routes'
 import { LoginRoutes } from './routes/login.route';
 import { GradeRoutes } from './routes/grade.route';
 import { CommunicationRoutes } from './routes/communication.route';
+import { YourselfRoutes } from './routes/yourself.route';
 
 /**
  * Exdends the Express request object with a jwt field
@@ -60,6 +61,7 @@ routes.push(new ClassRoutes(app));
 routes.push(new LoginRoutes(app));
 routes.push(new GradeRoutes(app));
 routes.push(new CommunicationRoutes(app));
+routes.push(new YourselfRoutes(app));
 
 /**
  * Configuring all the routes

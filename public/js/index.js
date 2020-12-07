@@ -35,7 +35,7 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser, deal
               method: 'GET',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
             }
-            fetch('../api/v1/users', fetchData)
+            fetch('../api/v1/yourself', fetchData)
               .then((resp) => {
                 if(resp.ok) {
                   return resp.json();
@@ -44,17 +44,14 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser, deal
                 }
               })
               .then((data) => {
-                if(data.length > 1){
+                if(data.role === 0){
+                  $(location).prop('href', './homeStudent.html');
+                } else if(data.role === 1){
+                  $(location).prop('href', './homeProfessor.html');
+                } else if(data.role === 2){
                   $(location).prop('href', './home.html');
                 } else {
-                  data = data[0];
-                  if(data.role === 0){
-                    $(location).prop('href', './homeStudent.html');
-                  } else if(data.role === 1){
-                    $(location).prop('href', './homeProfessor.html');
-                  } else {
-                    dealWithForbiddenErrorCode();
-                  }
+                  dealWithForbiddenErrorCode();
                 }
               })
           }

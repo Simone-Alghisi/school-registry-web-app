@@ -179,7 +179,26 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
-          
+
+  /yourself:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns your data
+      summary: Returns the data of the logged user who accessed the resource
+      responses:
+        '200':
+          description: 'Data of the user who accessed the resource'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Yourself'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'          
+
   /login:
     post:
       description: Login to the service providing the credentials
@@ -428,7 +447,7 @@ paths:
         - bearerJwtAuthToken: []
       description: >-
         Creates a new grades for one student of a class with a specific id
-      summary: Insert a new grande for students in a specific class
+      summary: Insert a new grade for students in a specific class
       parameters: 
         - in: path
           name: id
@@ -616,6 +635,82 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    
+  /communications:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns the list of all the communications in the system
+      summary: Returns all the communications
+      responses:
+        '200':
+          description: 'Collection of Communications'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Communication'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          
+    post:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Creates a new communication in the system
+      summary: Insert a new Communication
+      responses:
+        '201':
+          description: 'Location of created communication'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: 'Link to the newly created communication'     
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Communication'    
+
+  /communications/{id}:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns the data of a communication with a specific id
+      summary: Return a communication
+      parameters: 
+        - in: path
+          name: id
+          schema: 
+            type: string
+            format: ObjectId
+          required: true
+          description: 'Id of the communication to insert'
+      responses:
+        '200':
+          description: 'Data of the communication'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Communication'
+        '404':
+          description: 'Communication not found'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
   securitySchemes:
@@ -662,18 +757,10 @@ components:
           items: 
             $ref: '#/components/schemas/Teach'
         communications:
-          type: object
-          properties:
-            sender: 
-              type: string
-              format: ObjectId
-              description: 'the id of the sender of the communication'
-            subject:
-              type: string
-              description: 'the subject of the message'
-            content:
-              type: string
-              description: 'the content of the message'
+          type: array
+          description: 'list of communicatoins associated with the user'
+          items:
+            $ref: '#/components/schemas/Communication'
             
     User:
       allOf:
@@ -688,7 +775,53 @@ components:
         - id
         - role
         - birth_date
+
+    Secretary:
+      properties:
+        email:
+          type: string
+          description: 'email of the user'
+          format: email
+        id:
+          type: string
+          format: ObjectId
+          description: 'ID of the user'
+        role:
+          type: integer
+          description: 'role of the user'
+      required:
+        - email
+        - id
+        - role
         
+    Student:
+      allOf:
+        - $ref: '#/components/schemas/Secretary'
+        - type: object 
+      properties:
+        class_id: 
+          type: string
+          format: ObjectId
+          description: 'ID of the class where a student belong'
+      
+    Teacher:
+      allOf:
+        - $ref: '#/components/schemas/Secretary'
+        - type: object 
+      properties:
+        teaches:
+          type: array
+          description: 'list of the subjects teached in classes'
+          items: 
+            $ref: '#/components/schemas/Teach'
+        
+    Yourself:
+      oneOf:
+        - $ref: '#/components/schemas/Teacher'
+        - $ref: '#/components/schemas/Student'
+        - $ref: '#/components/schemas/Secretary'
+      type: object
+
     Lecture:
       type: object
       properties:
@@ -927,6 +1060,20 @@ components:
         accessToken:
           type: string
           description: 'New access token'
+          
+    Communication:
+      type: object
+      properties:
+        sender: 
+          type: string
+          format: ObjectId
+          description: 'the id of the sender of the communication'
+        subject:
+          type: string
+          description: 'the subject of the message'
+        content:
+          type: string
+          description: 'the content of the message'
   
   responses:
     LoginFailedError:
