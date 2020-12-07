@@ -641,8 +641,8 @@ paths:
       security:
         - bearerJwtAuthToken: []
       description: >-
-        Returns the list of all the communications in the system
-      summary: Returns all the communications
+        Returns the list of all the communications sended by secretaries in the system
+      summary: Returns all the communications made by secretaries in the system
       responses:
         '200':
           description: 'Collection of Communications'
@@ -689,7 +689,7 @@ paths:
         - bearerJwtAuthToken: []
       description: >-
         Returns the data of a communication with a specific id
-      summary: Return a communication
+      summary: Returns a communication
       parameters: 
         - in: path
           name: id
@@ -707,6 +707,73 @@ paths:
                 $ref: '#/components/schemas/Communication'
         '404':
           description: 'Communication not found'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  
+  /users/{userId}/communications:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns the data of a communication of a specific user given his or her id
+      summary: Returns all the communications
+      parameters: 
+        - in: path
+          name: userId
+          schema: 
+            type: string
+            format: ObjectId
+          required: true
+          description: 'Id of the user that want to get the communications received'
+      responses:
+        '200':
+          description: 'Data of the communication'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Communication'
+        '404':
+          description: 'Communication not found'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /users/{userId}/communications/{communicationsId}:
+    get:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Returns the data of a communication given its and the owner's id
+      summary: Returns a communication
+      parameters: 
+        - in: path
+          name: userId
+          schema: 
+            type: string
+            format: ObjectId
+          required: true
+          description: 'Id of the user that want to get the communications'
+        - in: path
+          name: communicationsId
+          schema: 
+            type: string
+            format: ObjectId
+          required: true
+          description: 'Id of the communications to get'
+      responses:
+        '200':
+          description: 'Data of the communication'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Communication'
+        '404':
+          description: 'User or communication not found'
         '403':
           $ref: '#/components/responses/UnauthorizedError'
         '500':
@@ -1068,6 +1135,9 @@ components:
           type: string
           format: ObjectId
           description: 'the id of the sender of the communication'
+        sender_role:
+          type: integer
+          description: 'role of the sender of the communication'
         subject:
           type: string
           description: 'the subject of the message'
