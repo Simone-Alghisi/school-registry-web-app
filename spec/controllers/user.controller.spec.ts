@@ -640,17 +640,7 @@ describe('UserController', () => {
           chai.expect(res.body.error).to.equal('User not found');
         });
     });
-
-    //the element deleted should not be accessible
-    it('should return the 404 status code: previously valid user id', () => {
-      return chai
-        .request(app)
-        .get('/api/v1/users/' + existingUserId)
-        .set('authorization', 'Bearer ' + token2)
-        .then(res => {
-          chai.expect(res.status).to.equal(404);
-        });
-    });
+    
   });
 
   describe('#updateById', () => {

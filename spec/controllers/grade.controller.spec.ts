@@ -465,13 +465,11 @@ describe('GradeController', () => {
     let invalidGradeIdType: any = 'hello world'
     let invalidGradeId: any = '5fc75b8d8e9d0909585e3210';
     const classService: ClassService = ClassService.getInstance();
-    const userService: UserService = UserService.getInstance();
 
     before(async () => {
       classInstance = await classService.getById(class_id);
       validGrade = getRandomGrade(classInstance);
       validGradeId = validGrade._id;
-      await userService.updateById({_id: idUser0, class_id: class_id});
     })
 
     it('should return the 200 status code: his/her grades', async () => {
@@ -553,15 +551,182 @@ describe('GradeController', () => {
   });
   
   describe('#deleteById', () => {
+    let classInstance: any;
+    let validGradeId: any;
+    let validGrade: any;
+    let notExistingGradeId: any = '5fc75b8d8e9d0909585e3210';
+    const classService: ClassService = ClassService.getInstance();
+
+    before(async () => {
+      classInstance = await classService.getById(class_id);
+      validGrade = getRandomGrade(classInstance);
+      validGradeId = validGrade._id;
+    })
+
+    it('should return the 403 Forbidden code: student shouldn\'t be able to delete a grade', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 404 status code: Grade not found', async () => {
+      return chai
+      .request(app)
+      .delete('/api/v1/classes/'+ class_id + '/grades/' + notExistingGradeId)
+      .set('authorization', 'Bearer ' + token1)
+      .then(res => {
+        chai.expect(res.status).to.equal(404);
+      });
+    });
+
+    it('should return the json error message: "Grade or class not found"', async () => {
+      return chai
+      .request(app)
+      .delete('/api/v1/classes/'+ class_id + '/grades/' + notExistingGradeId)
+      .set('authorization', 'Bearer ' + token1)
+      .then(res => {
+        chai.expect(res.body.error).to.equal('Grade or class not found');
+      });
+    });
     
+    it('should return the 204 status code: valid grade id', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.equal(204);
+        });
+    });
+    
+    it('should return the 404 status code: previously valid grade id', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.equal(404);
+        });
+    });
+
+    it('should return the json error message "Grade or class not found": previously valid grade id', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ class_id + '/grades/' + validGradeId)
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Grade or class not found');
+        });
+    });
+
   });
 
   describe('#deleteAll', () => {
-    
+    it('should return the 403 Forbidden code: student shouldn\'t be able to delete all grades in a class', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 405 status code: operation not allowed professor', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.equal(405);
+        });
+    });
+
+    it('should return the json error message "Method not allowed" professor', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Method not allowed');
+        });
+    });
+
+    it('should return the 405 status code: operation not allowed secretary', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.equal(405);
+        });
+    });
+
+    it('should return the json error message "Method not allowed" secretary', async () => {
+      return chai
+        .request(app)
+        .delete('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Method not allowed');
+        });
+    });
   });
 
   describe('#updateAll', () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to delete all grades in a class', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
 
+    it('should return the 405 status code: operation not allowed professor', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.equal(405);
+        });
+    });
+
+    it('should return the json error message "Method not allowed" professor', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Method not allowed');
+        });
+    });
+
+    it('should return the 405 status code: operation not allowed secretary', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.equal(405);
+        });
+    });
+
+    it('should return the json error message "Method not allowed" secretary', async () => {
+      return chai
+        .request(app)
+        .patch('/api/v1/classes/'+ class_id + '/grades')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.body.error).to.equal('Method not allowed');
+        });
+    });
   });
 
   describe('#updateById', () => {
