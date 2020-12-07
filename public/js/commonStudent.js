@@ -36,7 +36,7 @@ function retrieveClassStudent(attemptMade = false){
     method: 'GET',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
   }
-  return fetch('../api/v1/users', fetchData).then((resp) => {
+  return fetch('../api/v1/yourself', fetchData).then((resp) => {
     if(resp.ok){
       return resp.json();
     } else if(resp.status == 403){
@@ -49,7 +49,7 @@ function retrieveClassStudent(attemptMade = false){
       dealWithServerErrorCodes();
     }
   }).then((data) => {
-    class_id = data[0].class_id;
-    student_id = data[0]._id;
+    class_id = data.class_id;
+    student_id = data._id;
   });
 }
