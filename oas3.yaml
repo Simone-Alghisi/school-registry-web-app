@@ -428,7 +428,7 @@ paths:
         - bearerJwtAuthToken: []
       description: >-
         Creates a new grades for one student of a class with a specific id
-      summary: Insert a new grande for students in a specific class
+      summary: Insert a new grade for students in a specific class
       parameters: 
         - in: path
           name: id
@@ -638,6 +638,32 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
           
+    post:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Creates a new communication in the system
+      summary: Insert a new Communication
+      responses:
+        '201':
+          description: 'Location of created communication'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: 'Link to the newly created communication'     
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Communication'    
+
   /communications/{id}:
     get:
       security:
