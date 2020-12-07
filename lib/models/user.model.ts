@@ -103,6 +103,7 @@ export class UserModel {
     communications:[
       {
         sender: String,
+        sender_role: Number,
         subject: String,
         content: String
       }
