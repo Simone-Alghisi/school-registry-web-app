@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Insert user</title>
+  <title>Communications</title>
 
   <!-- Custom fonts for this template-->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" type="text/css">
@@ -40,14 +40,14 @@
       
       <!-- Example of items inside the Nav Bar - No collapse menu' -->
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="communications.html">
           <!-- icon for the nav item -->
           <i class="fas fa-fw fa-envelope"></i>
           <span>Comunicazioni</span></a>
       </li>
 
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="users.html">
           <!-- icon for the nav item -->
           <i class="fas fa-fw fa-users"></i>
@@ -187,54 +187,28 @@
               <!-- Project Card Example -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-card">Crea nuovo utente</h6>
+                  <h6 class="m-0 font-weight-bold text-card">Comunicazioni</h6>
                 </div>
                 <div class="card-body">
-                  <form method='POST' id="form">
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label for="name">Nome</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Inserisci il nome..." required>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="surname">Cognome</label>
-                        <input type="text" class="form-control" id="surname" name="surname" placeholder="Inserisci il cognome..." required>
-                      </div>
+                  <div class="row">
+                    <div class="col-md-12 table-responsive">
+                      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Sender</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
                     </div>
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label for="birth_date">Data di nascita</label>
-                        <input type="date" class="form-control" id="birth_date" name="birth_date" required>
-                      </div>
-                      <div class="form-group col-md-6">
-                        <label for="role">Categoria</label>
-                        <select class="form-control" id="role" name="role" required>
-                          <option  value="" selected="selected">Seleziona la categoria dell'utente</option>
-                          <option value="0">Student*</option>
-                          <option value="1">Professor*</option>
-                          <option value="2">Segretari*</option>
-                        </select>
-                      </div>
+                  </div>
+                  <div class="row justify-content-end">
+                    <div class="col-auto">
+                      <button class="btn btn-danger btn-circle" onclick="location.href='./communications.html';"><i class="fas fa-fw fa-plus"></i></button>
                     </div>
-                    <div class="form-row">
-                      <div class="form-group col-md-12">
-                        <label for="email">Email</label>
-                        <input type="email" name="email" class="form-control" id="email" placeholder="Inserisci l'email..." required>
-                      </div>
-                    </div>
-                    <div class="form-row">
-                      <div class="form-group col-md-12">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" name="password" class="form-control" id="password" placeholder="Inserisci la password..." required>
-                      </div>
-                    </div>
-                    <div class="form-row justify-content-end">
-                      <div class="form-group col-auto">
-                        <button type="button" class="btn btn-secondary" onclick="location.href='./users.html';">Annulla</button>
-                        <button type="submit" class="btn btn-primary" id="submit">Conferma</button>
-                      </div>
-                    </div>
-                  </form>
+                  </div>
                 </div>
               </div>
 
@@ -288,9 +262,10 @@
 
   <!-- Page level custom scripts -->
   <script src="js/plugins/datatables.js"></script>
-
+  
   <!-- Custom script for users page -->
-  <script type="module" src="js/insertUser.js"></script>
+  <script type="module" src="js/communications.js"></script>
+
 </body>
 
 </html>

@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Forbidden</title>
+  <title>Communications</title>
 
   <!-- Custom fonts for this template-->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" type="text/css">
@@ -40,7 +40,7 @@
       
       <!-- Example of items inside the Nav Bar - No collapse menu' -->
       <!-- Nav Item - Dashboard -->
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link" href="communications.html">
           <!-- icon for the nav item -->
           <i class="fas fa-fw fa-envelope"></i>
@@ -93,6 +93,80 @@
           <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars"></i>
           </button>
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <!-- Nav Item - Alerts -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bell fa-fw"></i>
+                <!-- Counter - Alerts -->
+                <span class="badge badge-danger-alternative badge-counter">3+</span>
+              </a>
+              <!-- Dropdown - Alerts -->
+              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+                <h6 class="dropdown-header">
+                  Alerts Center
+                </h6>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="mr-3">
+                    <div class="icon-circle bg-primary">
+                      <i class="fas fa-file-alt text-white"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="small text-gray-500">December 12, 2019</div>
+                    <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                  </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="mr-3">
+                    <div class="icon-circle bg-success">
+                      <i class="fas fa-donate text-white"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="small text-gray-500">December 7, 2019</div>
+                    $290.29 has been deposited into your account!
+                  </div>
+                </a>
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="mr-3">
+                    <div class="icon-circle bg-warning">
+                      <i class="fas fa-exclamation-triangle text-white"></i>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="small text-gray-500">December 2, 2019</div>
+                    Spending Alert: We've noticed unusually high spending for your account.
+                  </div>
+                </a>
+                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+              </div>
+            </li>
+
+            <div class="topbar-divider d-none d-sm-block"></div>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-900 small">Username</span>
+                <div class="img-profile rounded-circle">
+                  <i class="fas fa-user login-icon"></i>
+                </div>
+              </a>
+              <!-- Dropdown - User Information -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#" id="logoutButton" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
+              </div>
+            </li>
+
+          </ul>
+
         </nav>
         <!-- End of Topbar -->
 
@@ -100,8 +174,8 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
-          <div class="d-sm-flex align-items-center justify-content-center mb-4">
-            <h1 class="h3 mb-0 text-gray-800 mx-auto">Forbidden</h1>
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Segreteria</h1>
           </div>
 
           <!-- Content Row -->
@@ -109,16 +183,23 @@
 
             <!-- Content Column -->
             <div class="col-lg-12 mb-4">
-              <div class="row h-100 justify-content-center align-items-center">
-                <div class="error mx-auto" data-text="403">403</div>
-              </div> 
-              <div class="row h-100 justify-content-center align-items-center">
-                <p class="text-gray-500 mb-0">Hai tentato di accedere a risorse protette, prova a riautenticarti</p>
+
+              <!-- Project Card Example -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <button class="btn btn-danger btn-circle" onclick="location.href='./communications.html';"><i class="fas fa-fw fa-arrow-left"></i></button>
+                  <h6 class="m-0 font-weight-bold text-card" style="display:inline">Comunicazioni</h6>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div id="communication" class="col-md-12 table-responsive">
+                      
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="row h-100 justify-content-center align-items-center">
-                <p><a href="/" id="logoutButton">Login con un altro utente</a></p>
-              </div>
-          </div>
+
+            </div>
           </div>
 
         </div>
@@ -165,6 +246,13 @@
 
   <!-- Custom scripts for all pages-->
   <script src="js/main.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="js/plugins/datatables.js"></script>
+  
+  <!-- Custom script for users page -->
+  <script type="module" src="js/viewCommunication.js"></script>
+
 </body>
 
 </html>
