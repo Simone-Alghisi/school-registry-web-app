@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Check Grades</title>
+  <title>Communications</title>
 
   <!-- Custom fonts for this template-->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" type="text/css">
@@ -41,7 +41,7 @@
       <!-- Example of items inside the Nav Bar - No collapse menu' -->
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
-        <a class="nav-link" href="./homeProfessor.html">
+        <a class="nav-link" href="">
           <!-- icon for the nav item -->
           <i class="fa fa-home"></i>
           <span>Homepage</span></a>
@@ -49,7 +49,7 @@
 
       <!-- Example of items inside the Nav Bar - Collapse menu' -->
       <!-- Nav Item - Pages Collapse Menu -->
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <!-- icon for the nav item -->
           <i class="fas fa-fw fa-chalkboard-teacher"></i>
@@ -62,8 +62,8 @@
         </div>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link" href="./communicationsProfessor.html">
+      <li class="nav-item active">
+        <a class="nav-link" href="">
           <!-- icon for the nav item -->
           <i class="fas fa-fw fa-envelope"></i>
           <span>Comunicazioni Ricevute</span></a>
@@ -190,7 +190,7 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800"></h1>
+            <h1 class="h3 mb-0 text-gray-800">Segreteria</h1>
           </div>
 
           <!-- Content Row -->
@@ -201,35 +201,14 @@
 
               <!-- Project Card Example -->
               <div class="card shadow mb-4">
-                <div class="card-header" >
-                  <ul class="nav nav-tabs nav-justified card-header-tabs">
-                    <li class="nav-item font-weight-bold text-card"><a class="nav-link disabled-card-header" href="#">Comunicazioni</a></li>
-                    <li class="nav-item font-weight-bold text-card"><a class="nav-link active-card-header" href="#" id="navViewGrades">Voti</a></li>
-                    <li class="nav-item font-weight-bold text-card"><a class="nav-link disabled-card-header" href="#">Verifiche</a></li>
-                    <li class="nav-item font-weight-bold text-card"><a class="nav-link disabled-card-header" href="#">Compiti</a></li>
-                    <li class="nav-item font-weight-bold text-card"><a class="nav-link disabled-card-header" href="#">Materiale</a></li>
-                  </ul>
-                  <!--<h6 class="m-0 font-weight-bold text-card">Crea nuovo utente</h6>-->
+                <div class="card-header py-3">
+                  <button class="btn btn-danger btn-circle" onclick="location.href='./communicationsProfessor.html';"><i class="fas fa-fw fa-arrow-left"></i></button>
+                  <h6 class="m-0 font-weight-bold text-card" style="display:inline">Comunicazioni</h6>
                 </div>
                 <div class="card-body">
                   <div class="row">
-                    <div class="col-md-12 table-responsive">
-                      <table class="table table-bordered" id="studentsTable" width="100%" cellspacing="0">
-                        <thead>
-                          <tr>
-                            <th>Studente</th>
-                            <th>Numero Voti</th>
-                            <th>Media</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="row justify-content-end">
-                    <div class="col-auto">
-                      <button id="addGrades" class="btn btn-danger btn-circle"><i class="fas fa-fw fa-plus"></i></button>
+                    <div id="communication" class="col-md-12 table-responsive">
+                      
                     </div>
                   </div>
                 </div>
@@ -260,12 +239,7 @@
   </div>
   <!-- End of Page Wrapper -->
 
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Select Class Modal-->
+  <!-- Class selection modal -->
   <div class="modal fade" id="classModal" tabindex="-1" role="dialog" aria-labelledby="classModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -288,48 +262,10 @@
     </div>
   </div>
 
-  <!-- Select Class Modal-->
-  <div class="modal fade" id="gradesModal" tabindex="-1" role="dialog" aria-labelledby="gradesModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="gradesModalLable">Voti per lo studente</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body modal-lg">
-          <!-- Grades List -->
-          <div class="form-group col-md-12">
-            <div class="card mb-4">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-12 table-responsive">
-                    <table class="table table-bordered" width="100%" cellspacing="0">
-                      <thead>
-                        <tr>
-                          <th>Elimina Voto</th>
-                          <th>Argomento</th>
-                          <th>Data</th>
-                          <th>Voto</th>
-                        </tr>
-                      </thead>
-                      <tbody id="gradesTable">
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Annulla</button>
-          <button id="confirmEdit" class="btn btn-primary" href="#">Conferma</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
 
   <!-- Bootstrap core JavaScript-->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -351,10 +287,11 @@
 
   <!-- Page level custom scripts -->
   <script src="js/plugins/datatables.js"></script>
-
+  
   <!-- Custom script for users page -->
-  <script type="module" src="js/grades.js"></script>
-  <script type="module" src="js/editGrade.js"></script>
+  <script src="js/main.js"></script>
+  <script type="module" src="js/viewCommunicationProfessor.js"></script>
+
 </body>
 
 </html>
