@@ -1,13 +1,12 @@
-import { CRUDService } from '../common/interfaces/crudService.interface';
 import { UserModel } from '../models/user.model';
 import { ClassModel } from '../models/class.model';
 
 /**
- * ComunicationService class, it implements the {@link CRUDService} interface.
- * It aims to manage perform all the operations that involve the _class_ resource
+ * ComunicationService class.
+ * It aims to manage all the operations that involve the _communications_ resource
  * by interacting with the database
  */
-export class CommunicationService /*implements CRUDService*/ {
+export class CommunicationService {
   /**
    * CommunicationService instance
    */
@@ -17,7 +16,7 @@ export class CommunicationService /*implements CRUDService*/ {
    */
   classModel: ClassModel; 
   /**
-   * Class model
+   * User model
    */
   userModel: UserModel;
 
@@ -47,47 +46,52 @@ export class CommunicationService /*implements CRUDService*/ {
     
   }
 
-  //Not used 
-  async list(): Promise<any>{
-    return new Promise((resolve, reject) => {
-      this.userModel.userCollection.find().select(['communications'])
-        .exec(function (err, classes) {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(classes);
-        }
-        })
-    });
-  }
-
   async updateById(resource: any): Promise<any>{
 
   }
 
+  /**
+   * Asynchronous function which retrives a communication sended 
+   * to a user given the userId and the resourceId
+   * 
+   * @param userId the Id of the user 
+   * @param resourceId the Id of the communication
+   * 
+   * @returns requested communication
+   */
   async getById(userId: string, resourceId: string): Promise < any > {
-    console.log("UserId: " + userId + " resourceId: " + resourceId);
     let foundCommunications = await this.userModel.userCollection.findOne({'_id': userId, 'communications._id': resourceId }, {'communications.$._id': resourceId });
     if (foundCommunications) {
       foundCommunications = foundCommunications['communications'][0];
-    } else {
-      console.log('Non trovo per id');
     }
     return foundCommunications;
   }
 
+  /**
+   * Asynchronous function which retrives a communication 
+   * given its resourceId
+   * 
+   * @param resourceId the Id of the communication
+   * 
+   * @returns requested communication
+   */
   async getSendedById(resourceId: string): Promise < any > {
     let foundCommunications = await this.userModel.userCollection.findOne({'communications._id': resourceId }, {'communications.$._id': resourceId });
     if (foundCommunications) {
       foundCommunications = foundCommunications['communications'][0];
-    } else {
-      console.log('Non trovo per id');
     }
     return foundCommunications;
   }
 
+  /**
+   * Asynchronous function which retrieves all the communication according to the passed parameters
+   * which act as a filter
+   * 
+   * @param parameters 
+   * 
+   * @returns communication that are compliant with the parameter passed
+   */
   async filterList(parameters: any): Promise<any>{
-    console.log(parameters);
     let filters = this.separateUserCommuicationFields(parameters);
     let userFilters = filters[0];
     let commFilters = filters[1];
@@ -120,6 +124,16 @@ export class CommunicationService /*implements CRUDService*/ {
     return communicationsToReturn;
   }
 
+  /**
+   * Function called by {@link filterList} which separates the fields of
+   * the UserModel from the one inside the communication fields (also inside
+   * UserModel)
+   * 
+   * @param fields an object of field which are from either UserModel or the communication
+   * field insiede of it
+   * 
+   * @returns an array composed of two objects: fields and commFilters
+   */
   separateUserCommuicationFields(fields: any): any{
     const userModel = UserModel.getInstance();
     let commFilters = {};

@@ -1,12 +1,10 @@
 import { Response, Request, NextFunction } from 'express';
-import { ClassModel } from '../models/class.model';
 import { UserModel } from '../models/user.model';
 import { CommunicationService } from '../services/communication.service';
-import { CommonMiddleware } from '../common/middlewares/common.middleware';
 import { UserMiddleware } from './user.middleware';
 
 /**
- * CommunicationMiddleware class, it extends the {@link CommonMiddleware} class.
+ * CommunicationMiddleware class, it extends the {@link UserMiddleware} class.
  * It aims to manage all the requests received for the communication resource:
  * - In case of errors, the HTTP status code is returned
  * - Otherwise the request is allowed to pass
@@ -14,8 +12,9 @@ import { UserMiddleware } from './user.middleware';
 export class CommunicationMiddleware extends UserMiddleware{
   
   /**
-   * Method that checks if it exists a grade that has the same class id 
-   * contained in the parameters of the request
+   * Method that checks if it exists a communication inside the profile of a
+   * specified user (data needed are retrieved from the request parameters)
+   * Otherwise the 404 Not Found HTTP code is returned
    * @param req Express Request
    * @param res Express Response
    * @param next Express NextFunction
@@ -35,14 +34,14 @@ export class CommunicationMiddleware extends UserMiddleware{
     if(success){
       next();
     }else{
-      console.log("Non trovo nulla");
       res.status(404).json({error: 'Communication or user not found'});
     }
   }
 
   /**
-   * Method that checks if it exists a grade that has the same class id 
-   * contained in the parameters of the request
+   * Method that checks if it exists a communication in the DB with the same
+   * id passed in the request as a parameter
+   * Otherwise the 404 Not Found HTTP code is returned
    * @param req Express Request
    * @param res Express Response
    * @param next Express NextFunction
@@ -60,20 +59,20 @@ export class CommunicationMiddleware extends UserMiddleware{
     if(success){
       next();
     }else{
-      console.log("Non trovo nulla");
       res.status(404).json({error: 'Communication or user not found'});
     }
   }
 
   /**
-   * Middleware that checks the user
-   * A user can request only communications about himself or herself
+   * Middleware that checks the user id passed as query with the one 
+   * inside the jwt token: a user can request only communications 
+   * about himself or herself
    * Otherwise the 403 forbidden HTTP code is returned
    * @param req request
    * @param res response
    * @param next next function
    */
-  requestMyComunication(req: Request, res: Response, next: NextFunction): void{
+  requestMyCommunication(req: Request, res: Response, next: NextFunction): void{
     try {
       const id = req.jwt._id;
       if(id) {
@@ -89,13 +88,14 @@ export class CommunicationMiddleware extends UserMiddleware{
 
   /**
    * Middleware that checks if the user is a secretary
-   * If he or she is a secretary, then he or she can request all the secretary comunication in the system
+   * If that's the case, then the user can request all the communication sent
+   * by all the secretaries in the system
    * Otherwise the 403 forbidden HTTP code is returned
    * @param req request
    * @param res response
    * @param next next function
    */
-  requestMySendedComunication(req: Request, res: Response, next: NextFunction): void{
+  requestMySendedCommunication(req: Request, res: Response, next: NextFunction): void{
     try {
       const id = req.jwt._id;
       const userRole = parseInt(req.jwt.role, 10);
@@ -111,17 +111,18 @@ export class CommunicationMiddleware extends UserMiddleware{
   }
 
   /**
-   * Middleware that checks if the user can only access his comunication
+   * Middleware that checks the user id in the parameters with the one 
+   * inside the jwt token: a user can request only communications 
+   * about himself or herself
    * Otherwise the 403 forbidden HTTP code is returned
    * @param req request
    * @param res response
    * @param next next function
    */
-  requestOnlyMyComunication(req: Request, res: Response, next: NextFunction): void{
+  requestOnlyMyCommunication(req: Request, res: Response, next: NextFunction): void{
     try {
       const id = req.jwt._id;
       const paramId = req.params.id;
-      console.log("Id token: " + id + " id param: " + paramId);
       if(id === paramId) {
         next();
       } else {

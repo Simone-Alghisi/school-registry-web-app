@@ -2,7 +2,7 @@ import { UserModel } from '../models/user.model';
 
 /**
  * YourselfService class.
- * It aims to manage all the operations that involve the _/yourself_ resource
+ * It aims to manage all the operations that involve the _yourself_ resource
  * by interacting with the database
  */
 export class YourselfService {

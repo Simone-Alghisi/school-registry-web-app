@@ -37,7 +37,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
 
     //TODO define in a better way the users' permissions to perform this
     /**
-     * Route for the get method (retreive resource) for the grades of a class
+     * Route for the get method (retrieve resource) for the grades of a class
      * The request is routed through a series of middlewares that check the validity of the JWT token
      * The middlewares remove all the invalid query fields
      * The middlewares also check that the referred class exist

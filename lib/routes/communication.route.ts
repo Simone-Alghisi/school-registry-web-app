@@ -33,28 +33,55 @@ export class CommunicationRoutes extends CommonRoutes implements ConfigureRoutes
     /** Instance of jwt middleware that checks if a client has a valid token*/
     const jwtMiddleware: JwtMiddleware = new JwtMiddleware();
 
-  
+    /**
+     * Route for the get method (retrieve resource) for the communications that the user received
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The middlewares check if the user exists in the system 
+     * The middlewares also check that the communications requested are the ones of the user
+     * Then the request is routed to the appropriate communication controller function for list
+    */
     this.app.get('/api/v1/users/:id/communications', [
       jwtMiddleware.validateJWT,
       communicationMiddleware.validateUserExists,
-      communicationMiddleware.requestMyComunication,
+      communicationMiddleware.requestMyCommunication,
       communicationController.list
     ]);
 
+    /**
+     * Route for the get method (retrieve resource) for a particular communication that the user received
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The middlewares check that the communication requested is one of the user
+     * The middlewares check if the user exists in the system 
+     * The middlewares also check if the communication exist in the profile of the user
+     * Then the request is routed to the appropriate communication controller function for getById
+    */
     this.app.get('/api/v1/users/:id/communications/:idc', [
       jwtMiddleware.validateJWT,
-      communicationMiddleware.requestOnlyMyComunication,
+      communicationMiddleware.requestOnlyMyCommunication,
       communicationMiddleware.validateUserExists,
       communicationMiddleware.validateCommunicationExists,
       communicationController.getById
     ]);
 
+    /**
+     * Route for the get method (retrieve resource) for the communications sent by secretaries
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The middlewares also check that the user's role is 2 (i.e. must be a secretary)
+     * Then the request is routed to the appropriate communication controller function for getById
+    */
     this.app.get('/api/v1/communications', [
       jwtMiddleware.validateJWT,
-      communicationMiddleware.requestMySendedComunication,
+      communicationMiddleware.requestMySendedCommunication,
       communicationController.list
     ]);
 
+    /**
+     * Route for the get method (retrieve resource) for a particular communication sent by secretaries
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * The middlewares check that the user's role is 2 (i.e. must be a secretary)
+     * The middlewares also check if the communication exist
+     * Then the request is routed to the appropriate communication controller function for list
+    */
     this.app.get('/api/v1/communications/:id', [
       jwtMiddleware.validateJWT,
       communicationMiddleware.onlySecretaryNeedsToDoThis,

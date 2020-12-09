@@ -6,11 +6,12 @@ import { CommunicationService } from '../services/communication.service';
  * CommunicationController class, it implements the {@link CRUDController} interface.
  * It aims to manage all the operations that involves the communication resource
  */
-export class CommunicationController implements CRUDController{
+export class CommunicationController implements CRUDController {
   constructor() {}
 
   /**
-   * Asyncronous functions that 
+   * Asyncronous functions that get a list of communication based on
+   * a list of parameters passed in the request
    * and sends it back with the status code 200 otherwise 500
    * @param req express Request object
    * @param res express Response object
@@ -20,7 +21,6 @@ export class CommunicationController implements CRUDController{
     let communications: any;
     try{
       if(req.query && Object.keys(req.query).length !== 0){
-        //console.log("Eseguo la filter");
         communications = await classService.filterList(req.query);
       } else {
         res.status(405).json({ error: 'Method not allowed' });
@@ -51,7 +51,8 @@ export class CommunicationController implements CRUDController{
   }
   
   /**
-   * Asyncronous functions that 
+   * Asyncronous functions that retrives a communication sended 
+   * to a user given the userId and the resourceId
    * and sends it back with the status code 200 otherwise 500
    * @param req express Request object
    * @param res express Response object
@@ -67,6 +68,13 @@ export class CommunicationController implements CRUDController{
     }
   }
 
+    /**
+   * Asyncronous functions that retrives a communication 
+   * given its resourceId
+   * and sends it back with the status code 200 otherwise 500
+   * @param req express Request object
+   * @param res express Response object
+   */
   async getSendedById(req: Request, res: Response): Promise<void> {
     const communicationService = CommunicationService.getInstance();
     try{
@@ -89,7 +97,7 @@ export class CommunicationController implements CRUDController{
   }
 
   /**
-   * Asyncronous functions for 
+   * Asyncronous functions which is not allowed, it sends back error code 405
    * @param req express Request object
    * @param res express Response object
    */

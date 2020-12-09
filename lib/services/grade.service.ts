@@ -1,14 +1,12 @@
-import {
-  ClassModel
-} from '../models/class.model';
+import { ClassModel } from '../models/class.model';
 import mongoose from 'mongoose';
 
 /**
  * GradeService class
- * It aims to manage perform all the operations that involve the _classes/{id}/grades_ resource
+ * It aims to manage all the operations that involve the _classes/{id}/grades_ resource
  * by interacting with the database
  */
-export class GradeService /*implements CRUDService*/ {
+export class GradeService {
   /**
    * GradeService instance
    */

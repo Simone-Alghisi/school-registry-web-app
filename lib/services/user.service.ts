@@ -4,7 +4,7 @@ import * as crypto from 'crypto';
 
 /**
  * UserService class, it implements the {@link CRUDService} interface.
- * It aims to manage perform all the operations that involve the _user_ resource
+ * It aims to manage all the operations that involve the _user_ resource
  * by interacting with the database
  */
 export class UserService implements CRUDService {

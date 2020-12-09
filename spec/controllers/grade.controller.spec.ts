@@ -64,6 +64,16 @@ async function createUserOfThatClass(class_id: string){
   });
 }
 
+function filterGradesById(grades_list: any, user_id: any): any{
+  let user_grades = [];
+  for(const grade in grades_list){
+    if(grades_list[grade].student_id === user_id){
+      user_grades.push(grades_list[grade])
+    }
+  }
+  return user_grades;
+}
+
 
 describe('GradeController', () => {
   const userService: UserService = UserService.getInstance();
@@ -137,6 +147,7 @@ describe('GradeController', () => {
       classElem = await getRandomClass();
       classId = classElem._id;
       grades_list = classElem.grades_list
+      grades_list = filterGradesById(grades_list, idUser0);
     })
 
     it('should return the 200 OK: student should be able to request grades', async () => {
