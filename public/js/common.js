@@ -1,4 +1,4 @@
-export { getUrlVars, dealWithForbiddenErrorCode, refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser };
+export { getUrlVars, dealWithForbiddenErrorCode, refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser, getYourself };
 
 function refreshToken(){
   return new Promise((resolve, reject) => {
@@ -53,4 +53,36 @@ function dealWithServerErrorCodes(){
 
 function dealWithAlreadyLoggedUser(){
   $(location).prop('href', './home.html');
+}
+
+/**
+ * Get the the _/yourself_ resource for the current user
+ * @param {*} attemptMade param used for refresh token 
+ */
+function getYourself(attemptMade=false){
+  return new Promise( (resolve,reject) => {
+    const url = '../api/v1/yourself'
+    fetch(url,{
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + window.sessionStorage.accessToken
+      }
+    })
+    .then(resp => {
+      if(resp.ok){
+        return resp.json();
+      }else if(resp.status == 403){
+        if(!attemptMade){
+          refreshToken().then(() => getid(true)).catch(() => dealWithForbiddenErrorCode());
+        }else{
+          dealWithForbiddenErrorCode();
+        }
+      } else {
+        dealWithServerErrorCodes();
+      }
+    })
+    .then(data => {
+      resolve(data);
+    });
+  });
 }
