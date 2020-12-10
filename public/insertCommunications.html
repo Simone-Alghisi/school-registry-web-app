@@ -58,7 +58,7 @@
         <a class="nav-link" href="classes.html">
           <!-- icon for the nav item -->
           <i class="fas fa-fw fa-chalkboard-teacher"></i>
-          <span>Classi</span></a>
+          <span>Comunicazioni</span></a>
       </li>
 
       <li class="nav-item">
@@ -187,31 +187,39 @@
               <!-- Project Card Example -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-card">Comunicazioni</h6>
+                  <h6 class="m-0 font-weight-bold text-card">Classi</h6>
                 </div>
                 <div class="card-body">
-                  <div class="row">
-                    <div class="col-md-12 table-responsive">
-                      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Subject</th>
-                                <th>Recipient</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
+                  <form method='POST' id="form">
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
+                        <label class="" for="multi-select">Destinario: </label>
+                        <select name="multi-select" class="form-control ui fluid multiple search selection dropdown" multiple="" id="multi-select">
+                          <option value="">Seleziona i/il Destinari/io</option>
+                        </select>                      
+                      </div>
                     </div>
-                  </div>
-                  <div class="row justify-content-end">
-                    <div class="col-auto">
-                      <button class="btn btn-danger btn-circle" onclick="location.href='./insertCommunications.html';"><i class="fas fa-fw fa-plus"></i></button>
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
+                        <label for="subject">Oggetto</label>
+                        <input type="text" name="subject" class="form-control" id="subject" placeholder="Inserisci l'oggetto..." required>
+                      </div>
                     </div>
-                  </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-12">
+                        <label for="message">Messaggio</label>
+                        <textarea name="message" class="form-control" id="message" placeholder="Inserisci il testo della comunicazione..." required rows="10"></textarea>
+                      </div>
+                    </div>
+                    <div class="form-row justify-content-end">
+                      <div class="form-group col-auto">
+                        <button type="button" class="btn btn-secondary" onclick="location.href='./communications.html';">Annulla</button>
+                        <button type="submit" class="btn btn-primary" id="submit">Conferma</button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -257,6 +265,13 @@
   <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
 
+  <!-- Page level plugins -->
+  <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.min.css" integrity="sha512-YYS7fyqDxVE/yJ1280i8KjA+nC7wAtv2u/qkulKbdMpmp8DBWX0Wj+HtILsFyvq+fouCwCyr0hasPAz1eBlvwA==" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/transition.min.css" integrity="sha512-5StPzJo8hFyTvXfJ31FMB37EXRMVeUg+J3yvUNOJcL83MEMr7VrhZSNsoL3GDmUDBGBBhoTjnJx0Ql7cH9LY7g==" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/label.min.css" integrity="sha512-bLGTFSFKewLG/ltHL52mMtuviUCuHlohn0410iUawDPbjvAONDt0yZ6vLkXfiFOIS9LxPqknEp2K76gBaMq9Bg==" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/icon.min.css" integrity="sha512-8Tb+T7SKUFQWOPIQCaLDWWe1K/SY8hvHl7brOH8Nz5z1VT8fnf8B+9neoUzmFY3OzkWMMs3OjrwZALgB1oXFBg==" crossorigin="anonymous" />
+
   <!-- Custom scripts for all pages-->
   <script src="js/main.js"></script>
 
@@ -264,7 +279,11 @@
   <script src="js/plugins/datatables.js"></script>
   
   <!-- Custom script for users page -->
-  <script type="module" src="js/communications.js"></script>
+  <script type="module" src="js/insertCommunications.js"></script>
+
+  
+  
+  
 
 </body>
 
