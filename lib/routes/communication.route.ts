@@ -42,8 +42,8 @@ export class CommunicationRoutes extends CommonRoutes implements ConfigureRoutes
     */
     this.app.get('/api/v1/users/:id/communications', [
       jwtMiddleware.validateJWT,
-      communicationMiddleware.validateUserExists,
       communicationMiddleware.requestMyCommunication,
+      communicationMiddleware.validateUserExists,
       communicationController.list
     ]);
 

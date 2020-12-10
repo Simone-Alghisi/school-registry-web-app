@@ -76,8 +76,9 @@ export class CommunicationMiddleware extends UserMiddleware {
   requestMyCommunication(req: Request, res: Response, next: NextFunction): void{
     try {
       const id = req.jwt._id;
-      if(id) {
-        req.query._id = id;
+      const paramId = req.params.id;
+      if(id && paramId && id === paramId) {
+        req.query._id = paramId;
         next();
       } else {
         res.status(403).json({ error: 'Forbidden' });

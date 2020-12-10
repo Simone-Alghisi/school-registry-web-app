@@ -161,8 +161,6 @@ describe('CommunicationController', () => {
     });
   });
 
-  //TODO TESTS ARE ONLY FOR SECRETARY LIST (get all communications sended)
-  //TODO missing professor and user list 
   describe('#list', () => {
     let communication_list: any;
     let userCommunications: any;
@@ -170,8 +168,6 @@ describe('CommunicationController', () => {
     before(async () => {
       communication_list= await getAllSendedCommunications(); 
       userCommunications = await getAllReceivedCommunications();
-      //console.log(userIdWithCommunications);
-      //console.log(userCommunications);
     })
 
     it('should return the 403 Forbidden code: professor shouldn\'t be able to request sended communication', async () => {
@@ -244,7 +240,7 @@ describe('CommunicationController', () => {
         });
     });
 
-    /*it('should return the 403: student shouldn\'t be able to request received communications of other users', async () => {
+    it('should return the 403: student shouldn\'t be able to request received communications of other users', async () => {
       return chai
         .request(app)
         .get('/api/v1/users/' + student_id + '/communications')
@@ -272,7 +268,7 @@ describe('CommunicationController', () => {
         .then(res => {
           chai.expect(res.status).to.eql(403);
         });
-    }); */
+    }); 
 
     it('should return all communications that a student has received ', async () => {
       return chai
