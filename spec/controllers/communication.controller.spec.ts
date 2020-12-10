@@ -6,7 +6,7 @@ import * as faker from 'faker';
 import moment from 'moment';
 import { UserModel } from '../../lib/models/user.model';
 import { CommunicationController } from '../../lib/controllers/communication.controller';
-import { user_role_0, user_role_1, user_role_2, userAccessToken, dateFormat } from '../spec_helper';
+import { user_role_0, user_role_1, user_role_2, userAccessToken, dateFormat, sample_communication } from '../spec_helper';
 import { UserService } from '../../lib/services/user.service';
 
 chai.use(chaiHttp);
@@ -421,8 +421,125 @@ describe('CommunicationController', () => {
           chai.expect(JSON.stringify(res.body)).to.equal(JSON.stringify(validCommunication));
         });
     });
-
   });
 
+  describe('#create', () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to send a communication', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users/' + student_id + '/communications')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token0)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
 
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to send a communication', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users/' + student_id + '/communications')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token1)
+        .then(res => {
+          chai.expect(res.status).to.eql(403);
+        });
+    });
+
+    it('should return the 404 not found code, the user do not exists', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users/' + faker.random.number() + '/communications')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .then(res => {
+          chai.expect(res.status).to.eql(404);
+        });
+    });
+
+    it('should return the 422 unprocessable entity code: some fields are missing', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users/' + student_id + '/communications')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send({content: faker.lorem.text()})
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 unprocessable entity code: wrong subject field', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users/' + student_id + '/communications')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send({
+          subject: faker.random.number(),
+          content: faker.lorem.text(),
+          date: moment(new Date()).format(dateFormat)
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 unprocessable entity code: wrong content field', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users/' + student_id + '/communications')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send({
+          subject: faker.lorem.text(),
+          content: faker.random.number(),
+          date: moment(new Date()).format(dateFormat)
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 422 unprocessable entity code: wrong date field', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users/' + student_id + '/communications')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send({
+          subject: faker.lorem.text(),
+          content: faker.lorem.text(),
+          date: faker.lorem.text()
+        })
+        .then(res => {
+          chai.expect(res.status).to.eql(422);
+        });
+    });
+
+    it('should return the 201 created', async () => {
+      console.log(sample_communication)
+      return chai
+        .request(app)
+        .post('/api/v1/users/' + student_id + '/communications')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(sample_communication)
+        .then(res => {
+          chai.expect(res.status).to.eql(201);
+        });
+    });
+
+    it('should have a valid location field: api/v1/users/', async () => {
+      return chai
+        .request(app)
+        .post('/api/v1/users/' + student_id + '/communications')
+        .set('content-type', 'application/json')
+        .set('authorization', 'Bearer ' + token2)
+        .send(sample_communication)
+        .then(res => {
+          chai.expect(res.header.location).to.contains('api/v1/users/');
+        });
+    });
+  });
 });

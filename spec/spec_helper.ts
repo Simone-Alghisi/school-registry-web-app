@@ -66,6 +66,12 @@ export const some_class = {
   name: faker.name.firstName()
 }
 
+export const sample_communication = {
+  subject: faker.lorem.text(),
+  content: faker.lorem.text(),
+  date: moment(new Date()).format(dateFormat)
+}
+
 export function userAccessToken(email: string, password: string) {
   return new Promise((resolve, reject) => {
     const options : RequestOptions = {
