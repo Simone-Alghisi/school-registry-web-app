@@ -657,32 +657,6 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
           
-    post:
-      security:
-        - bearerJwtAuthToken: []
-      description: >-
-        Creates a new communication in the system
-      summary: Insert a new Communication
-      responses:
-        '201':
-          description: 'Location of created communication'
-          headers:
-            Location:
-              schema:
-                type: string
-              description: 'Link to the newly created communication'     
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-        '403':
-          $ref: '#/components/responses/UnauthorizedError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Communication'    
-
   /communications/{id}:
     get:
       security:
@@ -742,6 +716,40 @@ paths:
           $ref: '#/components/responses/UnauthorizedError'
         '500':
           $ref: '#/components/responses/InternalServerError'
+    post:
+      security:
+        - bearerJwtAuthToken: []
+      description: >-
+        Creates a new communication for the selected user
+      summary: Insert a new Communication for the selected user
+      parameters: 
+        - in: path
+          name: userId
+          schema: 
+            type: string
+            format: ObjectId
+          required: true
+          description: 'Id of the user that will recieve the communication'
+      responses:
+        '201':
+          description: 'Location of created communication'
+          headers:
+            Location:
+              schema:
+                type: string
+              description: 'Link to the newly created communication'     
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '403':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommunication'    
+
 
   /users/{userId}/communications/{communicationsId}:
     get:
@@ -1129,6 +1137,9 @@ components:
           description: 'New access token'
           
     Communication:
+      allOf:
+        - $ref: '#/components/schemas/CreateCommunication'
+        - type: object
       type: object
       properties:
         sender: 
@@ -1138,12 +1149,26 @@ components:
         sender_role:
           type: integer
           description: 'role of the sender of the communication'
+      required:
+        - sender
+        - sender_role
+          
+    CreateCommunication:
+      type: object
+      properties:
         subject:
           type: string
           description: 'the subject of the message'
         content:
           type: string
           description: 'the content of the message'
+        date:
+          type: string
+          description: 'creation date of the message'
+      required:
+        - subject
+        - content
+        - date
   
   responses:
     LoginFailedError:

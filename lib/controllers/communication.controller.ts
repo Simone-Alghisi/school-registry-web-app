@@ -32,13 +32,20 @@ export class CommunicationController implements CRUDController {
   }
 
   /**
-   * Asyncronous functions that 
+   * Asyncronous functions which creates the communication inside the specified user resource 
    * and sends the status code 200 in case of success, 500 otherwise
    * @param req express Request object
    * @param res express Response object
    */
   async create(req: Request, res: Response): Promise<void> {
-
+    const communicationService = CommunicationService.getInstance();
+    try{
+      req.body.user_id = req.params.id;
+      const communicationId = await communicationService.create(req.body);
+      res.status(201).location('api/v1/users/' + req.params.id + '/communications/'+ communicationId).send();
+    }catch(e){
+      res.status(500).json({error: 'Internal server error'});
+    }
   }
 
   /**

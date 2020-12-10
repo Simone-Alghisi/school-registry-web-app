@@ -89,9 +89,20 @@ export class CommunicationRoutes extends CommonRoutes implements ConfigureRoutes
       communicationController.getSendedById
     ]);
 
+    /**
+     * Route for the post method (create resource) for a particular communication sent by secretaries
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * 
+    */
     this.app.post('/api/v1/users/:id/communications', [
       jwtMiddleware.validateJWT,
+      communicationMiddleware.onlySecretaryNeedsToDoThis, //For now, only the secretariat can
       communicationMiddleware.validateUserExists,
+      communicationMiddleware.discardUselessFields,
+      communicationMiddleware.validateSubject,
+      communicationMiddleware.validateContent,
+      communicationMiddleware.validateDate,
+      communicationMiddleware.setSenderAndSenderRole,
       communicationController.create
     ]);
 

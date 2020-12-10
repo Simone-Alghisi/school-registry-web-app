@@ -1,5 +1,6 @@
 import { UserModel } from '../models/user.model';
 import { ClassModel } from '../models/class.model';
+import mongoose from 'mongoose';
 
 /**
  * ComunicationService class.
@@ -39,7 +40,22 @@ export class CommunicationService {
   }
 
   async create(resource: any) : Promise<any>{
-    
+    const newDocumentId = new mongoose.Types.ObjectId();
+    await this.userModel.userCollection.updateOne({
+      _id: resource.user_id,
+    }, {
+      $push: {
+        communications: {
+          _id: newDocumentId,
+          sender: resource.sender,
+          sender_role: resource.sender_role,
+          subject: resource.subject,
+          date: resource.date,
+          content: resource.content
+        }
+      }
+    });
+    return newDocumentId;
   }
 
   async deleteById(resourceId: string): Promise<void>{
