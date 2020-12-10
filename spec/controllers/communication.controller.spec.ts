@@ -24,19 +24,27 @@ let student_email: string;
 let student_password: string;
 let token_student: string;
 
+
 async function getAllSendedCommunications(){
   return new Promise((resolve, reject) => {
     userModel.userCollection.find().select(['communications'])
-      .exec(function (err, communicationsRetrieved) {
+      .exec(function (err, communicationsRetrievedModel) {
       if (err) {
           reject(err);
       } else {
         let communicationsToReturn:any = [];
+        let communicationsRetrieved: any = deepCopy(communicationsRetrievedModel);
         if (communicationsRetrieved) {
           for(let index = 0; index < communicationsRetrieved.length; index++){
             if (communicationsRetrieved[index]['communications']) {
-              //userIdWithCommunications = communicationsRetrieved[index]['_id'];
+              let recipient = communicationsRetrieved[index]['_id'];
               communicationsRetrieved[index] = communicationsRetrieved[index]['communications'];
+              let len = communicationsRetrieved[index]['length'];
+              let i = 0;
+              while (i < len) {
+                communicationsRetrieved[index][i]['recipient'] = recipient;
+                i++;
+              }
               communicationsToReturn = communicationsToReturn.concat(communicationsRetrieved[index]);
             }
           }
@@ -47,12 +55,19 @@ async function getAllSendedCommunications(){
   });
 }
 
+function deepCopy(obj:any){
+  return JSON.parse(JSON.stringify(obj));
+}
+
 async function getAllReceivedCommunications(){
-  let userWithCommunications;
+  let userWithCommunicationsModel,  userWithCommunications: any;
   const userService: UserService = UserService.getInstance();
-  //await getAllSendedCommunications();
-  userWithCommunications = await userService.getById(student_id);
+  userWithCommunicationsModel = await userService.getById(student_id);
+  userWithCommunications = deepCopy(userWithCommunicationsModel);
   //console.log(userWithCommunications['communications']); 
+  for(let i=0; i <userWithCommunications['communications'].length; i++){
+    userWithCommunications['communications'][i]['recipient'] = student_id;
+  }
   return userWithCommunications['communications'];
 }
 
@@ -166,8 +181,9 @@ describe('CommunicationController', () => {
     let userCommunications: any;
 
     before(async () => {
-      communication_list= await getAllSendedCommunications(); 
+      communication_list = await getAllSendedCommunications();
       userCommunications = await getAllReceivedCommunications();
+      //console.log(userCommunications);
     })
 
     it('should return the 403 Forbidden code: professor shouldn\'t be able to request sended communication', async () => {
@@ -518,7 +534,7 @@ describe('CommunicationController', () => {
     });
 
     it('should return the 201 created', async () => {
-      console.log(sample_communication)
+      //console.log(sample_communication)
       return chai
         .request(app)
         .post('/api/v1/users/' + student_id + '/communications')
