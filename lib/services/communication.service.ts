@@ -118,10 +118,11 @@ export class CommunicationService {
     let filters = this.separateUserCommuicationFields(parameters);
     let userFilters = filters[0];
     let commFilters = filters[1];
-    let communicationsRetrieved = await this.userModel.userCollection.find(userFilters).select(['-_id']).select(['communications']);
+    let communicationsRetrieved: any = this.deepCopy(await this.userModel.userCollection.find(userFilters).select(['_id']).select(['communications']));
     let communicationsToReturn:any = [];
     if (communicationsRetrieved) {
       for(let index = 0; index < communicationsRetrieved.length; index++){
+        let recipient = communicationsRetrieved[index]['_id']
         communicationsRetrieved[index] = communicationsRetrieved[index]['communications'];
         if (communicationsRetrieved[index]) {
           let len = communicationsRetrieved[index]['length'];
@@ -133,6 +134,7 @@ export class CommunicationService {
                 keep = false;
               }
             }
+            communicationsRetrieved[index][i]['recipient'] = recipient;
             if (!keep) {
               communicationsRetrieved[index]['splice'](i, 1);
               len--;
@@ -147,6 +149,10 @@ export class CommunicationService {
     return communicationsToReturn;
   }
 
+  deepCopy(obj:any){
+    return JSON.parse(JSON.stringify(obj));
+  }
+
   /**
    * Function called by {@link filterList} which separates the fields of
    * the UserModel from the one inside the communication fields (also inside
@@ -157,7 +163,7 @@ export class CommunicationService {
    * 
    * @returns an array composed of two objects: fields and commFilters
    */
-  separateUserCommuicationFields(fields: any): any{
+  separateUserCommuicationFields(fields: any): any {
     const userModel = UserModel.getInstance();
     let commFilters = {};
     try{
