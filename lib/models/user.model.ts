@@ -105,7 +105,16 @@ export class UserModel {
         sender: String,
         sender_role: Number,
         subject: String,
-        content: String
+        content: String,
+        date: {
+          type: String,
+          validate: {
+            validator: CommonModel.validateString,
+            message: 'Invalid date'
+          },
+          // eslint-disable-next-line
+          match: /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/
+        }
       }
     ]
    });
