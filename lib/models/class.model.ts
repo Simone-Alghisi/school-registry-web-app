@@ -61,7 +61,7 @@ export class ClassModel {
         required: true
       }
     }], 
-    communictions: [{
+    communications: [{
       sender_id: {
         type: Schema.Types.ObjectId, 
         ref: 'users',
