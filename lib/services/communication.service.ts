@@ -39,6 +39,13 @@ export class CommunicationService {
     return CommunicationService.instance;
   }
 
+  /**
+   * Function which creates a communication record and associates it with the user given his or her id
+   * 
+   * @param resource data needed for the record creation
+   * 
+   * @returns the newly created communication id
+   */
   async create(resource: any) : Promise<any>{
     const newDocumentId = new mongoose.Types.ObjectId();
     await this.userModel.userCollection.updateOne({

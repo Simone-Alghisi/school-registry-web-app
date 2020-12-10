@@ -92,11 +92,16 @@ export class CommunicationRoutes extends CommonRoutes implements ConfigureRoutes
     /**
      * Route for the post method (create resource) for a particular communication sent by secretaries
      * The request is routed through a series of middlewares that check the validity of the JWT token
-     * 
+     * The middlewares check that the user's role is 2 (i.e. must be a secretary)
+     * The middlewares discard all the fields which are not part of the communication in user's schema
+     * The middlewares check that the given subject is valid
+     * The middlewares check that the given content is valid
+     * The middlewares check that the given date is valid
+     * The middlewares insert the sender and the sender_role
     */
     this.app.post('/api/v1/users/:id/communications', [
       jwtMiddleware.validateJWT,
-      communicationMiddleware.onlySecretaryNeedsToDoThis, //For now, only the secretariat can
+      communicationMiddleware.onlySecretaryNeedsToDoThis,
       communicationMiddleware.validateUserExists,
       communicationMiddleware.discardUselessFields,
       communicationMiddleware.validateSubject,
@@ -106,6 +111,11 @@ export class CommunicationRoutes extends CommonRoutes implements ConfigureRoutes
       communicationController.create
     ]);
 
+    /**
+     * Route for the post method (update resource) for all the user's communications
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * Then the method is not allowed
+    */
     this.app.patch('/api/v1/users/:id/communications', [
       jwtMiddleware.validateJWT,
       communicationMiddleware.validateUserExists,
@@ -119,17 +129,22 @@ export class CommunicationRoutes extends CommonRoutes implements ConfigureRoutes
       communicationController.updateById
     ]);
 
+    /**
+     * Route for the post method (delete resource) for all the user's communications
+     * The request is routed through a series of middlewares that check the validity of the JWT token
+     * Then the method is not allowed
+    */
     this.app.delete('/api/v1/users/:id/communications',[
       jwtMiddleware.validateJWT,
       communicationMiddleware.validateUserExists,
-      communicationController.deleteById
+      communicationController.deleteAll
     ]);
 
     this.app.delete('/api/v1/users/:id/communications/:idc',[
       jwtMiddleware.validateJWT,
       communicationMiddleware.validateUserExists,
       communicationMiddleware.validateCommunicationExists,
-      communicationController.deleteAll
+      communicationController.deleteById
     ]);
   }
 }
