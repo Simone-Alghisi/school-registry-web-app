@@ -5,6 +5,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
   function loadCommunication(attemptMade=false){
     const urlParams = new URLSearchParams(location.search);
     let commId = urlParams.get("id");
+    let recipients = urlParams.get("recipients");
     if(commId == null){
       $(location).prop('href', './communications.html');
     }
@@ -29,10 +30,11 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
       }
     })
     .then(data => {
+
       $('#communication')
-      .append('<div class="col-md-12"><b>A: </b>' + 'DESTINATARIO' + '</div><hr>')
+      .append('<div class="col-md-12"><b>A: </b>' + recipients + '</div><hr>')
       .append('<div class="col-md-12"><b>Oggetto: </b>' + data.subject + '</div><hr>')
-      .append('<div class="col-md-12"><b>Inviata il: </b>' + 'GG-MM-AAAA' + '</div><hr>')
+      .append('<div class="col-md-12"><b>Inviata il: </b>' + data.date + '</div><hr>')
       .append('<div class="col-md-12">' + data.content + '</div>');
     })
   }
