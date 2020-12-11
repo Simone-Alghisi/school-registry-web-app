@@ -62,7 +62,6 @@ import { student_id, students, class_id, subject, gradesToRemove} from './grades
       delete gradeToSend._id;
       let data;
       data = JSON.stringify(gradeToSend);
-      console.log(data);
 
       let fetchData = {
         method: 'PATCH',
@@ -87,7 +86,6 @@ import { student_id, students, class_id, subject, gradesToRemove} from './grades
           }
         })
         .then((resp) => {
-          console.log('Update!');
           resolve();
         })
         .catch(
@@ -108,7 +106,6 @@ import { student_id, students, class_id, subject, gradesToRemove} from './grades
     return fetch(url, fetchData)
       .then((resp) => {
         if(resp.ok) {
-          console.log('deleted');
           return;
         } else if(resp.status == 403){
           if(!attemptMade){
@@ -117,7 +114,6 @@ import { student_id, students, class_id, subject, gradesToRemove} from './grades
             dealWithForbiddenErrorCode();
           }
         }else if(resp.status == 404){
-          //già cancellato, nessun problema
           return;
         } else {
           dealWithServerErrorCodes();
@@ -128,7 +124,6 @@ import { student_id, students, class_id, subject, gradesToRemove} from './grades
   async function deleteGrades(){
     for(let i=0; i < gradesToRemove.length; i++){
       await deleteGrade(gradesToRemove[i]);
-      console.log("REMOVE: " + gradesToRemove[i]);
     }
   }
 

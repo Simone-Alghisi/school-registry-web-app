@@ -77,7 +77,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     subjectSelector.find('option:selected').prop('selected', false);
     subjectSelector.find('option[value=""]').prop('selected', true);
     if (selectedUserElem.val() !== '') {
-      //retreive selected user data
+      //retrieve selected user data
       let selectedUser = usersToInsertList[selectedUserElem.val()];
       if (selectedUser.role === 1) {
         subjectSelector.prop("disabled", false);
@@ -393,7 +393,6 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
   
   $('#form').submit((event) => {
     editClass();
-    //(modifiedUsers);
     event.preventDefault();
   });
 

@@ -126,7 +126,7 @@ export class GradeService {
       foundGrades = foundGrades['grades_list'];
 
       if (foundGrades) {
-        //applico filtri
+        //apply filters
         let len = foundGrades['length'];
         let i = 0;
         while (i < len) {
