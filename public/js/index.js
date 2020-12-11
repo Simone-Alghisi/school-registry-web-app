@@ -1,4 +1,4 @@
-import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser, dealWithForbiddenErrorCode } from './common.js';
+import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser } from './common.js';
 
 (function ($) {
     "use strict";
@@ -30,29 +30,7 @@ import { refreshToken, dealWithServerErrorCodes, dealWithAlreadyLoggedUser, deal
           if(data){
             window.sessionStorage.accessToken = data.accessToken;
             window.sessionStorage.refreshToken = data.refreshToken;
-            let fetchData = {
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
-            }
-            fetch('../api/v1/yourself', fetchData)
-              .then((resp) => {
-                if(resp.ok) {
-                  return resp.json();
-                } else {
-                  dealWithServerErrorCodes();
-                }
-              })
-              .then((data) => {
-                if(data.role === 0){
-                  $(location).prop('href', './homeStudent.html');
-                } else if(data.role === 1){
-                  $(location).prop('href', './homeProfessor.html');
-                } else if(data.role === 2){
-                  $(location).prop('href', './home.html');
-                } else {
-                  dealWithForbiddenErrorCode();
-                }
-              })
+            dealWithAlreadyLoggedUser();
           }
         })
         .catch( 

@@ -3,7 +3,7 @@ import { ClassModel } from '../models/class.model';
 import mongoose from 'mongoose';
 
 /**
- * ComunicationService class.
+ * CommunicationService class.
  * It aims to manage all the operations that involve the _communications_ resource
  * by interacting with the database
  */
@@ -30,7 +30,7 @@ export class CommunicationService {
   }
 
   /**
-   * Function which retrieves a ComunicationService instance
+   * Function which retrieves a CommunicationService instance
    */
   static getInstance(): CommunicationService {
     if (!CommunicationService.instance) {
@@ -74,7 +74,7 @@ export class CommunicationService {
   }
 
   /**
-   * Asynchronous function which retrives a communication sended 
+   * Asynchronous function which retrieves a communication sent 
    * to a user given the userId and the resourceId
    * 
    * @param userId the Id of the user 
@@ -91,14 +91,14 @@ export class CommunicationService {
   }
 
   /**
-   * Asynchronous function which retrives a communication 
+   * Asynchronous function which retrieves a communication 
    * given its resourceId
    * 
    * @param resourceId the Id of the communication
    * 
    * @returns requested communication
    */
-  async getSendedById(resourceId: string): Promise < any > {
+  async getSentById(resourceId: string): Promise < any > {
     let foundCommunications = await this.userModel.userCollection.findOne({'communications._id': resourceId }, {'communications.$._id': resourceId });
     if (foundCommunications) {
       foundCommunications = foundCommunications['communications'][0];

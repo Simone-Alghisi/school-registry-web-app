@@ -6,7 +6,7 @@ import {Request, Response } from 'express';
  */
 export interface CRUDController {
   /**
-   * Retrives (read) all instances of the resource
+   * Retrieves (read) all instances of the resource
    */
   list: (req: Request, res: Response) => Promise<void>,
   /**
@@ -26,7 +26,7 @@ export interface CRUDController {
    */
   updateById: (req: Request, res: Response) => Promise<void>,
   /**
-   * Retrives (read) the instance of the resource with the given id
+   * Retrieves (read) the instance of the resource with the given id
    */
   getById: (req: Request, res: Response) => Promise<void>,
   /**

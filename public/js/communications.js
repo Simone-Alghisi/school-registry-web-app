@@ -26,15 +26,16 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
         dealWithServerErrorCodes();
       }
     })
-    .then(async function(data){
-      let unique = getUnique(data);
-
-      unique.map(async function(elem) {
-        table.row.add([
-          elem.subject,
-          getRecipientString(await replaceRecipientWithName(elem.recipient))
-        ]).draw().node().id=elem._id;
-      })
+    .then(function(data){
+      if(data){
+        let unique = getUnique(data);
+        unique.map(async function(elem) {
+          table.row.add([
+            elem.subject,
+            getRecipientString(await replaceRecipientWithName(elem.recipient))
+          ]).draw().node().id=elem._id;
+        })
+      }
     })
   }
 

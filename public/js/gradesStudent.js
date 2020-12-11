@@ -1,5 +1,7 @@
 import { retrieveClassStudent, subjectMapping, gradesMapping, class_id, student_id } from './commonStudent.js';
 
+import { refreshToken, dealWithForbiddenErrorCode } from './common.js';
+
 
 (function ($){
   "use strict";
@@ -7,7 +9,7 @@ import { retrieveClassStudent, subjectMapping, gradesMapping, class_id, student_
   let gradeTable = $('#gradesTable').DataTable();
 
   /**
-   * Wait to retrive class id and student id 
+   * Wait to retrieve class id and student id 
    * Then wait the fetch of the grades of a particolar student of the class
    */
   async function setGrades(){
@@ -17,7 +19,7 @@ import { retrieveClassStudent, subjectMapping, gradesMapping, class_id, student_
 
   /**
    * Fetch of the grades of a particolar student of the class
-   * Insert the data retrived in a data table
+   * Insert the data retrieved in a data table
    * @param {*} attemptMade param used for refresh token
    */
   function retrieveGrades(attemptMade = false){

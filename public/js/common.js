@@ -52,7 +52,29 @@ function dealWithServerErrorCodes(){
 }
 
 function dealWithAlreadyLoggedUser(){
-  $(location).prop('href', './home.html');
+  let fetchData = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
+  }
+  fetch('../api/v1/yourself', fetchData)
+    .then((resp) => {
+      if(resp.ok) {
+        return resp.json();
+      } else {
+        dealWithServerErrorCodes();
+      }
+    })
+    .then((data) => {
+      if(data.role === 0){
+        $(location).prop('href', './homeStudent.html');
+      } else if(data.role === 1){
+        $(location).prop('href', './homeProfessor.html');
+      } else if(data.role === 2){
+        $(location).prop('href', './home.html');
+      } else {
+        dealWithForbiddenErrorCode();
+      }
+    })
 }
 
 /**
@@ -73,7 +95,7 @@ function getYourself(attemptMade=false){
         return resp.json();
       }else if(resp.status == 403){
         if(!attemptMade){
-          refreshToken().then(() => getid(true)).catch(() => dealWithForbiddenErrorCode());
+          refreshToken().then(() => getYourself(true)).catch(() => dealWithForbiddenErrorCode());
         }else{
           dealWithForbiddenErrorCode();
         }

@@ -26,7 +26,6 @@ import { student_id, students, class_id, subject, gradesToRemove} from './grades
    * @param { grade of the considered student } student_grades 
    */
   function loadModifiedFields(student_grades){
-    let currentGrade = 0;
     let gradeIndex = 0;
     $('#gradesTable > tr').each(function(index, tr) { 
       const description = $("#description", tr).val();
@@ -34,15 +33,14 @@ import { student_id, students, class_id, subject, gradesToRemove} from './grades
       const value = $("#value option:selected", tr).val();      
       let voto = {'description': description, 'date': date, 'value': value };
       for(const key in voto){
-        if(voto[key] != student_grades[currentGrade][key]){
+        if(voto[key] != student_grades[$(this).attr('id')][key]){
           if(!gradesToModify[gradeIndex]){
             gradesToModify[gradeIndex] = {};
-            gradesToModify[gradeIndex]['_id'] = student_grades[currentGrade]['_id'];
+            gradesToModify[gradeIndex]['_id'] = student_grades[$(this).attr('id')]['_id'];
           }
           gradesToModify[gradeIndex][key] = voto[key];
         }
       }
-      currentGrade++;
       if(gradesToModify[gradeIndex]){
         gradeIndex++;
       }
@@ -128,8 +126,7 @@ import { student_id, students, class_id, subject, gradesToRemove} from './grades
   }
 
   $('#confirmEdit').click(() => {
-    deleteGrades();
-    updateGrades();
+    deleteGrades().then(() => updateGrades());
   });
   
 })(jQuery);

@@ -30,6 +30,7 @@ let teaches = [];
 function setEventSelectClass(){
   $('#collapseTwo .collapse-item').on('click', function () {
     $('#classModalLabel').html('Seleziona Materia per ' + $(this).html());
+    console.log(classes);
     const classSubjects = classes[$(this).html()].subjects;
     $('#materia').html('<option value="" selected="selected">Nessuna</option>');
     $('#materia').prop('disabled', true);
@@ -43,7 +44,7 @@ function setEventSelectClass(){
 
 function setDisablePropertyOfConfirmButton(){
   $('#materia').change(function() {
-    if($('select option:selected').text() === 'Nessuna'){
+    if($('#materia option:selected').text() === 'Nessuna'){
       $('#confirm').prop('disabled', true);
     } else {
       $('#confirm').prop('disabled', false);
@@ -51,7 +52,7 @@ function setDisablePropertyOfConfirmButton(){
   });
 }
 
-async function retrieveClasses(attemptMade = false){
+async function retrieveClasses(attemptMade){
   let fetchData = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
@@ -61,7 +62,7 @@ async function retrieveClasses(attemptMade = false){
       return resp.json();
     } else if(resp.status == 403){
       if(!attemptMade){
-        refreshToken().then(() => retrieveClasses(true)).catch(() => dealWithForbiddenErrorCode());
+        refreshToken().then(() => prepareClassOnLoad(true)).catch(() => dealWithForbiddenErrorCode());
       }else{
         dealWithForbiddenErrorCode();
       }
@@ -76,7 +77,7 @@ async function retrieveClasses(attemptMade = false){
   });
 }
 
-function retrieveSubjectForClasses(teach, classes, attemptMade = false){
+function retrieveSubjectForClasses(teach, classes, attemptMade){
   let fetchData = {
     method: 'GET',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
@@ -88,7 +89,7 @@ function retrieveSubjectForClasses(teach, classes, attemptMade = false){
         return resp.json();
       } else if(resp.status == 403){
         if(!attemptMade){
-          refreshToken().then(() => retrieveSubjectForClasses(teach, classes, true)).catch(() => dealWithForbiddenErrorCode());
+          refreshToken().then(() => prepareClassOnLoad(true)).catch(() => dealWithForbiddenErrorCode());
         }else{
           dealWithForbiddenErrorCode();
         }
@@ -115,10 +116,12 @@ function addClassesToNavBar(classes){
   setEventSelectClass(classes)
 }
 
-function makeClassesAvailable(classes){
-  retrieveClasses().then(async () => {
+function makeClassesAvailable(attemptMade){
+  classes = [];
+  teaches = [];
+  retrieveClasses(attemptMade).then(async () => {
     for(const teach in teaches){
-      await retrieveSubjectForClasses(teaches[teach], classes);
+      await retrieveSubjectForClasses(teaches[teach], classes, attemptMade);
     };
   })
   .then(() =>  {addClassesToNavBar(classes)})
@@ -132,8 +135,8 @@ function setConfirmButtonEvent(){
   })
 }
 
-function prepareClassOnLoad(){
-  makeClassesAvailable(classes);
+function prepareClassOnLoad(attemptMade = false){
+  makeClassesAvailable(attemptMade);
   setDisablePropertyOfConfirmButton();
   setConfirmButtonEvent();
 }

@@ -49,7 +49,7 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     ]);
 
     /**
-     * Route for the get method (retreive resource) on a single grade of a class
+     * Route for the get method (retrieve resource) on a single grade of a class
      * The request is routed through a series of middlewares that check the validity of the JWT token
      * The middlewares check that the referred class exist
      * Then the request is routed to the appropriate grade controller function for getById

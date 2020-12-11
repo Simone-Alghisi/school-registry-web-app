@@ -1,7 +1,7 @@
 export interface CRUDService {
 
   /**
-   * Retreives all the documents from the DB
+   * Retrieves all the documents from the DB
    */
   list: () => any,
 
@@ -16,7 +16,7 @@ export interface CRUDService {
   updateById: (resource: any) => any,
   
   /**
-   * Retreives a document by its id from the DB
+   * Retrieves a document by its id from the DB
    */
   getById: (resourceId: string) => any,
   

@@ -1,6 +1,6 @@
 export { students, student_id, class_id, subject, gradesToRemove };
 
-import { getUrlVars } from './common.js';
+import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.js';
 import { prepareClassOnLoad, setClassName, gradesMapping } from './commonProfessor.js';
 
 let students = [];
@@ -18,7 +18,7 @@ let subject = vars['subject'];
   let table = $('#studentsTable').DataTable();
   let gradeTable = $('#gradesTable');
 
-  function retrieveStudents(attemptMade = false){
+  function retrieveStudents(attemptMade){
     const url = '../api/v1/users?role=0&class_id=' + class_id;
     let fetchData = {
       method: 'GET',
@@ -30,7 +30,7 @@ let subject = vars['subject'];
           return resp.json();
         } else if(resp.status == 403){
           if(!attemptMade){
-            refreshToken().then(() => retrieveStudents(true)).catch(() => dealWithForbiddenErrorCode());
+            refreshToken().then(() => setGrades(true)).catch(() => dealWithForbiddenErrorCode());
           }else{
             dealWithForbiddenErrorCode();
           }
@@ -45,7 +45,7 @@ let subject = vars['subject'];
       });
   }
 
-  function retrieveGrades(attemptMade = false){
+  function retrieveGrades(attemptMade){
     const url = '../api/v1/classes/' + class_id + '/grades?subject=' + subject;
     let fetchData = {
       method: 'GET',
@@ -57,7 +57,7 @@ let subject = vars['subject'];
           return resp.json();
         } else if(resp.status == 403){
           if(!attemptMade){
-            refreshToken().then(() => retrieveGrades(true)).catch(() => dealWithForbiddenErrorCode());
+            refreshToken().then(() => setGrades(true)).catch(() => dealWithForbiddenErrorCode());
           }else{
             dealWithForbiddenErrorCode();
           }
@@ -81,9 +81,10 @@ let subject = vars['subject'];
 
   function assignGradesToStudents(){
     grades_list.forEach((grade) => {
-      if(students[grade.student_id]){
-        students[grade.student_id].grades.push(grade);
+      if(students[grade.student_id] && !students[grade.student_id].grades[grade._id]){
+        students[grade.student_id].grades[grade._id] = grade;
         students[grade.student_id].total += grade.value;
+        students[grade.student_id].grades.length++;
       }
     })
   }
@@ -94,21 +95,26 @@ let subject = vars['subject'];
     table.row.add([
       student.surname + " " + student.name,
       n_grades,
-      n_grades > 0 ? student.total / n_grades : total
+      n_grades > 0 ? student.total / n_grades : student.total
     ]).draw().node().id = key;
   }
 
-  function setGrades(){
-    retrieveStudents()
+  function setGrades(attemptMade = false){
+    students = [];
+    gradesToRemove = [];
+    grades_list = [];
+    studentsRetrieved = [];
+    retrieveStudents(attemptMade)
     .then(() => {
       for(const student in studentsRetrieved){
         reassingStudent(studentsRetrieved[student])
       }
     })
     .then(async () => {
-      await retrieveGrades();
+      await retrieveGrades(attemptMade);
     }).then(() => {
       assignGradesToStudents();
+      table.clear();
       for(const key in students){
         addRow(key);
       }

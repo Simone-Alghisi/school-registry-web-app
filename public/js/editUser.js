@@ -34,8 +34,6 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
         $('#password').val(data.password);
         $('#birth_date').val(data.birth_date);
         $('#role').val(data.role);
-      }else{
-        $(location).prop('href', './users.html');
       }
     })
     .catch(

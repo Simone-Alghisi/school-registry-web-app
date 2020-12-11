@@ -28,7 +28,7 @@ let class_id = 0;
 let student_id = 0;
 
 /**
- * Retrive the id of the student and his class_id 
+ * Retrieves the id of the student and his class_id 
  * @param {*} attemptMade param used for refresh token 
  */
 function retrieveClassStudent(attemptMade = false){

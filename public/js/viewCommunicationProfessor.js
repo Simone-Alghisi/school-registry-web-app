@@ -32,11 +32,13 @@ import { prepareClassOnLoad } from './commonProfessor.js';
       }
     })
     .then(data => {
-      $('#communication')
-      .append('<div class="col-md-12"><b>Da: </b>' + getSender(data) + '</div><hr>')
-      .append('<div class="col-md-12"><b>Oggetto: </b>' + data.subject + '</div><hr>')
-      .append('<div class="col-md-12"><b>Inviata il: </b>' + data.date + '</div><hr>')
-      .append('<div class="col-md-12">' + data.content + '</div>');
+      if(data){
+        $('#communication')
+        .append('<div class="col-md-12"><b>Da: </b>' + getSender(data) + '</div><hr>')
+        .append('<div class="col-md-12"><b>Oggetto: </b>' + data.subject + '</div><hr>')
+        .append('<div class="col-md-12"><b>Inviata il: </b>' + data.date + '</div><hr>')
+        .append('<div class="col-md-12">' + data.content + '</div>');
+      }
     })
   }
 

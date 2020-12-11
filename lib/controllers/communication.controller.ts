@@ -58,7 +58,7 @@ export class CommunicationController implements CRUDController {
   }
   
   /**
-   * Asyncronous functions that retrives a communication sended 
+   * Asyncronous functions that retrieves a communication sent 
    * to a user given the userId and the resourceId
    * and sends it back with the status code 200 otherwise 500
    * @param req express Request object
@@ -76,17 +76,17 @@ export class CommunicationController implements CRUDController {
   }
 
     /**
-   * Asyncronous functions that retrives a communication 
+   * Asyncronous functions that retrieves a communication 
    * given its resourceId
    * and sends it back with the status code 200 otherwise 500
    * @param req express Request object
    * @param res express Response object
    */
-  async getSendedById(req: Request, res: Response): Promise<void> {
+  async getSentById(req: Request, res: Response): Promise<void> {
     const communicationService = CommunicationService.getInstance();
     try{
       let foundCommunications;
-      foundCommunications = await communicationService.getSendedById(req.params.id);
+      foundCommunications = await communicationService.getSentById(req.params.id);
       res.status(200).send(foundCommunications);
     }catch(e){
       res.status(500).json({error: 'Internal server error'});

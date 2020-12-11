@@ -641,7 +641,7 @@ paths:
       security:
         - bearerJwtAuthToken: []
       description: >-
-        Returns the list of all the communications sended by secretaries in the system
+        Returns the list of all the communications sent by secretaries in the system
       summary: Returns all the communications made by secretaries in the system
       responses:
         '200':

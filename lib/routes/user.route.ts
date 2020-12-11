@@ -47,7 +47,7 @@ export class UserRoutes extends CommonRoutes implements ConfigureRoutes {
 
     /** 
      * Route for the get method on a single user with a specific id 
-     * The request is routed through a middlewares that check the existance of the id to retrive
+     * The request is routed through a middlewares that check the existance of the id to retrieve
      * Then the request is routed to the appropriate user controller function for getById
     */
     this.app.get('/api/v1/users/:id', [

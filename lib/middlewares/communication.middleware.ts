@@ -52,7 +52,7 @@ export class CommunicationMiddleware extends UserMiddleware {
     const userModel = UserModel.getInstance();
     let success = false;
     if(userModel.isValidId(req.params.id)){
-      const communicationList = await communicationService.getSendedById(req.params.id);
+      const communicationList = await communicationService.getSentById(req.params.id);
       if (communicationList) {
         success = true;
       }
@@ -97,7 +97,7 @@ export class CommunicationMiddleware extends UserMiddleware {
    * @param res response
    * @param next next function
    */
-  requestMySendedCommunication(req: Request, res: Response, next: NextFunction): void{
+  requestMySentCommunication(req: Request, res: Response, next: NextFunction): void{
     try {
       const id = req.jwt._id;
       const userRole = parseInt(req.jwt.role, 10);

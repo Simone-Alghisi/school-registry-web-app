@@ -86,7 +86,7 @@ export class ClassService implements CRUDService {
   }
 
   /**
-   * Asynchronous function which retrives a class given its id
+   * Asynchronous function which retrieves a class given its id
    * 
    * @param resourceId 
    * 

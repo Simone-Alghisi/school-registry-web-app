@@ -25,7 +25,7 @@ let student_password: string;
 let token_student: string;
 
 
-async function getAllSendedCommunications(){
+async function getAllSentCommunications(){
   return new Promise((resolve, reject) => {
     userModel.userCollection.find().select(['communications'])
       .exec(function (err, communicationsRetrievedModel) {
@@ -180,11 +180,11 @@ describe('CommunicationController', () => {
     let userCommunications: any;
 
     before(async () => {
-      communication_list = await getAllSendedCommunications();
+      communication_list = await getAllSentCommunications();
       userCommunications = await getAllReceivedCommunications();
     })
 
-    it('should return the 403 Forbidden code: professor shouldn\'t be able to request sended communication', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to request sent communication', async () => {
       return chai
         .request(app)
         .get('/api/v1/communications')
@@ -194,7 +194,7 @@ describe('CommunicationController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: student shouldn\'t be able to request sended communication', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to request sent communication', async () => {
       return chai
         .request(app)
         .get('/api/v1/communications')
@@ -204,7 +204,7 @@ describe('CommunicationController', () => {
         });
     });
 
-    it('should return the 200 OK: secretary should be able to request sended communications', async () => {
+    it('should return the 200 OK: secretary should be able to request sent communications', async () => {
       return chai
         .request(app)
         .get('/api/v1/communications')
@@ -214,7 +214,7 @@ describe('CommunicationController', () => {
         });
     });
     
-    it('should return all communications sended by all secretaries', async () => {
+    it('should return all communications sent by all secretaries', async () => {
       return chai
         .request(app)
         .get('/api/v1/communications')
@@ -296,7 +296,7 @@ describe('CommunicationController', () => {
 
   });
 
-  describe('#getSendedById', () => {
+  describe('#getSentById', () => {
     let validCommunicationId: any;
     let validCommunication: any;
     let invalidCommunicationIdType: any = 'hello world'
@@ -306,7 +306,7 @@ describe('CommunicationController', () => {
       [validCommunicationId, validCommunication] = await getValidCommunicationId();
     })
 
-    it('should return the 200 status code: secretary sended communications', async () => {
+    it('should return the 200 status code: secretary sent communications', async () => {
       return chai
         .request(app)
         .get('/api/v1/communications/' + validCommunicationId)
@@ -317,7 +317,7 @@ describe('CommunicationController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: professor shouldn\'t be able to request a single sended communication', async () => {
+    it('should return the 403 Forbidden code: professor shouldn\'t be able to request a single sent communication', async () => {
       return chai
         .request(app)
         .get('/api/v1/communications/' + validCommunicationId)
@@ -327,7 +327,7 @@ describe('CommunicationController', () => {
         });
     });
 
-    it('should return the 403 Forbidden code: student shouldn\'t be able to request a single sended communication', async () => {
+    it('should return the 403 Forbidden code: student shouldn\'t be able to request a single sent communication', async () => {
       return chai
         .request(app)
         .get('/api/v1/communications/' + validCommunicationId)

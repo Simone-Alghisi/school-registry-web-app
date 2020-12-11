@@ -71,7 +71,7 @@ export class CommunicationRoutes extends CommonRoutes implements ConfigureRoutes
     */
     this.app.get('/api/v1/communications', [
       jwtMiddleware.validateJWT,
-      communicationMiddleware.requestMySendedCommunication,
+      communicationMiddleware.requestMySentCommunication,
       communicationController.list
     ]);
 
@@ -86,7 +86,7 @@ export class CommunicationRoutes extends CommonRoutes implements ConfigureRoutes
       jwtMiddleware.validateJWT,
       communicationMiddleware.onlySecretaryNeedsToDoThis,
       communicationMiddleware.validateCommunicationExistsWithoutUser,
-      communicationController.getSendedById
+      communicationController.getSentById
     ]);
 
     /**

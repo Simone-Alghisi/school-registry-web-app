@@ -27,12 +27,14 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes, get
       }
     })
     .then(data => {
-      data.map(elem => {
-        table.row.add([
-          elem.subject,
-          getSender(elem)
-        ]).draw().node().id=elem._id;
-      })
+      if(data){
+        data.map(elem => {
+          table.row.add([
+            elem.subject,
+            getSender(elem)
+          ]).draw().node().id=elem._id;
+        })
+      }
     })
   }
 

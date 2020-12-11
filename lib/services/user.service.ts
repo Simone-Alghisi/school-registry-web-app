@@ -98,7 +98,7 @@ export class UserService implements CRUDService {
   }
 
   /**
-   * Asynchronous function which retrives a user given its id
+   * Asynchronous function which retrieves a user given its id
    * 
    * @param resourceId 
    * 
@@ -110,7 +110,7 @@ export class UserService implements CRUDService {
   }
 
   /**
-   * Asynchronous function which retrives a user given its email (which is unique in all the users' collection)
+   * Asynchronous function which retrieves a user given its email (which is unique in all the users' collection)
    * 
    * @param resourceId 
    * 

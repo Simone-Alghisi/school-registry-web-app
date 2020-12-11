@@ -58,11 +58,13 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         }
       })
       .then((data) => {
-        data.map((elem) => {
-          if ((!elem.class_id && elem.role === 0) || elem.role === 1) {
-            addToUsersToInsertListElement(elem);
-          }
-        });
+        if(data){
+          data.map((elem) => {
+            if ((!elem.class_id && elem.role === 0) || elem.role === 1) {
+              addToUsersToInsertListElement(elem);
+            }
+          });
+        }
       })
   }
   
@@ -115,8 +117,6 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         $('#className').val(data.name);
         getStudents(data);
         getProfessors(data);
-      }else{
-        $(location).prop('href', './classes.html');
       }
     })
     .catch(
@@ -145,9 +145,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       }
     })
     .then((students) => {
-      students.forEach((user) => {
-        addStudent(user);
-      })
+      if(students){
+        students.forEach((user) => {
+          addStudent(user);
+        })
+      }
     })
   }
 
@@ -172,19 +174,21 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       }
     })
     .then((professors) => {
-      let modified = professors.filter((teacher) => {
-        return teacher.teaches.find((t) => {
-          if(t){
-            return t.class_id === data._id;
-          }
+      if(professors){
+        let modified = professors.filter((teacher) => {
+          return teacher.teaches.find((t) => {
+            if(t){
+              return t.class_id === data._id;
+            }
+          })
         })
-      })
-      if(!Array.isArray(modified)){
-        modified = [modified];
+        if(!Array.isArray(modified)){
+          modified = [modified];
+        }
+        modified.forEach((user) => {
+          addProfessor(data, user);
+        })
       }
-      modified.forEach((user) => {
-        addProfessor(data, user);
-      })
     })
   }
 

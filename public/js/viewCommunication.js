@@ -30,12 +30,13 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
       }
     })
     .then(data => {
-
-      $('#communication')
-      .append('<div class="col-md-12"><b>A: </b>' + recipients + '</div><hr>')
-      .append('<div class="col-md-12"><b>Oggetto: </b>' + data.subject + '</div><hr>')
-      .append('<div class="col-md-12"><b>Inviata il: </b>' + data.date + '</div><hr>')
-      .append('<div class="col-md-12">' + data.content + '</div>');
+      if(data){
+        $('#communication')
+        .append('<div class="col-md-12"><b>A: </b>' + recipients + '</div><hr>')
+        .append('<div class="col-md-12"><b>Oggetto: </b>' + data.subject + '</div><hr>')
+        .append('<div class="col-md-12"><b>Inviata il: </b>' + data.date + '</div><hr>')
+        .append('<div class="col-md-12">' + data.content + '</div>');
+      }      
     })
   }
 
