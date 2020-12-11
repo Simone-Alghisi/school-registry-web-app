@@ -123,7 +123,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
     let recStr = '';
     
     for(let i = 0; i < recipients.length -1; i++){
-      recStr += recipients[recipients.length-1] + ', ';
+      recStr += recipients[i] + ', ';
     }
     recStr += recipients[recipients.length-1];
 
@@ -133,6 +133,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
   $('#dataTable tbody').on('click', 'tr', function(e){
     let commId = table.row(this).node().id;
     let recipients = table.row(this).node().children[1].textContent;
+    console.log(recipients);
     $(location).prop('href', './viewCommunication.html?id='+commId+'&recipients='+recipients);
   });
 
