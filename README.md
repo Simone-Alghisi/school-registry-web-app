@@ -91,10 +91,15 @@ projectSe2group06
 │   │       └── mongoose.service.ts
 │   ├── controllers
 │   │   ├── class.controller.ts
+│   │   ├── communication.controller.ts
+│   │   ├── grade.controller.ts
 │   │   ├── login.controller.ts
-│   │   └── user.controller.ts
+│   │   ├── user.controller.ts
+│   │   └── yourself.controller.ts
 │   ├── middlewares
 │   │   ├── class.middleware.ts
+│   │   ├── communication.middleware.ts
+│   │   ├── grade.middleware.ts
 │   │   ├── jwt.middleware.ts
 │   │   ├── login.middleware.ts
 │   │   └── user.middleware.ts
@@ -103,41 +108,74 @@ projectSe2group06
 │   │   └── user.model.ts
 │   ├── routes
 │   │   ├── class.route.ts
+│   │   ├── communication.route.ts
+│   │   ├── grade.route.ts
 │   │   ├── login.route.ts
-│   │   └── user.route.ts
+│   │   ├── user.route.ts
+│   │   └── yourself.route.ts
 │   └── services
 │       ├── class.service.ts
-│       └── user.service.ts
-├── package.json
+│       ├── communication.service.ts
+│       ├── grade.service.ts
+│       ├── user.service.ts
+│       └── yourself.service.ts
+├── oas3.yaml
 ├── package-lock.json
+├── package.json
 ├── Procfile
 ├── public
 │   ├── classes.html
+│   ├── communications.html
+│   ├── communicationsProfessor.html
+│   ├── communicationsStudent.html
 │   ├── css
 │   │   └── style.css
 │   ├── editClass.html
 │   ├── editUser.html
 │   ├── forbidden.html
+│   ├── grades.html
+│   ├── gradesStudent.html
 │   ├── home.html
+│   ├── homeProfessor.html
+│   ├── homeStudent.html
 │   ├── index.html
 │   ├── insertClass.html
+│   ├── insertCommunications.html
+│   ├── insertGrades.html
 │   ├── insertUser.html
 │   ├── js
 │   │   ├── classes.js
 │   │   ├── common.js
+│   │   ├── commonProfessor.js
+│   │   ├── commonStudent.js
+│   │   ├── communications.js
+│   │   ├── communicationsProfessor.js
+│   │   ├── communicationsStudent.js
 │   │   ├── deleteClass.js
 │   │   ├── deleteUser.js
 │   │   ├── editClass.js
+│   │   ├── editGrade.js
 │   │   ├── editUser.js
+│   │   ├── grades.js
+│   │   ├── gradesStudent.js
+│   │   ├── homeProfessor.js
 │   │   ├── index.js
 │   │   ├── insertClass.js
+│   │   ├── insertCommunications.js
+│   │   ├── insertGrades.js
 │   │   ├── insertUser.js
 │   │   ├── main.js
 │   │   ├── plugins
 │   │   │   └── datatables.js
-│   │   └── users.js
+│   │   ├── users.js
+│   │   ├── viewCommunication.js
+│   │   ├── viewCommunicationProfessor.js
+│   │   └── viewCommunicationStudent.js
 │   ├── serverError.html
-│   └── users.html
+│   ├── users.html
+│   ├── viewCommunication.html
+│   ├── viewCommunicationProfessor.html
+│   └── viewCommunicationStudent.html
 ├── README.md
 ├── spec
 │   ├── app.spec.ts
@@ -146,16 +184,19 @@ projectSe2group06
 │   │       └── common.routes.spec.ts
 │   ├── controllers
 │   │   ├── class.controller.spec.ts
+│   │   ├── communication.controller.spec.ts
+│   │   ├── grade.controller.spec.ts
 │   │   ├── login.controller.spec.ts
 │   │   └── user.controller.spec.ts
 │   ├── models
 │   │   ├── class.model.spec.ts
 │   │   └── user.model.spec.ts
 │   ├── routes
-│   │   ├── login.route.ts
-│   │   └── user.route.ts
+│   │   ├── communication.route.spec.ts
+│   │   ├── grade.route.spec.ts
+│   │   ├── login.route.spec.ts
+│   │   └── user.route.spec.ts
 │   └── spec_helper.ts
-├── swagger.yaml
 └── tsconfig.json
 ```
 
