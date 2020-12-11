@@ -319,7 +319,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     professorsTable.row(toRemove).remove().draw(false);
   });
   
-  function editUser(user, attemptMade = false){
+  function editUser(user, attemptMade){
     
     let base_url = '../api/v1/users/';
     let data = '';
@@ -342,7 +342,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
           resolve();
         }else if(resp.status == 403){
           if(!attemptMade){
-            refreshToken().then(() => editUser(user, true)).catch(() => dealWithForbiddenErrorCode());
+            refreshToken().then(() => editClass(true)).catch(() => dealWithForbiddenErrorCode());
           }else{
             dealWithForbiddenErrorCode();
           }
@@ -362,8 +362,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
   async function editClass(attemptMade = false){
 
     for(const user in modifiedUsers){
-      console.log("LMAO");
-      await editUser(user);
+      await editUser(user, attemptMade);
     }
 
     let class_url = '../api/v1/classes/' + classId;

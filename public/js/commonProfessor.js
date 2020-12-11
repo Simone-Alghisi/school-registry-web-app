@@ -30,7 +30,6 @@ let teaches = [];
 function setEventSelectClass(){
   $('#collapseTwo .collapse-item').on('click', function () {
     $('#classModalLabel').html('Seleziona Materia per ' + $(this).html());
-    console.log(classes);
     const classSubjects = classes[$(this).html()].subjects;
     $('#materia').html('<option value="" selected="selected">Nessuna</option>');
     $('#materia').prop('disabled', true);

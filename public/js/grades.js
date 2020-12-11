@@ -112,7 +112,8 @@ let subject = vars['subject'];
     })
     .then(async () => {
       await retrieveGrades(attemptMade);
-    }).then(() => {
+    })
+    .then(() => {
       assignGradesToStudents();
       table.clear();
       for(const key in students){

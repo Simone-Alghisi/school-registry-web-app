@@ -5,6 +5,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
 
   // Retrieve the class id
   let classId = getUrlVars()['id'];
+  const errorMessage = "error while retrieving data due to refresh token" 
 
   /**
    * Delete the students' reference to that class
@@ -23,15 +24,15 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         } else {
           dealWithForbiddenErrorCode();
         }
-      }else{
+      }else if(resp.status == 500){
         dealWithServerErrorCodes();
       }
+      throw errorMessage
     }).then((users) => {
       if(users){
         users.forEach((u) => {
           deleteStudentReference(u._id,attemptMade).then(() => {return});
         });
-        return;
       }
     });
   }
@@ -54,12 +55,11 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         } else {
           dealWithForbiddenErrorCode();
         }
-      }else{
+      }else if(resp.status == 500){
         dealWithServerErrorCodes();
       }
-    }).catch( 
-      error => console.error(error)
-    );
+      throw errorMessage
+    })
   }
 
   /**
@@ -78,16 +78,15 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         } else {
           dealWithForbiddenErrorCode();
         }
-      }else{
+      }else if(resp.status == 500){
         dealWithServerErrorCodes();
       }
+      throw errorMessage;
     }).then((users) => {
       if(users){
         users.forEach((u) => {
-          console.log(u);
-          deleteProfessorReference(u,attemptMade).then(() => {return});
+          deleteProfessorReference(u, attemptMade).then(() => {return});
         });
-        return;
       }
     });
   }
@@ -111,23 +110,21 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         } else {
           dealWithForbiddenErrorCode();
         }
-      }else{
+      }else if(resp.status == 500){
         dealWithServerErrorCodes();
       }
-    }).catch( 
-      error => console.error(error)
-    );
+      throw errorMessage;
+    })
   }
 
   /**
    * Remove the classes and the users linked to it
    */
   function deleteClass(attemptMade=false){
-    removeClassReferencesStudents(attemptMade).then(() => 
-      removeClassReferencesProfessors(attemptMade).then(() =>
-        removeClassById(attemptMade)
-      )
-    );
+    removeClassReferencesStudents(attemptMade)
+    .then(() => removeClassReferencesProfessors(attemptMade))
+    .then(() => removeClassById(attemptMade))
+    .catch(error => {console.log(error)});
   }
   
   async function removeClassById(attemptMade){
@@ -137,7 +134,6 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
     })
     .then((resp) => {
       if(resp.ok){
-        //$(location).prop('href', './classes.html');
         return;
       }else if(resp.status == 403){
         if(!attemptMade){
@@ -145,13 +141,13 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
         } else {
           dealWithForbiddenErrorCode();
         }
-      }else{
+      }else if(resp.status == 500){
         dealWithServerErrorCodes();
       }
+      throw errorMessage
+    }).then(() => {
+      $(location).prop('href', './classes.html');
     })
-    .catch( 
-      error => console.error(error)
-    );
   }
 
   $('#delete').click((event) => {
