@@ -342,7 +342,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
           resolve();
         }else if(resp.status == 403){
           if(!attemptMade){
-            refreshToken().then(() => editUser(userId, true)).catch(() => dealWithForbiddenErrorCode());
+            refreshToken().then(() => editUser(user, true)).catch(() => dealWithForbiddenErrorCode());
           }else{
             dealWithForbiddenErrorCode();
           }
@@ -362,6 +362,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
   async function editClass(attemptMade = false){
 
     for(const user in modifiedUsers){
+      console.log("LMAO");
       await editUser(user);
     }
 

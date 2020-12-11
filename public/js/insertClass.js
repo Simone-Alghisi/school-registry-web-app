@@ -89,12 +89,14 @@ import {
         }
       })
       .then((data) => {
-        data.map((elem) => {
-          if ((!elem.class_id && elem.role === 0) || elem.role === 1) {
-            usersToInsertListElement.append($('<option>').val(elem._id).text(elem.name + " " + elem.surname));
-            usersToInsertList[elem._id] = elem;
-          }
-        });
+        if(data){
+          data.map((elem) => {
+            if ((!elem.class_id && elem.role === 0) || elem.role === 1) {
+              usersToInsertListElement.append($('<option>').val(elem._id).text(elem.name + " " + elem.surname));
+              usersToInsertList[elem._id] = elem;
+            }
+          });
+        }
       })
   }
 
@@ -278,7 +280,7 @@ import {
         })
         .catch(
           error => {
-            console.error(error)
+            console.error(error);
             reject();
           }
         );

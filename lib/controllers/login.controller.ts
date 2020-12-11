@@ -10,7 +10,7 @@ export class LoginController {
   /**
    * Token expiration value
    */
-  private static tokenExpiration = '1m';
+  private static tokenExpiration = '5s';
   /**
    * Refresh token expiration value
    */

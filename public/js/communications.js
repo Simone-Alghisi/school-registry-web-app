@@ -92,7 +92,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
     return rec;
   }
 
-  function getName(userId){
+  function getName(userId,attemptMade=false){
     return new Promise( (resolve,reject) => {
       const url = '../api/v1/users/' + userId;
       fetch(url,{
@@ -106,7 +106,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
           return resp.json();
         }else if(resp.status == 403){
           if(!attemptMade){
-            refreshToken().then(() => getName(true)).catch(() => dealWithForbiddenErrorCode());
+            refreshToken().then(() => getName(userId,true)).catch(() => dealWithForbiddenErrorCode());
           }else{
             dealWithForbiddenErrorCode();
           }
@@ -115,7 +115,9 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
         }
       })
       .then(data => {
-        resolve(data.name + ' ' + data.surname);
+        if(data){
+          resolve(data.name + ' ' + data.surname);
+        }
       });
     });
   }

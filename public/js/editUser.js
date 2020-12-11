@@ -69,8 +69,10 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
           dealWithServerErrorCodes();
         }
       })
-      .then(() => {
-        $(location).prop('href', './users.html');
+      .then((data) => {
+        if(data){
+          $(location).prop('href', './users.html');
+        }
       })
       .catch( 
         error => console.error(error)
