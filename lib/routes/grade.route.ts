@@ -5,8 +5,6 @@ import { JwtMiddleware } from '../middlewares/jwt.middleware';
 import { GradeController } from '../controllers/grade.controller';
 import { GradeMiddleware } from '../middlewares/grade.middleware';
 
-//TODO... Decides who can access to these methods
-
 /**
  * GradeRoutes class, it extends the {@link CommonRoutes} class and implements the {@link ConfigureRoutes} interface.
  * It aims to manage all the requests received for the resource _/classes/{id}/grades_.
@@ -35,7 +33,6 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
     /** Instance of jwt middleware that checks if a client has a valid token*/
     const jwtMiddleware: JwtMiddleware = new JwtMiddleware();
 
-    //TODO define in a better way the users' permissions to perform this
     /**
      * Route for the get method (retrieve resource) for the grades of a class
      * The request is routed through a series of middlewares that check the validity of the JWT token
@@ -65,7 +62,6 @@ export class GradeRoutes extends CommonRoutes implements ConfigureRoutes {
       grade.getById
     ]);
 
-    //TODO define in a better way the users' permissions to perform this
     /**
      * Route for the post method (create resource) on a single grade 
      * The request is routed through a series of middlewares that check the validity of the JWT token

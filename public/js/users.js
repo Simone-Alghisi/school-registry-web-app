@@ -37,7 +37,6 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
       headers: { 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken }
     })
     .then((resp) => {
-      console.log(resp);
       if(resp.ok){
         return resp.json();
       }else if(resp.status == 403){

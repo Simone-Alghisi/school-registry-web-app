@@ -53,7 +53,6 @@ export class JwtMiddleware {
    * @param next next function
    */
   validateRefreshTokenField(req: Request, res: Response, next: NextFunction):void {
-    //console.log(req.body.refreshToken);
     if (req.body && req.body.refreshToken) {
       next();
     } else {

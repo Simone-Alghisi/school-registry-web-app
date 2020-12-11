@@ -46,8 +46,6 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode } from './common.j
       body: JSON.stringify({class_id: ''}),
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' +  window.sessionStorage.accessToken}
     }).then((resp) => {
-      console.log(resp);
-      console.log(resp.status);
       if(resp.ok){
         return;
       }else if(resp.status == 403){

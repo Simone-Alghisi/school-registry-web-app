@@ -64,7 +64,6 @@ async function getAllReceivedCommunications(){
   const userService: UserService = UserService.getInstance();
   userWithCommunicationsModel = await userService.getById(student_id);
   userWithCommunications = deepCopy(userWithCommunicationsModel);
-  //console.log(userWithCommunications['communications']); 
   for(let i=0; i <userWithCommunications['communications'].length; i++){
     userWithCommunications['communications'][i]['recipient'] = student_id;
   }
@@ -183,7 +182,6 @@ describe('CommunicationController', () => {
     before(async () => {
       communication_list = await getAllSendedCommunications();
       userCommunications = await getAllReceivedCommunications();
-      //console.log(userCommunications);
     })
 
     it('should return the 403 Forbidden code: professor shouldn\'t be able to request sended communication', async () => {
@@ -534,7 +532,6 @@ describe('CommunicationController', () => {
     });
 
     it('should return the 201 created', async () => {
-      //console.log(sample_communication)
       return chai
         .request(app)
         .post('/api/v1/users/' + student_id + '/communications')

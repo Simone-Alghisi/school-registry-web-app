@@ -114,7 +114,6 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
         }
       })
       .then(data => {
-        //console.log(data);
         resolve(data.name + ' ' + data.surname);
       });
     });
@@ -134,7 +133,6 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
   $('#dataTable tbody').on('click', 'tr', function(e){
     let commId = table.row(this).node().id;
     let recipients = table.row(this).node().children[1].textContent;
-    console.log(recipients);
     $(location).prop('href', './viewCommunication.html?id='+commId+'&recipients='+recipients);
   });
 

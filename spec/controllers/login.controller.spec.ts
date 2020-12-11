@@ -118,7 +118,6 @@ describe('LoginController', () => {
         .post('/api/v1/login/refresh')
         .send({ refreshToken: refreshToken })
         .then(res => {
-          //console.log(refreshToken);
           chai.expect(res.status).to.eql(200);
         });
     });

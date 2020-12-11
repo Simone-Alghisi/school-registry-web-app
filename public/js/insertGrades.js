@@ -16,8 +16,6 @@ import {
 
   let class_id = getUrlVars()['class'];
   let subject = getUrlVars()['subject'];
-  //console.log(class_id);
-  //console.log(subject);
   let usersWithGrades = [];
   let grades_list = '';
   $('#navViewGrades').attr("href", './grades.html?class=' + class_id + '&subject=' + subject);
@@ -36,7 +34,6 @@ import {
 
   function getStudents(attemptMade = false){
     let url = '../api/v1/users?class_id='+ class_id +'&role=' + 0;
-    //console.log(url);
     fetch(url, {
       method: 'GET',
       headers: { 
@@ -57,7 +54,6 @@ import {
       }
     })
     .then((students) => {
-      //console.log(students);
       students.forEach((user) => {
         addStudent(user);
       })
@@ -79,7 +75,6 @@ import {
 
       let data;
       data = JSON.stringify(gradeElement);
-      console.log(data);
 
       let fetchData = {
         method: 'POST',

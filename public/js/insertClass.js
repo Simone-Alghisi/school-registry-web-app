@@ -37,7 +37,6 @@ import {
   let subjectSelector = $('#materia');
   subjectSelector.prop("disabled", true);
 
-  //TODO aggiungere tutte le materie, decidendo i valori
   let subjectMapping = {
     0: 'Matematica',
     1: 'Storia',
@@ -115,7 +114,6 @@ import {
   });
 
   function copyUser(user) {
-    //TODO vedere che campi tenere
     let copy = {};
     copy._id = user._id;
     copy.name = user.name;
