@@ -29,7 +29,6 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
     .then(function(data){
       if(data){
         let unique = getUnique(data);
-        console.log(unique);
         unique.map(async function(elem){
           let name = await getRecipientString(await replaceRecipientWithName(elem.recipient)
             .catch((error) => {
@@ -45,7 +44,6 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
           ]).draw().node().id=elem._id;
 
         }).catch((error) => {
-          console.log('Prendo quello che lancia di nuovo flex');
           throw error;
         })
         alreadyLoaded = [];
@@ -163,5 +161,5 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
     $(location).prop('href', './viewCommunication.html?id='+commId+'&recipients='+recipients);
   });
 
-  getCommunications()//.catch(() => {console.log("prendiamolo mannaggia")});
+  getCommunications();
 })(jQuery);
