@@ -4,8 +4,15 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes, get
   let table = $('#dataTable').DataTable();
 
   async function getCommunications(attemptMade=false){
-    let userId = (await getYourself())._id;
+    let userId;
 
+    do{
+      userId = await getYourself();
+      if(userId){
+        userId = userId._id;
+      }
+    }while(!userId);
+    
     const url = '../api/v1/users/' + userId + '/communications'
     fetch(url,{
       method: 'GET',

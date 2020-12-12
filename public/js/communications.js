@@ -29,13 +29,28 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
     .then(function(data){
       if(data){
         let unique = getUnique(data);
-        unique.map(async function(elem) {
+        unique.map(async function(elem){
+          let name = await getRecipientString(await replaceRecipientWithName(elem.recipient)
+            .catch((error) => {
+            throw error;
+          }))
+          .catch((error) => {
+            throw error;
+          });
+
           table.row.add([
             elem.subject,
-            getRecipientString(await replaceRecipientWithName(elem.recipient))
+            name
           ]).draw().node().id=elem._id;
+
+        }).catch((error) => {
+          throw error;
         })
+        alreadyLoaded = [];
       }
+    })
+    .catch((error) => {
+      console.log('Token expired: Error trying to fetch the communications')
     })
   }
 
@@ -86,14 +101,16 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
       if(userName[recipient[j]]){
         rec[j] = userName[recipient[j]];
       } else {
-        userName[recipient[j]] = rec[j] = await getName(recipient[j]);
+        userName[recipient[j]] = rec[j] = await getName(recipient[j]).catch(() => {
+          throw 'Error';
+        });
       }
     }
     return rec;
   }
 
   function getName(userId,attemptMade=false){
-    return new Promise( (resolve,reject) => {
+    return new Promise((resolve,reject) => {
       const url = '../api/v1/users/' + userId;
       fetch(url,{
         method: 'GET',
@@ -106,7 +123,7 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
           return resp.json();
         }else if(resp.status == 403){
           if(!attemptMade){
-            refreshToken().then(() => getName(userId,true)).catch(() => dealWithForbiddenErrorCode());
+            refreshToken().then(() => getName(userId, true)).catch(() => dealWithForbiddenErrorCode());
           }else{
             dealWithForbiddenErrorCode();
           }
@@ -117,12 +134,17 @@ import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } fr
       .then(data => {
         if(data){
           resolve(data.name + ' ' + data.surname);
+        }else{
+          throw 'Get name error';
         }
+      }).catch((error) => {
+        console.log(error);
+        reject(error);
       });
     });
   }
 
-  function getRecipientString(recipients){
+  async function getRecipientString(recipients){
     let recStr = '';
     
     for(let i = 0; i < recipients.length -1; i++){

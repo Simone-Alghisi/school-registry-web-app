@@ -5,7 +5,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
 
   // Retrieve the class id
   let classId = getUrlVars()['id'];
-  const errorMessage = "error while retrieving data due to refresh token" 
+  const errorMessage = "error while retrieving data due to refresh token";
 
   /**
    * Delete the students' reference to that class
@@ -58,7 +58,7 @@ import { getUrlVars, refreshToken, dealWithForbiddenErrorCode, dealWithServerErr
       }else if(resp.status == 500){
         dealWithServerErrorCodes();
       }
-      throw errorMessage
+      throw errorMessage;
     })
   }
 

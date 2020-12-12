@@ -20,6 +20,7 @@ import {
   let grades_list = '';
   $('#navViewGrades').attr("href", './grades.html?class=' + class_id + '&subject=' + subject);
   $('#back').attr("onclick", "location.href='./grades.html?class=" + class_id + "&subject=" + subject + "';");
+  const error = "failed once, stop and re-try with refresh token"
 
   //datatables
   let studentsTable = $('#studentsTable').DataTable({
@@ -27,6 +28,8 @@ import {
     'searching': false,
     'info': false
   });
+
+  let blackList = [];
 
   for (let key in gradesMapping) {
     grades_list += '<option value="' + key + '">' + gradesMapping[key] + '</option>';
@@ -54,9 +57,11 @@ import {
       }
     })
     .then((students) => {
-      students.forEach((user) => {
-        addStudent(user);
-      })
+      if(students){
+        students.forEach((user) => {
+          addStudent(user);
+        })
+      }
     })
   }
 
@@ -69,7 +74,7 @@ import {
     ]).draw().node();
   }
 
-  function fetchGrade(gradeElement,  attemptMade = false) {
+  function fetchGrade(gradeElement, attemptMade) {
     return new Promise((resolve, reject) => {
       const url = '../api/v1/classes/' + class_id + '/grades';
 
@@ -90,27 +95,25 @@ import {
             return;
           } else if (resp.status == 403) {
             if(!attemptMade){
-              refreshToken().then(() => fetchGrade(gradeElement, true)).catch(() => dealWithForbiddenErrorCode());
+              refreshToken().then(() => sendGrades(true)).catch(() => dealWithForbiddenErrorCode());
             }else{
               dealWithForbiddenErrorCode();
             }
           } else {
             dealWithServerErrorCodes();
           }
+          throw error;
         })
-        .then((resp) => {
+        .then(() => {
           resolve();
         })
-        .catch(
-          error => {
-            console.error(error)
-            reject();
-          }
-        ); 
+        .catch((error) => {
+          reject(error);
+        })
     });
   }
 
-  async function sendGrades() {
+  async function sendGrades(attemptMade = false) {
     let description =  $('#description').val();
     let date =  $('#date').val();
     let studentGrade = {};
@@ -123,14 +126,22 @@ import {
       studentGrade['date'] = date;
       studentGrade['student_id'] = studentId;
       studentGrade['value'] = value;
-      if(value != 0) 
-        await fetchGrade(studentGrade);
+      if(value != 0 && !blackList[usersWithGrades[key]._id]){
+        await fetchGrade(studentGrade, attemptMade)
+        .then(() => {
+          blackList[usersWithGrades[key]._id] = true;
+        })
+        .catch((error) => {
+          throw error;
+        })
+      }
     }
+    blackList = [];
     $(location).prop('href', './grades.html?class=' + class_id + '&subject=' + subject);
   }
 
   $('#form').submit((event) => {
-    sendGrades();
+    sendGrades().catch((error) => {});
     event.preventDefault();
   });
 
