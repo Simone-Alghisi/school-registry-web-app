@@ -8,7 +8,7 @@
     "start": "node dist/app.js",
     "dev": "nodemon lib/app.ts",
     "build": "tsc -p .",
-    "test": "mocha -r ts-node/register spec/*.spec.ts spec/**/*.spec.ts --timeout 15000 --exit",
+    "test": "mocha -r ts-node/register 'spec/**/*.spec.ts' --exit",
     "clean": "rm -r dist/* || true",
     "postinstall": "tsc -p .",
     "lint": "eslint . --ext .ts",

@@ -1,6 +1,6 @@
 export { retrieveClassStudent, subjectMapping, gradesMapping, class_id, student_id};
 
-import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes, getUrlVars } from './common.js';
+import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } from './common.js';
 
 let gradesMapping = {
   '0': 'Nessun voto',
@@ -49,7 +49,9 @@ function retrieveClassStudent(attemptMade = false){
       dealWithServerErrorCodes();
     }
   }).then((data) => {
-    class_id = data.class_id;
-    student_id = data._id;
+    if(data){
+      class_id = data.class_id;
+      student_id = data._id;
+    }
   });
 }

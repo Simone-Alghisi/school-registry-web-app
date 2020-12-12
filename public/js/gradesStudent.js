@@ -1,6 +1,6 @@
 import { retrieveClassStudent, subjectMapping, gradesMapping, class_id, student_id } from './commonStudent.js';
 
-import { refreshToken, dealWithForbiddenErrorCode } from './common.js';
+import { refreshToken, dealWithForbiddenErrorCode, dealWithServerErrorCodes } from './common.js';
 
 
 (function ($){
@@ -38,6 +38,8 @@ import { refreshToken, dealWithForbiddenErrorCode } from './common.js';
           }else{
             dealWithForbiddenErrorCode();
           }
+        }else if(resp.status == 404){
+          return retrieveGrades();
         } else {
           dealWithServerErrorCodes();
         }

@@ -6,7 +6,13 @@ import { prepareClassOnLoad } from './commonProfessor.js';
   async function loadCommunication(attemptMade=false){
     const urlParams = new URLSearchParams(location.search);
     let commId = urlParams.get("id");
-    let userId = (await getYourself())._id;
+    let userId;
+    do{
+      userId = await getYourself();
+      if(userId){
+        userId = userId._id;
+      }
+    }while(!userId);
 
     if(commId == null){
       $(location).prop('href', './communicationsProfessor.html');

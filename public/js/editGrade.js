@@ -116,17 +116,21 @@ import { student_id, students, class_id, subject, gradesToRemove} from './grades
         } else {
           dealWithServerErrorCodes();
         }
+      }).catch(() => {
+        throw 'Error';
       });
   }
 
   async function deleteGrades(){
     for(let i=0; i < gradesToRemove.length; i++){
-      await deleteGrade(gradesToRemove[i]);
+      await deleteGrade(gradesToRemove[i]).catch((error) => {
+        throw error;
+      });
     }
   }
 
   $('#confirmEdit').click(() => {
-    deleteGrades().then(() => updateGrades());
+    deleteGrades().then(() => updateGrades()).catch(() => deleteGrades());
   });
   
 })(jQuery);
