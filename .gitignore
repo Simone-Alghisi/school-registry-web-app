@@ -14,3 +14,7 @@ doc
 
 # real .env
 .env
+
+# test coverage directories
+coverage
+.nyc_output
