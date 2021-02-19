@@ -202,9 +202,9 @@ projectSe2group06
 
 ## Team 
 
-|  Name    |  Surname   |     Github          |  Matricola |
-| :-----:  | :--------: | :-----------------: | :--------: |
-| Emanuele | Beozzo     | `emanuelebeozzo`    | **201637** |
-| Massimo  | Rizzoli    | `massimo-rizzoli`   | **202691** |
-| Samuele  | Bortolotti | `samuelebortolotti` | **201647** |
-| Simone   | Alghisi    | `Simone-Alghisi`    | **202077** |
+|  Name    |  Surname   |     Github          | 
+| :-----:  | :--------: | :-----------------: | 
+| Emanuele | Beozzo     | `emanuelebeozzo`    | 
+| Massimo  | Rizzoli    | `massimo-rizzoli`   | 
+| Samuele  | Bortolotti | `samuelebortolotti` | 
+| Simone   | Alghisi    | `Simone-Alghisi`    | 
